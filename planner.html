@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Planner | Next Technology (NexTech)</title>
+    <meta name="description" content="Configure your custom project blueprint — select services, budget, and timeline to get started with NexTech.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Shared Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ── Planner Page Specific Styles ── */
+
+        .planner-page-hero {
+            padding: 180px 24px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 5;
+        }
+
+        .planner-page-title {
+            font-family: var(--font-heading);
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            line-height: 1;
+            margin-bottom: 24px;
+        }
+
+        .planner-page-title span {
+            color: var(--text-tertiary);
+        }
+
+        .planner-page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 300;
+            max-width: 520px;
+            line-height: 1.7;
+        }
+
+        /* Planner Section Override for full-page layout */
+        .planner-section {
+            padding-top: 0;
+        }
+
+        .planner-section .section-container {
+            padding-top: 20px;
+        }
+
+        .planner-section .section-header {
+            display: none; /* Hidden — we use the hero title instead */
+        }
+
+        /* Step progress indicator */
+        .planner-progress {
+            max-width: 1200px;
+            margin: 0 auto 0;
+            padding: 0 24px 40px;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            position: relative;
+            z-index: 5;
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            position: relative;
+        }
+
+        .progress-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: calc(100% - 120px);
+            height: 1px;
+            background: var(--border);
+            left: 120px;
+        }
+
+        .progress-num {
+            font-family: var(--font-heading);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            color: var(--text-tertiary);
+            border: 1px solid var(--border);
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .progress-label {
+            font-family: var(--font-heading);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            white-space: nowrap;
+        }
+
+        /* Contact redirect note */
+        .planner-note {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px 24px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .planner-note p {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .planner-note svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+
+        /* Override apply button behavior on standalone page */
+        #applyBlueprintBtn {
+            width: 100%;
+        }
+
+        /* Footer spacing */
+        .planner-section {
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 600px) {
+            .planner-progress {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-grid"></div>
+    <div class="bg-glow" id="bgGlow"></div>
+
+    <!-- Navigation -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="index.html" class="logo-group">
+                <img src="assets/logo.png" alt="Next Technology Logo" class="logo-img">
+            </a>
+
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="portfolio.html" class="nav-link">Portfolio</a>
+                <a href="planner.html" class="nav-link nav-link-active">Planner</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="blog.html" class="nav-link">Blog</a>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Theme">
+                    <i data-lucide="sun" class="sun-icon"></i>
+                    <i data-lucide="moon" class="moon-icon"></i>
+                </button>
+                <a href="planner.html" class="btn-primary">Start Project</a>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="mobile-nav" id="mobileNav">
+            <a href="index.html" class="mobile-nav-link">Home</a>
+            <a href="portfolio.html" class="mobile-nav-link">Portfolio</a>
+            <a href="planner.html" class="mobile-nav-link">Planner</a>
+            <a href="contact.html" class="mobile-nav-link">Contact</a>
+            <a href="blog.html" class="mobile-nav-link">Blog</a>
+            <a href="planner.html" class="btn-primary mobile-btn">Start Project</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Page Hero -->
+        <div class="planner-page-hero">
+            <span class="section-tag fade-in">PLANNER</span>
+            <h1 class="planner-page-title fade-in">
+                Configure<br><span>Your Project.</span>
+            </h1>
+            <p class="planner-page-subtitle fade-in">
+                Select your services, budget, and timeline below to generate a custom blueprint — then send it straight to our team.
+            </p>
+        </div>
+
+        <!-- Step Progress Bar -->
+        <div class="planner-progress fade-in">
+            <div class="progress-step">
+                <span class="progress-num">01</span>
+                <span class="progress-label">Services</span>
+            </div>
+            <div class="progress-step">
+                <span class="progress-num">02</span>
+                <span class="progress-label">Budget</span>
+            </div>
+            <div class="progress-step">
+                <span class="progress-num">03</span>
+                <span class="progress-label">Timeline</span>
+            </div>
+        </div>
+
+        <!-- Info note -->
+        <div class="planner-note fade-in">
+            <p>
+                <i data-lucide="info"></i>
+                Clicking "Apply Blueprint to Inquiry" will take you to the contact form with your configuration pre-filled.
+            </p>
+        </div>
+
+        <!-- Planner Section (reused from index) -->
+        <section class="planner-section" id="planner">
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-tag">PLANNER</span>
+                    <h2 class="section-title">Configure Your Project</h2>
+                    <p class="section-subtitle">Select your requirements below to build a customized blueprint and outline.</p>
+                </div>
+
+                <div class="planner-card">
+                    <!-- Step 1: Select Services -->
+                    <div class="planner-step">
+                        <div class="step-label">01 / Choose Services (Select multiple)</div>
+                        <div class="planner-options" id="serviceOptions">
+                            <div class="planner-opt-card" data-val="Website Development" data-weight="3">
+                                <i data-lucide="code-2"></i>
+                                <span>Website Development</span>
+                            </div>
+                            <div class="planner-opt-card" data-val="Landing Pages" data-weight="1">
+                                <i data-lucide="layers"></i>
+                                <span>Landing Page</span>
+                            </div>
+                            <div class="planner-opt-card" data-val="Portfolio Websites" data-weight="2">
+                                <i data-lucide="user"></i>
+                                <span>Portfolio Website</span>
+                            </div>
+                            <div class="planner-opt-card" data-val="Business Websites" data-weight="3">
+                                <i data-lucide="building-2"></i>
+                                <span>Business Website</span>
+                            </div>
+                            <div class="planner-opt-card" data-val="UI/UX Design" data-weight="2">
+                                <i data-lucide="palette"></i>
+                                <span>UI/UX Design</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Budget Select -->
+                    <div class="planner-step">
+                        <div class="step-label">02 / Project Budget Range</div>
+                        <div class="planner-options" id="budgetOptions">
+                            <div class="planner-opt-card" data-val="Starter ($2k - $5k)" data-mult="1">
+                                <span>$2k - $5k</span>
+                            </div>
+                            <div class="planner-opt-card active" data-val="Growth ($5k - $10k)" data-mult="1.5">
+                                <span>$5k - $10k</span>
+                            </div>
+                            <div class="planner-opt-card" data-val="Enterprise ($10k+)" data-mult="2.2">
+                                <span>$10k+</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Timeline Select -->
+                    <div class="planner-step">
+                        <div class="step-label">03 / Target Timeline</div>
+                        <div class="planner-options" id="timelineOptions">
+                            <div class="planner-opt-card" data-val="Urgent (< 1 month)">
+                                <span>&lt; 1 Month</span>
+                            </div>
+                            <div class="planner-opt-card active" data-val="Standard (1 - 2 months)">
+                                <span>1 - 2 Months</span>
+                            </div>
+                            <div class="planner-opt-card" data-val="Flexible (2+ months)">
+                                <span>2+ Months</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary & Action -->
+                    <div class="planner-summary">
+                        <div class="summary-details">
+                            <h4>Project Configuration Blueprint</h4>
+                            <div class="summary-item">
+                                <span class="summary-key">Services:</span>
+                                <span class="summary-val" id="sumServices">None selected</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-key">Budget Tier:</span>
+                                <span class="summary-val" id="sumBudget">Growth ($5k - $10k)</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-key">Timeline:</span>
+                                <span class="summary-val" id="sumTimeline">Standard (1 - 2 months)</span>
+                            </div>
+                            <div class="summary-item total">
+                                <span class="summary-key">Estimated Blueprint Score:</span>
+                                <span class="summary-val" id="sumEstimate">Medium Intensity</span>
+                            </div>
+                        </div>
+                        <button class="btn-primary-large" id="applyBlueprintBtn">Apply Blueprint to Inquiry</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="logo-group">
+                    <img src="assets/logo.png" alt="Next Technology Logo" class="logo-img">
+                </div>
+                <p class="footer-desc">Premium digital engineering and clean-cut UI/UX design. We design and construct digital foundations for high-tier brands.</p>
+            </div>
+
+            <div class="footer-nav">
+                <h4>Navigation</h4>
+                <a href="index.html">Home</a>
+                <a href="portfolio.html">Portfolio</a>
+                <a href="planner.html">Planner</a>
+                <a href="contact.html">Contact</a>
+                <a href="blog.html">Blog</a>
+            </div>
+
+            <div class="footer-social">
+                <h4>Connect</h4>
+                <div class="social-links">
+                    <a href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub"><i data-lucide="github"></i></a>
+                    <a href="https://dribbble.com" target="_blank" rel="noopener" aria-label="Dribbble"><i data-lucide="dribbble"></i></a>
+                    <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn"><i data-lucide="linkedin"></i></a>
+                    <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter"><i data-lucide="twitter"></i></a>
+                </div>
+                <span class="footer-url">nextechnology.com</span>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Next Technology. All rights reserved. Designed with precision.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            // Theme
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
+            const htmlElement = document.documentElement;
+            htmlElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+            themeToggleBtn.addEventListener('click', () => {
+                const newTheme = htmlElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                htmlElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+
+            // Mouse glow
+            const bgGlow = document.getElementById('bgGlow');
+            if (bgGlow && window.matchMedia('(pointer: fine)').matches) {
+                document.addEventListener('mousemove', (e) => {
+                    bgGlow.style.opacity = '1';
+                    bgGlow.style.left = `${e.clientX}px`;
+                    bgGlow.style.top = `${e.clientY}px`;
+                });
+                document.addEventListener('mouseleave', () => { bgGlow.style.opacity = '0'; });
+            }
+
+            // Mobile menu
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileNav = document.getElementById('mobileNav');
+            if (mobileMenuToggle && mobileNav) {
+                mobileMenuToggle.addEventListener('click', () => {
+                    const isOpen = mobileNav.classList.toggle('open');
+                    const icon = mobileMenuToggle.querySelector('i');
+                    if (icon) {
+                        icon.setAttribute('data-lucide', isOpen ? 'x' : 'menu');
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                    }
+                });
+                mobileNav.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('mobile-nav-link') || e.target.classList.contains('mobile-btn')) {
+                        mobileNav.classList.remove('open');
+                        const icon = mobileMenuToggle.querySelector('i');
+                        if (icon) {
+                            icon.setAttribute('data-lucide', 'menu');
+                            if (typeof lucide !== 'undefined') lucide.createIcons();
+                        }
+                    }
+                });
+            }
+
+            // Planner Logic
+            const serviceOptions = document.querySelectorAll('#serviceOptions .planner-opt-card');
+            const budgetOptions  = document.querySelectorAll('#budgetOptions .planner-opt-card');
+            const timelineOptions = document.querySelectorAll('#timelineOptions .planner-opt-card');
+            const sumServices = document.getElementById('sumServices');
+            const sumBudget   = document.getElementById('sumBudget');
+            const sumTimeline = document.getElementById('sumTimeline');
+            const sumEstimate = document.getElementById('sumEstimate');
+            const applyBlueprintBtn = document.getElementById('applyBlueprintBtn');
+
+            function updateBlueprint() {
+                const selectedServices = [];
+                let totalWeight = 0;
+                serviceOptions.forEach(opt => {
+                    if (opt.classList.contains('active')) {
+                        selectedServices.push(opt.getAttribute('data-val'));
+                        totalWeight += parseInt(opt.getAttribute('data-weight') || '0', 10);
+                    }
+                });
+                sumServices.textContent = selectedServices.length > 0
+                    ? selectedServices.join(', ')
+                    : 'None selected (Please choose at least one)';
+
+                let activeBudget = 'Growth ($5k - $10k)';
+                let budgetMultiplier = 1.5;
+                budgetOptions.forEach(opt => {
+                    if (opt.classList.contains('active')) {
+                        activeBudget = opt.getAttribute('data-val');
+                        budgetMultiplier = parseFloat(opt.getAttribute('data-mult') || '1.0');
+                    }
+                });
+                sumBudget.textContent = activeBudget;
+
+                let activeTimeline = 'Standard (1 - 2 months)';
+                timelineOptions.forEach(opt => {
+                    if (opt.classList.contains('active')) activeTimeline = opt.getAttribute('data-val');
+                });
+                sumTimeline.textContent = activeTimeline;
+
+                const score = totalWeight * budgetMultiplier;
+                sumEstimate.textContent = score === 0
+                    ? 'Select Services Above'
+                    : score < 4  ? 'Light Intensity Blueprint'
+                    : score < 8  ? 'Medium Intensity Blueprint'
+                    : 'High Intensity (Enterprise Blueprint)';
+            }
+
+            serviceOptions.forEach(opt => opt.addEventListener('click', () => { opt.classList.toggle('active'); updateBlueprint(); }));
+            budgetOptions.forEach(opt => opt.addEventListener('click', () => { budgetOptions.forEach(o => o.classList.remove('active')); opt.classList.add('active'); updateBlueprint(); }));
+            timelineOptions.forEach(opt => opt.addEventListener('click', () => { timelineOptions.forEach(o => o.classList.remove('active')); opt.classList.add('active'); updateBlueprint(); }));
+
+            // Apply → redirect to contact page with blueprint in sessionStorage
+            if (applyBlueprintBtn) {
+                applyBlueprintBtn.addEventListener('click', () => {
+                    const selectedServices = [];
+                    serviceOptions.forEach(opt => { if (opt.classList.contains('active')) selectedServices.push(opt.getAttribute('data-val')); });
+
+                    if (selectedServices.length === 0) {
+                        alert('Please select at least one service from the blueprint configuration.');
+                        return;
+                    }
+
+                    let activeBudget = '', activeTimeline = '';
+                    budgetOptions.forEach(opt => { if (opt.classList.contains('active')) activeBudget = opt.getAttribute('data-val'); });
+                    timelineOptions.forEach(opt => { if (opt.classList.contains('active')) activeTimeline = opt.getAttribute('data-val'); });
+
+                    const formattedDesc =
+                        `Hello NexTech team, I have built a custom project blueprint:\n` +
+                        `- Required Services: ${selectedServices.join(', ')}\n` +
+                        `- Budget Bracket: ${activeBudget}\n` +
+                        `- Target Timeline: ${activeTimeline}\n` +
+                        `- Estimator: ${sumEstimate.textContent}\n` +
+                        `Please let me know how we can proceed.`;
+
+                    // Store blueprint and redirect to contact
+                    sessionStorage.setItem('nextech_blueprint', formattedDesc);
+                    window.location.href = 'contact.html';
+                });
+            }
+
+            updateBlueprint();
+
+            // Fade-in animations
+            document.querySelectorAll('.fade-in').forEach((el, i) => {
+                el.style.animationDelay = `${0.2 + i * 0.15}s`;
+            });
+        });
+    </script>
+
+    <style>
+        .nav-link-active {
+            color: var(--text-primary) !important;
+        }
+        .nav-link-active::after {
+            width: 100% !important;
+        }
+    </style>
+</body>
+
+</html>

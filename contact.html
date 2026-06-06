@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact | Next Technology (NexTech)</title>
+    <meta name="description" content="Start a conversation with NexTech. Tell us about your project and we'll get back to you shortly.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Shared Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .contact-page-hero {
+            padding: 180px 24px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 5;
+        }
+
+        .contact-page-title {
+            font-family: var(--font-heading);
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            line-height: 1;
+            margin-bottom: 24px;
+        }
+
+        .contact-page-title span {
+            color: var(--text-tertiary);
+        }
+
+        .contact-page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 300;
+            max-width: 520px;
+            line-height: 1.7;
+        }
+
+        /* Override section padding for standalone page */
+        .contact-section .section-container {
+            padding-top: 20px;
+        }
+
+        .contact-section .section-header {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-grid"></div>
+    <div class="bg-glow" id="bgGlow"></div>
+
+    <!-- Navigation -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="index.html" class="logo-group">
+                <img src="assets/logo.png" alt="Next Technology Logo" class="logo-img">
+            </a>
+
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="portfolio.html" class="nav-link">Portfolio</a>
+                <a href="planner.html" class="nav-link">Planner</a>
+                <a href="contact.html" class="nav-link nav-link-active">Contact</a>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Theme">
+                    <i data-lucide="sun" class="sun-icon"></i>
+                    <i data-lucide="moon" class="moon-icon"></i>
+                </button>
+                <a href="planner.html" class="btn-primary">Start Project</a>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="mobile-nav" id="mobileNav">
+            <a href="index.html" class="mobile-nav-link">Home</a>
+            <a href="portfolio.html" class="mobile-nav-link">Portfolio</a>
+            <a href="planner.html" class="mobile-nav-link">Planner</a>
+            <a href="contact.html" class="mobile-nav-link">Contact</a>
+            <a href="blog.html" class="mobile-nav-link">Blog</a>
+            <a href="planner.html" class="btn-primary mobile-btn">Start Project</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Page Hero -->
+        <div class="contact-page-hero">
+            <span class="section-tag fade-in">CONTACT</span>
+            <h1 class="contact-page-title fade-in">
+                Start the<br><span>Conversation.</span>
+            </h1>
+            <p class="contact-page-subtitle fade-in">
+                Let's collaborate to build something remarkable. Tell us about your vision and we'll follow up shortly.
+            </p>
+        </div>
+
+        <!-- Contact Section -->
+        <section class="contact-section" id="contact">
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-tag">CONTACT</span>
+                    <h2 class="section-title">Start the Conversation</h2>
+                    <p class="section-subtitle">Let's collaborate to build something remarkable.</p>
+                </div>
+
+                <div class="contact-layout">
+                    <!-- Contact Info -->
+                    <div class="contact-info">
+                        <div class="info-group">
+                            <h3>Next Technology</h3>
+                            <p>Modern Websites. Digital Solutions.</p>
+                        </div>
+                        <div class="info-details">
+                            <div class="info-item">
+                                <i data-lucide="mail"></i>
+                                <div>
+                                    <span>Send an Email</span>
+                                    <a href="mailto:hello@nextechnology.com">hello@nextechnology.com</a>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i data-lucide="globe"></i>
+                                <div>
+                                    <span>Web Address</span>
+                                    <a href="https://nextechnology.com" target="_blank" rel="noopener">nextechnology.com</a>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <i data-lucide="map-pin"></i>
+                                <div>
+                                    <span>Location</span>
+                                    <p>Global / Distributed Remote</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <form class="contact-form" id="contactForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="clientName">Your Name *</label>
+                                <input type="text" id="clientName" required placeholder="John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label for="clientEmail">Email Address *</label>
+                                <input type="email" id="clientEmail" required placeholder="john@company.com">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="projectDetails">Project Blueprint Description</label>
+                            <textarea id="projectDetails" rows="5"
+                                placeholder="Select options from the blueprint calculator or describe your goals here..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit">
+                            <span>Submit Inquiry</span>
+                            <i data-lucide="arrow-right"></i>
+                        </button>
+                        <div class="form-status" id="formStatus"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="logo-group">
+                    <img src="assets/logo.png" alt="Next Technology Logo" class="logo-img">
+                </div>
+                <p class="footer-desc">Premium digital engineering and clean-cut UI/UX design. We design and construct digital foundations for high-tier brands.</p>
+            </div>
+
+            <div class="footer-nav">
+                <h4>Navigation</h4>
+                <a href="index.html">Home</a>
+                <a href="portfolio.html">Portfolio</a>
+                <a href="planner.html">Planner</a>
+                <a href="contact.html">Contact</a>
+                <a href="blog.html">Blog</a>
+            </div>
+
+            <div class="footer-social">
+                <h4>Connect</h4>
+                <div class="social-links">
+                    <a href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub"><i data-lucide="github"></i></a>
+                    <a href="https://dribbble.com" target="_blank" rel="noopener" aria-label="Dribbble"><i data-lucide="dribbble"></i></a>
+                    <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn"><i data-lucide="linkedin"></i></a>
+                    <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter"><i data-lucide="twitter"></i></a>
+                </div>
+                <span class="footer-url">nextechnology.com</span>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Next Technology. All rights reserved. Designed with precision.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            // Theme
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
+            const htmlElement = document.documentElement;
+            htmlElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+            themeToggleBtn.addEventListener('click', () => {
+                const newTheme = htmlElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                htmlElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+
+            // Mouse glow
+            const bgGlow = document.getElementById('bgGlow');
+            if (bgGlow && window.matchMedia('(pointer: fine)').matches) {
+                document.addEventListener('mousemove', (e) => {
+                    bgGlow.style.opacity = '1';
+                    bgGlow.style.left = `${e.clientX}px`;
+                    bgGlow.style.top = `${e.clientY}px`;
+                });
+                document.addEventListener('mouseleave', () => { bgGlow.style.opacity = '0'; });
+            }
+
+            // Mobile menu
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileNav = document.getElementById('mobileNav');
+            if (mobileMenuToggle && mobileNav) {
+                mobileMenuToggle.addEventListener('click', () => {
+                    const isOpen = mobileNav.classList.toggle('open');
+                    const icon = mobileMenuToggle.querySelector('i');
+                    if (icon) {
+                        icon.setAttribute('data-lucide', isOpen ? 'x' : 'menu');
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                    }
+                });
+                mobileNav.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('mobile-nav-link') || e.target.classList.contains('mobile-btn')) {
+                        mobileNav.classList.remove('open');
+                        const icon = mobileMenuToggle.querySelector('i');
+                        if (icon) {
+                            icon.setAttribute('data-lucide', 'menu');
+                            if (typeof lucide !== 'undefined') lucide.createIcons();
+                        }
+                    }
+                });
+            }
+
+            // Pre-fill from Planner blueprint via sessionStorage
+            const blueprintData = sessionStorage.getItem('nextech_blueprint');
+            if (blueprintData) {
+                const projectDetailsField = document.getElementById('projectDetails');
+                if (projectDetailsField) {
+                    projectDetailsField.value = blueprintData;
+                    sessionStorage.removeItem('nextech_blueprint');
+                }
+            }
+
+            // Form submission
+            const contactForm = document.getElementById('contactForm');
+            const formStatus = document.getElementById('formStatus');
+            if (contactForm && formStatus) {
+                contactForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const submitBtn = contactForm.querySelector('.btn-submit');
+                    const submitBtnText = submitBtn.querySelector('span');
+                    const originalText = submitBtnText.textContent;
+
+                    submitBtn.style.pointerEvents = 'none';
+                    submitBtnText.textContent = 'Transmitting...';
+                    formStatus.className = 'form-status';
+                    formStatus.textContent = '';
+
+                    setTimeout(() => {
+                        submitBtn.style.pointerEvents = 'all';
+                        submitBtnText.textContent = originalText;
+                        formStatus.className = 'form-status success';
+                        formStatus.innerHTML = '<i data-lucide="check-circle" style="width:14px;height:14px;vertical-align:middle;margin-right:6px;"></i>Inquiry received successfully. Our engineering team will follow up shortly.';
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                        contactForm.reset();
+                    }, 1500);
+                });
+            }
+
+            // Scroll reveal
+            const animatedEls = document.querySelectorAll('.contact-layout');
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+                animatedEls.forEach(el => {
+                    el.style.opacity = '0';
+                    el.style.transform = 'translateY(30px)';
+                    el.style.transition = 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+                    observer.observe(el);
+                });
+            }
+        });
+    </script>
+
+    <style>
+        .nav-link-active {
+            color: var(--text-primary) !important;
+        }
+        .nav-link-active::after {
+            width: 100% !important;
+        }
+    </style>
+</body>
+
+</html>

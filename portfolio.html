@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | Next Technology (NexTech)</title>
+    <meta name="description" content="Browse our completed client projects — live websites, web apps, and digital products built by NexTech.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Shared Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ── Portfolio Page Specific Styles ── */
+
+        .portfolio-page-hero {
+            padding: 180px 24px 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 5;
+        }
+
+        .portfolio-page-hero .section-tag {
+            margin-bottom: 20px;
+        }
+
+        .portfolio-page-title {
+            font-family: var(--font-heading);
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            line-height: 1;
+            margin-bottom: 24px;
+        }
+
+        .portfolio-page-title span {
+            color: var(--text-tertiary);
+        }
+
+        .portfolio-page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 300;
+            max-width: 520px;
+            line-height: 1.7;
+        }
+
+        .portfolio-page-meta {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+        }
+
+        .meta-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .meta-stat-num {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .meta-stat-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+        }
+
+        .meta-divider {
+            width: 1px;
+            height: 40px;
+            background: var(--border);
+        }
+
+        /* Filter Bar */
+        .filter-bar {
+            max-width: 1200px;
+            margin: 0 auto 60px;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 5;
+        }
+
+        .filter-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            margin-right: 8px;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 8px 18px;
+            font-family: var(--font-heading);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            border-color: var(--accent);
+            color: var(--text-primary);
+            background: var(--card-hover);
+        }
+
+        /* Projects Grid */
+        .projects-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px 120px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .project-card {
+            position: relative;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            cursor: pointer;
+            transition: border-color 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            border-color: var(--border-hover);
+        }
+
+        /* Screenshot Wrapper */
+        .project-screenshot {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            background: var(--bg-secondary);
+            flex-shrink: 0;
+        }
+
+        .project-screenshot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            display: block;
+        }
+
+        .project-card:hover .project-screenshot img {
+            transform: scale(1.04);
+        }
+
+        /* Placeholder for empty screenshot slots */
+        .screenshot-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            color: var(--text-tertiary);
+            background: repeating-linear-gradient(
+                45deg,
+                var(--bg-secondary),
+                var(--bg-secondary) 10px,
+                var(--bg-primary) 10px,
+                var(--bg-primary) 20px
+            );
+        }
+
+        .screenshot-placeholder svg {
+            width: 40px;
+            height: 40px;
+            opacity: 0.3;
+        }
+
+        .screenshot-placeholder span {
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            opacity: 0.4;
+            font-family: var(--font-heading);
+            font-weight: 600;
+        }
+
+        /* Live badge */
+        .live-badge {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 255, 102, 0.3);
+            padding: 5px 12px;
+            font-family: var(--font-heading);
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #00ff66;
+            z-index: 2;
+        }
+
+        [data-theme="light"] .live-badge {
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #00ff66;
+            animation: pulse-dot 2s infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.7); }
+        }
+
+        /* Project Info */
+        .project-info {
+            padding: 28px 28px 24px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .project-number {
+            font-family: var(--font-heading);
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.25em;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .project-name {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .project-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 300;
+            line-height: 1.65;
+            flex: 1;
+            margin-bottom: 24px;
+        }
+
+        .project-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            gap: 12px;
+        }
+
+        .project-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .project-tag {
+            font-family: var(--font-heading);
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+        }
+
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-heading);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            border: 1px solid var(--border-hover);
+            padding: 8px 16px;
+            white-space: nowrap;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            flex-shrink: 0;
+        }
+
+        .project-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background-color: var(--accent);
+            transition: var(--transition-smooth);
+            z-index: -1;
+        }
+
+        .project-link:hover {
+            color: var(--btn-primary-text);
+            border-color: var(--accent);
+        }
+
+        .project-link:hover::before {
+            left: 0;
+        }
+
+        .project-link svg {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .project-link:hover svg {
+            transform: translate(3px, -3px);
+        }
+
+        /* Coming soon card */
+        .project-card.coming-soon {
+            opacity: 0.45;
+            pointer-events: none;
+        }
+
+        .project-card.coming-soon .live-badge {
+            background: rgba(0, 0, 0, 0.6);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: var(--text-tertiary);
+        }
+
+        .project-card.coming-soon .live-dot {
+            background: var(--text-tertiary);
+            animation: none;
+        }
+
+        /* CTA Section */
+        .portfolio-cta {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px 120px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .cta-block {
+            border: 1px solid var(--border);
+            padding: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            background: var(--card-bg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-block::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .cta-text h2 {
+            font-family: var(--font-heading);
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 10px;
+        }
+
+        .cta-text p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 300;
+        }
+
+        .cta-actions {
+            display: flex;
+            gap: 16px;
+            flex-shrink: 0;
+        }
+
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-block {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 40px;
+            }
+
+            .cta-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .cta-actions a {
+                text-align: center;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .portfolio-page-meta {
+                gap: 20px;
+            }
+
+            .project-footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .project-link {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background elements -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow" id="bgGlow"></div>
+
+    <!-- Navigation Header (same as index.html) -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="index.html" class="logo-group">
+                <img src="assets/logo.png" alt="Next Technology Logo" class="logo-img">
+            </a>
+
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="portfolio.html" class="nav-link nav-link-active">Portfolio</a>
+                <a href="planner.html" class="nav-link">Planner</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="blog.html" class="nav-link">Blog</a>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Theme">
+                    <i data-lucide="sun" class="sun-icon"></i>
+                    <i data-lucide="moon" class="moon-icon"></i>
+                </button>
+                <a href="planner.html" class="btn-primary">Start Project</a>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Nav Menu -->
+        <div class="mobile-nav" id="mobileNav">
+            <a href="index.html" class="mobile-nav-link">Home</a>
+            <a href="portfolio.html" class="mobile-nav-link">Portfolio</a>
+            <a href="planner.html" class="mobile-nav-link">Planner</a>
+            <a href="contact.html" class="mobile-nav-link">Contact</a>
+            <a href="blog.html" class="mobile-nav-link">Blog</a>
+            <a href="planner.html" class="btn-primary mobile-btn">Start Project</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Page Hero -->
+        <div class="portfolio-page-hero">
+            <span class="section-tag fade-in">PORTFOLIO</span>
+            <h1 class="portfolio-page-title fade-in">
+                Our<br><span>Work.</span>
+            </h1>
+            <p class="portfolio-page-subtitle fade-in">
+                Real projects. Live websites. Every build engineered for performance, crafted for impact.
+            </p>
+            <div class="portfolio-page-meta fade-in">
+                <div class="meta-stat">
+                    <span class="meta-stat-num">4</span>
+                    <span class="meta-stat-label">Projects Shipped</span>
+                </div>
+                <div class="meta-divider"></div>
+                <div class="meta-stat">
+                    <span class="meta-stat-num">100%</span>
+                    <span class="meta-stat-label">Live & Deployed</span>
+                </div>
+                <div class="meta-divider"></div>
+                <div class="meta-stat">
+                    <span class="meta-stat-num">5★</span>
+                    <span class="meta-stat-label">Client Satisfaction</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar reveal">
+            <span class="filter-label">Filter:</span>
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="web-app">Web App</button>
+            <button class="filter-btn" data-filter="landing">Landing Page</button>
+            <button class="filter-btn" data-filter="portfolio">Portfolio</button>
+            <button class="filter-btn" data-filter="business">Business</button>
+        </div>
+
+        <!-- Projects Grid -->
+        <div class="projects-grid" id="projectsGrid">
+
+            <!-- ─── PROJECT 1 ─── -->
+            <!-- TO CUSTOMIZE: Replace src with your screenshot path, update name/desc/tags/href -->
+            <div class="project-card reveal" data-tags="web-app">
+                <div class="project-screenshot">
+                    <!--
+                        ADD SCREENSHOT: <img src="assets/project-1.png" alt="Project Name Screenshot" loading="lazy">
+                        Remove the placeholder block below once you add the image.
+                    -->
+                    <div class="screenshot-placeholder">
+                        <i data-lucide="image"></i>
+                        <span>Add Screenshot</span>
+                    </div>
+                    <div class="live-badge">
+                        <span class="live-dot"></span>
+                        Live
+                    </div>
+                </div>
+                <div class="project-info">
+                    <div class="project-number">01 / 04</div>
+                    <h2 class="project-name">Project Name Here</h2>
+                    <p class="project-desc">
+                        Write a short description of what this project is, who it was built for, and what problem it solves. Keep it 2–3 sentences.
+                    </p>
+                    <div class="project-footer">
+                        <div class="project-tags">
+                            <!-- Update tags to match the project -->
+                            <span class="project-tag">Web App</span>
+                            <span class="project-tag">UI/UX</span>
+                        </div>
+                        <!-- Update href to the live site URL -->
+                        <a href="#" target="_blank" rel="noopener" class="project-link">
+                            Visit Site
+                            <i data-lucide="arrow-up-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ─── PROJECT 2 ─── -->
+            <div class="project-card reveal" data-tags="landing">
+                <div class="project-screenshot">
+                    <div class="screenshot-placeholder">
+                        <i data-lucide="image"></i>
+                        <span>Add Screenshot</span>
+                    </div>
+                    <div class="live-badge">
+                        <span class="live-dot"></span>
+                        Live
+                    </div>
+                </div>
+                <div class="project-info">
+                    <div class="project-number">02 / 04</div>
+                    <h2 class="project-name">Project Name Here</h2>
+                    <p class="project-desc">
+                        Write a short description of what this project is, who it was built for, and what problem it solves. Keep it 2–3 sentences.
+                    </p>
+                    <div class="project-footer">
+                        <div class="project-tags">
+                            <span class="project-tag">Landing Page</span>
+                            <span class="project-tag">Conversion</span>
+                        </div>
+                        <a href="#" target="_blank" rel="noopener" class="project-link">
+                            Visit Site
+                            <i data-lucide="arrow-up-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ─── PROJECT 3 ─── -->
+            <div class="project-card reveal" data-tags="portfolio">
+                <div class="project-screenshot">
+                    <div class="screenshot-placeholder">
+                        <i data-lucide="image"></i>
+                        <span>Add Screenshot</span>
+                    </div>
+                    <div class="live-badge">
+                        <span class="live-dot"></span>
+                        Live
+                    </div>
+                </div>
+                <div class="project-info">
+                    <div class="project-number">03 / 04</div>
+                    <h2 class="project-name">Project Name Here</h2>
+                    <p class="project-desc">
+                        Write a short description of what this project is, who it was built for, and what problem it solves. Keep it 2–3 sentences.
+                    </p>
+                    <div class="project-footer">
+                        <div class="project-tags">
+                            <span class="project-tag">Portfolio</span>
+                            <span class="project-tag">Design</span>
+                        </div>
+                        <a href="#" target="_blank" rel="noopener" class="project-link">
+                            Visit Site
+                            <i data-lucide="arrow-up-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ─── PROJECT 4 ─── -->
+            <div class="project-card reveal" data-tags="business">
+                <div class="project-screenshot">
+                    <div class="screenshot-placeholder">
+                        <i data-lucide="image"></i>
+                        <span>Add Screenshot</span>
+                    </div>
+                    <div class="live-badge">
+                        <span class="live-dot"></span>
+                        Live
+                    </div>
+                </div>
+                <div class="project-info">
+                    <div class="project-number">04 / 04</div>
+                    <h2 class="project-name">Project Name Here</h2>
+                    <p class="project-desc">
+                        Write a short description of what this project is, who it was built for, and what problem it solves. Keep it 2–3 sentences.
+                    </p>
+                    <div class="project-footer">
+                        <div class="project-tags">
+                            <span class="project-tag">Business</span>
+                            <span class="project-tag">CMS</span>
+                        </div>
+                        <a href="#" target="_blank" rel="noopener" class="project-link">
+                            Visit Site
+                            <i data-lucide="arrow-up-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- CTA Block -->
+        <div class="portfolio-cta reveal">
+            <div class="cta-block">
+                <div class="cta-text">
+                    <h2>Want a site like these?</h2>
+                    <p>Tell us your vision — we'll build it, ship it, and make it matter.</p>
+                </div>
+                <div class="cta-actions">
+                    <a href="planner.html" class="btn-primary-large">Configure Your Project</a>
+                    <a href="contact.html" class="btn-secondary-large">Talk to Us</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="logo-group">
+                    <img src="assets/logo.png" alt="Next Technology Logo" class="logo-img">
+                </div>
+                <p class="footer-desc">Premium digital engineering and clean-cut UI/UX design. We design and construct digital foundations for high-tier brands.</p>
+            </div>
+
+            <div class="footer-nav">
+                <h4>Navigation</h4>
+                <a href="index.html">Home</a>
+                <a href="portfolio.html">Portfolio</a>
+                <a href="planner.html">Planner</a>
+                <a href="contact.html">Contact</a>
+                <a href="blog.html">Blog</a>
+            </div>
+
+            <div class="footer-social">
+                <h4>Connect</h4>
+                <div class="social-links">
+                    <a href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub"><i data-lucide="github"></i></a>
+                    <a href="https://dribbble.com" target="_blank" rel="noopener" aria-label="Dribbble"><i data-lucide="dribbble"></i></a>
+                    <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn"><i data-lucide="linkedin"></i></a>
+                    <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter"><i data-lucide="twitter"></i></a>
+                </div>
+                <span class="footer-url">nextechnology.com</span>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Next Technology. All rights reserved. Designed with precision.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Lucide Icons
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            // 2. Theme persistence
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
+            const htmlElement = document.documentElement;
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            htmlElement.setAttribute('data-theme', savedTheme);
+
+            themeToggleBtn.addEventListener('click', () => {
+                const newTheme = htmlElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                htmlElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+
+            // 3. Mouse glow (desktop only)
+            const bgGlow = document.getElementById('bgGlow');
+            if (bgGlow && window.matchMedia('(pointer: fine)').matches) {
+                document.addEventListener('mousemove', (e) => {
+                    bgGlow.style.opacity = '1';
+                    bgGlow.style.left = `${e.clientX}px`;
+                    bgGlow.style.top = `${e.clientY}px`;
+                });
+                document.addEventListener('mouseleave', () => { bgGlow.style.opacity = '0'; });
+            }
+
+            // 4. Mobile menu
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileNav = document.getElementById('mobileNav');
+            if (mobileMenuToggle && mobileNav) {
+                mobileMenuToggle.addEventListener('click', () => {
+                    const isOpen = mobileNav.classList.toggle('open');
+                    const icon = mobileMenuToggle.querySelector('i');
+                    if (icon) {
+                        icon.setAttribute('data-lucide', isOpen ? 'x' : 'menu');
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                    }
+                });
+                mobileNav.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('mobile-nav-link') || e.target.classList.contains('mobile-btn')) {
+                        mobileNav.classList.remove('open');
+                        const icon = mobileMenuToggle.querySelector('i');
+                        if (icon) {
+                            icon.setAttribute('data-lucide', 'menu');
+                            if (typeof lucide !== 'undefined') lucide.createIcons();
+                        }
+                    }
+                });
+            }
+
+            // 5. Filter functionality
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const projectCards = document.querySelectorAll('.project-card');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const filter = btn.getAttribute('data-filter');
+
+                    projectCards.forEach(card => {
+                        const tags = card.getAttribute('data-tags') || '';
+                        const match = filter === 'all' || tags.includes(filter);
+                        card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                        if (match) {
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0)';
+                            card.style.pointerEvents = 'auto';
+                        } else {
+                            card.style.opacity = '0.15';
+                            card.style.transform = 'translateY(8px)';
+                            card.style.pointerEvents = 'none';
+                        }
+                    });
+                });
+            });
+
+            // 6. Scroll reveal
+            const revealEls = document.querySelectorAll('.reveal');
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry, i) => {
+                        if (entry.isIntersecting) {
+                            // Stagger cards in grid
+                            const delay = entry.target.classList.contains('project-card')
+                                ? (Array.from(projectCards).indexOf(entry.target) % 2) * 100
+                                : 0;
+                            setTimeout(() => entry.target.classList.add('visible'), delay);
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+                revealEls.forEach(el => observer.observe(el));
+            } else {
+                revealEls.forEach(el => el.classList.add('visible'));
+            }
+
+            // 7. Active nav link highlight
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.href === window.location.href) {
+                    link.style.color = 'var(--text-primary)';
+                }
+            });
+        });
+    </script>
+
+    <style>
+        /* Active nav link on this page */
+        .nav-link-active {
+            color: var(--text-primary) !important;
+        }
+        .nav-link-active::after {
+            width: 100% !important;
+        }
+    </style>
+</body>
+
+</html>

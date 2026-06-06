@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next Technology (NexTech) | Modern Websites & Digital Solutions</title>
+    <meta name="description"
+        content="NexTech designs and develops minimalist, high-performance websites and premium digital solutions including landing pages, portfolios, business websites, and UI/UX.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;600;800&family=Barlow+Condensed:wght@300;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Custom Mouse Follower Background Grid/Aura -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow" id="bgGlow"></div>
+
+    <!-- Navigation Header -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="#" class="logo-group">
+                <!-- Stylized N Logo -->
+                <img src="assets/logo.png" alt="Next Technology Logo" class="logo-img">
+            </a>
+
+            <nav class="nav-links">
+                <a href="#" class="nav-link">Home</a>
+                <a href="portfolio.html" class="nav-link">Portfolio</a>
+                <a href="planner.html" class="nav-link">Planner</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="blog.html" class="nav-link">Blog</a>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Theme">
+                    <i data-lucide="sun" class="sun-icon"></i>
+                    <i data-lucide="moon" class="moon-icon"></i>
+                </button>
+                <a href="planner.html" class="btn-primary">Start Project</a>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Nav Menu -->
+        <div class="mobile-nav" id="mobileNav">
+            <a href="#" class="mobile-nav-link">Home</a>
+            <a href="portfolio.html" class="mobile-nav-link">Portfolio</a>
+            <a href="planner.html" class="mobile-nav-link">Planner</a>
+            <a href="contact.html" class="mobile-nav-link">Contact</a>
+            <a href="blog.html" class="mobile-nav-link">Blog</a>
+            <a href="planner.html" class="btn-primary mobile-btn">Start Project</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section" id="hero">
+            <div class="hero-content">
+                <div class="hero-badge fade-in">
+                    <span class="badge-dot"></span>
+                    <span>Available for New Projects</span>
+                </div>
+                <h1 class="hero-title fade-in">
+                    <span class="title-top">NEXT</span>
+                    <span class="title-bottom">TECHNOLOGY</span>
+                </h1>
+                <div class="hero-divider fade-in"></div>
+                <p class="hero-subtitle fade-in">Modern Websites. Digital Solutions.</p>
+
+                <div class="hero-ctas fade-in">
+                    <a href="portfolio.html" class="btn-primary-large">View Our Work</a>
+                    <a href="planner.html" class="btn-secondary-large">Configure Your Website</a>
+                </div>
+            </div>
+
+            <!-- Mini Quick Features list at bottom of Hero -->
+            <div class="hero-features fade-in">
+                <div class="feature-item">
+                    <i data-lucide="code-2"></i>
+                    <span>Clean Code</span>
+                </div>
+                <div class="feature-item">
+                    <i data-lucide="zap"></i>
+                    <span>High Performance</span>
+                </div>
+                <div class="feature-item">
+                    <i data-lucide="smartphone"></i>
+                    <span>Fully Responsive</span>
+                </div>
+            </div>
+
+
+        </section>
+
+        <!-- Services Section -->
+        <section class="services-section" id="services">
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-tag">SERVICES</span>
+                    <h2 class="section-title">What We Create</h2>
+                    <p class="section-subtitle">We design and build bespoke, high-performance digital products
+                        engineered for impact.</p>
+                </div>
+
+                <div class="services-grid">
+                    <!-- Service 1: Website Development -->
+                    <div class="service-card" data-service="dev">
+                        <div class="card-bg-glow"></div>
+                        <div class="service-number">01</div>
+                        <div class="service-icon">
+                            <i data-lucide="code-2"></i>
+                        </div>
+                        <h3 class="service-title">Website Development</h3>
+                        <p class="service-desc">Tailored web applications built with clean, semantic code, optimized for
+                            speed, scalability, and security.</p>
+                        <ul class="service-list">
+                            <li><i data-lucide="check"></i> Custom Framework Architectures</li>
+                            <li><i data-lucide="check"></i> Blazing Fast Load Speed</li>
+                            <li><i data-lucide="check"></i> SEO Optimized Build</li>
+                        </ul>
+                    </div>
+
+                    <!-- Service 2: Landing Pages -->
+                    <div class="service-card" data-service="landing">
+                        <div class="card-bg-glow"></div>
+                        <div class="service-number">02</div>
+                        <div class="service-icon">
+                            <i data-lucide="layers"></i>
+                        </div>
+                        <h3 class="service-title">Landing Pages</h3>
+                        <p class="service-desc">High-converting single-page layouts designed to present your product
+                            clearly and drive user action.</p>
+                        <ul class="service-list">
+                            <li><i data-lucide="check"></i> Copywriting-optimized Layout</li>
+                            <li><i data-lucide="check"></i> Conversion Rate Focus</li>
+                            <li><i data-lucide="check"></i> Integrated A/B Analytics</li>
+                        </ul>
+                    </div>
+
+                    <!-- Service 3: Portfolio Websites -->
+                    <div class="service-card" data-service="portfolio">
+                        <div class="card-bg-glow"></div>
+                        <div class="service-number">03</div>
+                        <div class="service-icon">
+                            <i data-lucide="user"></i>
+                        </div>
+                        <h3 class="service-title">Portfolio Websites</h3>
+                        <p class="service-desc">Sophisticated digital showcases for artists, designers, and agencies to
+                            display their work with premium flair.</p>
+                        <ul class="service-list">
+                            <li><i data-lucide="check"></i> Smooth Motion Design</li>
+                            <li><i data-lucide="check"></i> Responsive Image Galleries</li>
+                            <li><i data-lucide="check"></i> Premium Visual Layouts</li>
+                        </ul>
+                    </div>
+
+                    <!-- Service 4: Business Websites -->
+                    <div class="service-card" data-service="business">
+                        <div class="card-bg-glow"></div>
+                        <div class="service-number">04</div>
+                        <div class="service-icon">
+                            <i data-lucide="building-2"></i>
+                        </div>
+                        <h3 class="service-title">Business Websites</h3>
+                        <p class="service-desc">Professional corporate web platforms that project credibility, match
+                            branding, and capture leads.</p>
+                        <ul class="service-list">
+                            <li><i data-lucide="check"></i> CMS Integration (WordPress/Headless)</li>
+                            <li><i data-lucide="check"></i> Customer Portal Setups</li>
+                            <li><i data-lucide="check"></i> Lead Capture Pipelines</li>
+                        </ul>
+                    </div>
+
+                    <!-- Service 5: UI/UX Design -->
+                    <div class="service-card" data-service="uiux">
+                        <div class="card-bg-glow"></div>
+                        <div class="service-number">05</div>
+                        <div class="service-icon">
+                            <i data-lucide="palette"></i>
+                        </div>
+                        <h3 class="service-title">UI/UX Design</h3>
+                        <p class="service-desc">Figma-crafted user flows, interactive prototypes, and wireframes
+                            designed with absolute visual precision.</p>
+                        <ul class="service-list">
+                            <li><i data-lucide="check"></i> User Journey Mapping</li>
+                            <li><i data-lucide="check"></i> Interactive High-Fi Prototypes</li>
+                            <li><i data-lucide="check"></i> Clean Component-Based Design</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="logo-group">
+                    <img src="assets/logo.png" alt="Next Technology Logo" class="logo-img">
+                </div>
+                <p class="footer-desc">Premium digital engineering and clean-cut UI/UX design. We design and construct
+                    digital foundations for high-tier brands.</p>
+            </div>
+
+            <div class="footer-nav">
+                <h4>Navigation</h4>
+                <a href="#">Home</a>
+                <a href="#portfolio">Work</a>
+                <a href="#planner">Planner</a>
+                <a href="contact.html">Contact</a>
+                <a href="blog.html">Blog</a>
+            </div>
+
+            <div class="footer-social">
+                <h4>Connect</h4>
+                <div class="social-links">
+                    <a href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub"><i
+                            data-lucide="github"></i></a>
+                    <a href="https://dribbble.com" target="_blank" rel="noopener" aria-label="Dribbble"><i
+                            data-lucide="dribbble"></i></a>
+                    <a href="https://linkedin.com" target="_blank" rel="noopener" aria-label="LinkedIn"><i
+                            data-lucide="linkedin"></i></a>
+                    <a href="https://twitter.com" target="_blank" rel="noopener" aria-label="Twitter"><i
+                            data-lucide="twitter"></i></a>
+                </div>
+                <span class="footer-url">nextechnology.com</span>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Next Technology. All rights reserved. Designed with precision.</p>
+        </div>
+    </footer>
+
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+</body>
+
+</html>
