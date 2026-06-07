@@ -1013,15 +1013,15 @@ a {
 
 .planner-opt-card.active {
     border-color: var(--accent);
-    background-color: var(--text-primary);
+    background-color: var(--card-hover);
 }
 
 .planner-opt-card.active span {
-    color: var(--bg-primary);
+    color: var(--text-primary);
 }
 
 .planner-opt-card.active svg {
-    color: var(--bg-primary);
+    color: var(--text-primary);
 }
 
 .planner-summary {
@@ -1029,6 +1029,7 @@ a {
     grid-template-columns: 2fr 1fr;
     gap: 40px;
     align-items: center;
+    margin-top: 20px;
     background-color: var(--bg-secondary);
     border: 1px solid var(--border);
     padding: 32px;
@@ -1448,7 +1449,7 @@ body.page-leaving {
 
 /* ── Custom Logo Image ── */
 .logo-img {
-    height: 72px;
+    height: 44px;
     width: 140px;
     object-fit: contain;
     object-position: left center;

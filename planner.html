@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Planner | Next Technology</title>
+    <title>Project Planner | Next Technology (NexTech)</title>
     <meta name="description" content="Configure your custom project blueprint — select services, budget, and timeline to get started with NexTech.">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -145,7 +145,258 @@
             width: 100%;
         }
 
+        /* Plan Switcher */
+        .plan-switcher {
+            display: flex;
+            gap: 0;
+            margin-bottom: 32px;
+            border: 1px solid var(--border);
+            width: fit-content;
+        }
+        .plan-tab {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 12px 32px;
+            font-family: var(--font-heading);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+        .plan-tab.active {
+            background: var(--accent);
+            color: var(--btn-primary-text);
+        }
+        .plan-tab:not(.active):hover {
+            background: var(--card-hover);
+            color: var(--text-primary);
+        }
+
+        /* Student Base Banner */
+        .student-base-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 28px 32px;
+            margin-bottom: 8px;
+            gap: 24px;
+        }
+        .student-base-label {
+            font-family: var(--font-heading);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.25em;
+            color: var(--text-tertiary);
+            margin-bottom: 6px;
+        }
+        .student-base-title {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+        .student-base-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .student-base-price {
+            font-family: var(--font-heading);
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        /* Add-on Grid */
+        .addon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+        .addon-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid var(--border);
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            background: var(--card-bg);
+        }
+        .addon-card:hover {
+            border-color: var(--border-hover);
+            background: var(--card-hover);
+        }
+        .addon-card input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent);
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .addon-card:has(input:checked) {
+            border-color: var(--accent);
+            background: var(--card-hover);
+        }
+        .addon-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            gap: 12px;
+        }
+        .addon-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .addon-price {
+            font-family: var(--font-heading);
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        .addon-note {
+            font-size: 0.65rem;
+            font-weight: 400;
+            color: var(--text-tertiary);
+        }
+
+        /* Running Bill */
+        .student-bill {
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            padding: 28px 32px;
+        }
+        .bill-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-heading);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            color: var(--text-tertiary);
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .bill-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .bill-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .bill-base {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        .bill-addon {
+            color: var(--text-secondary);
+        }
+        .bill-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            font-family: var(--font-heading);
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: 0.05em;
+        }
+
+        /* Timeline note */
+        .timeline-note {
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 400;
+            color: var(--text-tertiary);
+            letter-spacing: 0.05em;
+            margin-top: 4px;
+            text-transform: none;
+            font-family: var(--font-body);
+        }
+        .planner-opt-card.active .timeline-note {
+            color: var(--text-secondary);
+        }
+
+        /* Pro Budget Tier Cards */
+        .pro-budget-options {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .pro-budget-card {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            padding: 24px !important;
+            position: relative;
+            height: auto !important;
+            min-height: unset !important;
+        }
+        .pro-budget-badge {
+            position: absolute;
+            top: -1px;
+            right: -1px;
+            background: var(--accent);
+            color: var(--btn-primary-text);
+            font-family: var(--font-heading);
+            font-size: 0.55rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            padding: 5px 10px;
+        }
+        .pro-budget-tier {
+            font-family: var(--font-heading);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.25em;
+            color: var(--text-tertiary);
+            margin-bottom: 8px;
+        }
+        .pro-budget-price {
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            width: 100%;
+        }
+        .pro-budget-ideal {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 4px;
+        }
+        @media (max-width: 768px) {
+            .pro-budget-options { grid-template-columns: 1fr !important; }
+        }
+
         /* Footer spacing */
+        .planner-section {
+            margin-bottom: 0;
+        }
+
+
         .planner-section {
             margin-bottom: 0;
         }
@@ -207,7 +458,7 @@
                 Configure<br><span>Your Project.</span>
             </h1>
             <p class="planner-page-subtitle fade-in">
-                Select your services, budget, and timeline below to generate a custom blueprint — then send it straight to our team.
+                Tell us a bit about your project — we'll take it from there. After you submit, we'll reach out to set up a conversation and walk you through everything together.
             </p>
         </div>
 
@@ -231,7 +482,7 @@
         <div class="planner-note fade-in">
             <p>
                 <i data-lucide="info"></i>
-                Clicking "Apply Blueprint to Inquiry" will take you to the contact form with your configuration pre-filled.
+                Clicking "Start the Conversation" will take you to the contact form with your configuration pre-filled.
             </p>
         </div>
 
@@ -244,7 +495,56 @@
                     <p class="section-subtitle">Select your requirements below to build a customized blueprint and outline.</p>
                 </div>
 
-                <div class="planner-card">
+                <!-- Plan Type Switcher -->
+                <div class="plan-switcher">
+                    <button class="plan-tab active" id="tabPro" onclick="switchPlan('pro')">Professional</button>
+                    <button class="plan-tab" id="tabStudent" onclick="switchPlan('student')">Student</button>
+                </div>
+
+                <!-- STUDENT PLANNER -->
+                <div class="planner-card" id="studentPlanner" style="display:none;">
+                    <div class="student-base-banner">
+                        <div>
+                            <div class="student-base-label">BASE PLAN</div>
+                            <div class="student-base-title">Student Starter Package</div>
+                            <div class="student-base-desc">1-page website · Mobile responsive · 1 revision · Basic deployment</div>
+                        </div>
+                        <div class="student-base-price">&#8369;5,000</div>
+                    </div>
+
+                    <div class="step-label" style="margin-top: 32px;">ADD-ONS / Features</div>
+                    <p style="font-size:0.8rem; color:var(--text-tertiary); margin-bottom:20px;">Check what you need — your total updates in real time.</p>
+
+                    <div class="addon-grid" id="addonGrid">
+                        <label class="addon-card"><input type="checkbox" data-price="1500" data-label="Additional Page"><div class="addon-inner"><span class="addon-name">Additional Page</span><span class="addon-price">+&#8369;1,500 <span class="addon-note">per page</span></span></div></label>
+                        <label class="addon-card"><input type="checkbox" data-price="1000" data-label="Contact Form"><div class="addon-inner"><span class="addon-name">Contact Form</span><span class="addon-price">+&#8369;1,000</span></div></label>
+                        <label class="addon-card"><input type="checkbox" data-price="2000" data-label="Portfolio / Gallery Section"><div class="addon-inner"><span class="addon-name">Portfolio / Gallery</span><span class="addon-price">+&#8369;2,000</span></div></label>
+                        <label class="addon-card"><input type="checkbox" data-price="2500" data-label="Blog Setup"><div class="addon-inner"><span class="addon-name">Blog Setup</span><span class="addon-price">+&#8369;2,500</span></div></label>
+                        <label class="addon-card"><input type="checkbox" data-price="1500" data-label="SEO Optimization"><div class="addon-inner"><span class="addon-name">SEO Optimization</span><span class="addon-price">+&#8369;1,500</span></div></label>
+                        <label class="addon-card"><input type="checkbox" data-price="2000" data-label="Animations & Interactions"><div class="addon-inner"><span class="addon-name">Animations &amp; Interactions</span><span class="addon-price">+&#8369;2,000</span></div></label>
+                        <label class="addon-card"><input type="checkbox" data-price="500" data-label="Custom Domain Setup"><div class="addon-inner"><span class="addon-name">Custom Domain Setup</span><span class="addon-price">+&#8369;500</span></div></label>
+                        <label class="addon-card"><input type="checkbox" data-price="3000" data-label="Logo / Branding Design"><div class="addon-inner"><span class="addon-name">Logo / Branding Design</span><span class="addon-price">+&#8369;3,000</span></div></label>
+                        <label class="addon-card"><input type="checkbox" data-price="800" data-label="Extra Revision Round"><div class="addon-inner"><span class="addon-name">Extra Revision Round</span><span class="addon-price">+&#8369;800 <span class="addon-note">per round</span></span></div></label>
+                        <label class="addon-card"><input type="checkbox" data-price="2000" data-label="Rush Delivery (under 2 weeks)"><div class="addon-inner"><span class="addon-name">Rush Delivery</span><span class="addon-price">+&#8369;2,000</span></div></label>
+                    </div>
+
+                    <div class="student-bill">
+                        <div class="bill-header">
+                            <span>YOUR RUNNING BILL</span>
+                            <span id="billItemCount">Base only</span>
+                        </div>
+                        <div class="bill-items" id="billItems">
+                            <div class="bill-row bill-base"><span>Base Plan</span><span>&#8369;5,000</span></div>
+                        </div>
+                        <div class="bill-total">
+                            <span>TOTAL ESTIMATE</span>
+                            <span id="billTotal">&#8369;5,000</span>
+                        </div>
+                        <button class="btn-primary-large" id="applyStudentBlueprintBtn" style="width:100%; margin-top:20px;">Send This Quote to Inquiry</button>
+                    </div>
+                </div>
+
+                <div class="planner-card" id="proPlannerCard">
                     <!-- Step 1: Select Services -->
                     <div class="planner-step">
                         <div class="step-label">01 / Choose Services (Select multiple)</div>
@@ -275,15 +575,22 @@
                     <!-- Step 2: Budget Select -->
                     <div class="planner-step">
                         <div class="step-label">02 / Project Budget Range</div>
-                        <div class="planner-options" id="budgetOptions">
-                            <div class="planner-opt-card" data-val="Starter ($2k - $5k)" data-mult="1">
-                                <span>$2k - $5k</span>
+                        <div class="planner-options pro-budget-options" id="budgetOptions">
+                            <div class="planner-opt-card pro-budget-card" data-val="Starter (₱10k - ₱25k)" data-mult="1">
+                                <div class="pro-budget-tier">STARTER</div>
+                                <div class="pro-budget-price">₱10k – ₱25k</div>
+                                <div class="pro-budget-ideal">Small sites &amp; simple builds</div>
                             </div>
-                            <div class="planner-opt-card active" data-val="Growth ($5k - $10k)" data-mult="1.5">
-                                <span>$5k - $10k</span>
+                            <div class="planner-opt-card pro-budget-card active" data-val="Growth (₱25k - ₱60k)" data-mult="1.5">
+                                <div class="pro-budget-badge">MOST POPULAR</div>
+                                <div class="pro-budget-tier">GROWTH</div>
+                                <div class="pro-budget-price">₱25k – ₱60k</div>
+                                <div class="pro-budget-ideal">Custom design &amp; full-featured sites</div>
                             </div>
-                            <div class="planner-opt-card" data-val="Enterprise ($10k+)" data-mult="2.2">
-                                <span>$10k+</span>
+                            <div class="planner-opt-card pro-budget-card" data-val="Enterprise (₱60k+)" data-mult="2.2">
+                                <div class="pro-budget-tier">ENTERPRISE</div>
+                                <div class="pro-budget-price">₱60k+</div>
+                                <div class="pro-budget-ideal">Complex projects &amp; large-scale builds</div>
                             </div>
                         </div>
                     </div>
@@ -292,14 +599,17 @@
                     <div class="planner-step">
                         <div class="step-label">03 / Target Timeline</div>
                         <div class="planner-options" id="timelineOptions">
-                            <div class="planner-opt-card" data-val="Urgent (< 1 month)">
-                                <span>&lt; 1 Month</span>
+                            <div class="planner-opt-card" data-val="Rush (2–4 weeks)">
+                                <span>Rush</span>
+                                <small class="timeline-note">2–4 weeks</small>
                             </div>
-                            <div class="planner-opt-card active" data-val="Standard (1 - 2 months)">
-                                <span>1 - 2 Months</span>
+                            <div class="planner-opt-card active" data-val="Standard (1–2 months)">
+                                <span>Standard</span>
+                                <small class="timeline-note">1–2 months · most common</small>
                             </div>
-                            <div class="planner-opt-card" data-val="Flexible (2+ months)">
-                                <span>2+ Months</span>
+                            <div class="planner-opt-card" data-val="Relaxed (3+ months)">
+                                <span>Relaxed</span>
+                                <small class="timeline-note">3+ months · no hard deadline</small>
                             </div>
                         </div>
                     </div>
@@ -307,27 +617,28 @@
                     <!-- Summary & Action -->
                     <div class="planner-summary">
                         <div class="summary-details">
-                            <h4>Project Configuration Blueprint</h4>
+                            <h4>Your Project Brief</h4>
                             <div class="summary-item">
                                 <span class="summary-key">Services:</span>
                                 <span class="summary-val" id="sumServices">None selected</span>
                             </div>
                             <div class="summary-item">
                                 <span class="summary-key">Budget Tier:</span>
-                                <span class="summary-val" id="sumBudget">Growth ($5k - $10k)</span>
+                                <span class="summary-val" id="sumBudget">Growth (₱25k - ₱60k)</span>
                             </div>
                             <div class="summary-item">
                                 <span class="summary-key">Timeline:</span>
-                                <span class="summary-val" id="sumTimeline">Standard (1 - 2 months)</span>
+                                <span class="summary-val" id="sumTimeline">Standard (1–2 months)</span>
                             </div>
                             <div class="summary-item total">
                                 <span class="summary-key">Estimated Blueprint Score:</span>
                                 <span class="summary-val" id="sumEstimate">Medium Intensity</span>
                             </div>
                         </div>
-                        <button class="btn-primary-large" id="applyBlueprintBtn">Apply Blueprint to Inquiry</button>
+                        <button class="btn-primary-large" id="applyBlueprintBtn">Start the Conversation</button>
                     </div>
                 </div>
+                </div><!-- /proPlannerCard -->
             </div>
         </section>
     </main>
@@ -376,7 +687,75 @@
     </footer>
 
     <script>
+        // Plan Switcher
+        function switchPlan(plan) {
+            const proPlannerCard = document.getElementById('proPlannerCard');
+            const studentPlanner = document.getElementById('studentPlanner');
+            const tabPro = document.getElementById('tabPro');
+            const tabStudent = document.getElementById('tabStudent');
+            if (plan === 'student') {
+                proPlannerCard.style.display = 'none';
+                studentPlanner.style.display = 'block';
+                tabStudent.classList.add('active');
+                tabPro.classList.remove('active');
+            } else {
+                proPlannerCard.style.display = 'block';
+                studentPlanner.style.display = 'none';
+                tabPro.classList.add('active');
+                tabStudent.classList.remove('active');
+            }
+        }
+
+        // Student Add-on Calculator
+        function updateBill() {
+            const checkboxes = document.querySelectorAll('#addonGrid input[type="checkbox"]');
+            const billItems = document.getElementById('billItems');
+            const billTotal = document.getElementById('billTotal');
+            const billItemCount = document.getElementById('billItemCount');
+            let total = 5000;
+            let addons = [];
+
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    const price = parseInt(cb.dataset.price);
+                    const label = cb.dataset.label;
+                    total += price;
+                    addons.push({ label, price });
+                }
+            });
+
+            // Rebuild bill rows
+            let html = '<div class="bill-row bill-base"><span>Base Plan</span><span>₱5,000</span></div>';
+            addons.forEach(a => {
+                html += `<div class="bill-row bill-addon"><span>${a.label}</span><span>+₱${a.price.toLocaleString()}</span></div>`;
+            });
+            billItems.innerHTML = html;
+            billTotal.textContent = '₱' + total.toLocaleString();
+            billItemCount.textContent = addons.length === 0 ? 'Base only' : `${addons.length} add-on${addons.length > 1 ? 's' : ''}`;
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
+            // Student add-on listeners
+            document.querySelectorAll('#addonGrid input[type="checkbox"]').forEach(cb => {
+                cb.addEventListener('change', updateBill);
+            });
+
+            // Student send to inquiry
+            const applyStudentBtn = document.getElementById('applyStudentBlueprintBtn');
+            if (applyStudentBtn) {
+                applyStudentBtn.addEventListener('click', () => {
+                    const checkboxes = document.querySelectorAll('#addonGrid input[type="checkbox"]:checked');
+                    const addons = Array.from(checkboxes).map(cb => cb.dataset.label).join(', ') || 'None';
+                    const total = document.getElementById('billTotal').textContent;
+                    sessionStorage.setItem('plannerData', JSON.stringify({
+                        services: 'Student Plan — Base Package',
+                        budget: `${total} (Student Pricing)`,
+                        timeline: 'TBD',
+                        addons: addons
+                    }));
+                    window.location.href = 'contact.html';
+                });
+            }
             if (typeof lucide !== 'undefined') lucide.createIcons();
 
             // Theme
@@ -447,7 +826,7 @@
                     ? selectedServices.join(', ')
                     : 'None selected (Please choose at least one)';
 
-                let activeBudget = 'Growth ($5k - $10k)';
+                let activeBudget = 'Growth (₱25k - ₱60k)';
                 let budgetMultiplier = 1.5;
                 budgetOptions.forEach(opt => {
                     if (opt.classList.contains('active')) {
@@ -457,7 +836,7 @@
                 });
                 sumBudget.textContent = activeBudget;
 
-                let activeTimeline = 'Standard (1 - 2 months)';
+                let activeTimeline = 'Standard (1–2 months)';
                 timelineOptions.forEach(opt => {
                     if (opt.classList.contains('active')) activeTimeline = opt.getAttribute('data-val');
                 });
