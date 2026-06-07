@@ -1449,7 +1449,7 @@ body.page-leaving {
 
 /* ── Custom Logo Image ── */
 .logo-img {
-    height: 44px;
+    height: 72px;
     width: 140px;
     object-fit: contain;
     object-position: left center;
