@@ -4,12 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Planner | Next Technology (NexTech)</title>
-    <meta name="description" content="Configure your custom project blueprint — select services, budget, and timeline to get started with NexTech.">
+    <title>Project Planner | Next Technology</title>
+    <meta name="description"
+        content="Configure your custom project blueprint — select services, budget, and timeline to get started with NexTech.">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Shared Stylesheet -->
@@ -57,7 +60,8 @@
         }
 
         .planner-section .section-header {
-            display: none; /* Hidden — we use the hero title instead */
+            display: none;
+            /* Hidden — we use the hero title instead */
         }
 
         /* Step progress indicator */
@@ -153,6 +157,7 @@
             border: 1px solid var(--border);
             width: fit-content;
         }
+
         .plan-tab {
             background: transparent;
             border: none;
@@ -166,10 +171,12 @@
             cursor: pointer;
             transition: var(--transition-smooth);
         }
+
         .plan-tab.active {
             background: var(--accent);
             color: var(--btn-primary-text);
         }
+
         .plan-tab:not(.active):hover {
             background: var(--card-hover);
             color: var(--text-primary);
@@ -186,6 +193,7 @@
             margin-bottom: 8px;
             gap: 24px;
         }
+
         .student-base-label {
             font-family: var(--font-heading);
             font-size: 0.65rem;
@@ -194,6 +202,7 @@
             color: var(--text-tertiary);
             margin-bottom: 6px;
         }
+
         .student-base-title {
             font-family: var(--font-heading);
             font-size: 1.1rem;
@@ -201,10 +210,12 @@
             color: var(--text-primary);
             margin-bottom: 6px;
         }
+
         .student-base-desc {
             font-size: 0.8rem;
             color: var(--text-secondary);
         }
+
         .student-base-price {
             font-family: var(--font-heading);
             font-size: 2.4rem;
@@ -220,6 +231,7 @@
             gap: 8px;
             margin-bottom: 32px;
         }
+
         .addon-card {
             display: flex;
             align-items: center;
@@ -230,10 +242,12 @@
             transition: var(--transition-smooth);
             background: var(--card-bg);
         }
+
         .addon-card:hover {
             border-color: var(--border-hover);
             background: var(--card-hover);
         }
+
         .addon-card input[type="checkbox"] {
             width: 16px;
             height: 16px;
@@ -241,10 +255,12 @@
             flex-shrink: 0;
             cursor: pointer;
         }
+
         .addon-card:has(input:checked) {
             border-color: var(--accent);
             background: var(--card-hover);
         }
+
         .addon-inner {
             display: flex;
             justify-content: space-between;
@@ -252,11 +268,13 @@
             width: 100%;
             gap: 12px;
         }
+
         .addon-name {
             font-size: 0.85rem;
             font-weight: 500;
             color: var(--text-primary);
         }
+
         .addon-price {
             font-family: var(--font-heading);
             font-size: 0.8rem;
@@ -264,6 +282,7 @@
             color: var(--text-secondary);
             white-space: nowrap;
         }
+
         .addon-note {
             font-size: 0.65rem;
             font-weight: 400;
@@ -276,6 +295,7 @@
             background: var(--bg-secondary);
             padding: 28px 32px;
         }
+
         .bill-header {
             display: flex;
             justify-content: space-between;
@@ -289,25 +309,30 @@
             padding-bottom: 16px;
             border-bottom: 1px solid var(--border);
         }
+
         .bill-items {
             display: flex;
             flex-direction: column;
             gap: 8px;
             margin-bottom: 20px;
         }
+
         .bill-row {
             display: flex;
             justify-content: space-between;
             font-size: 0.85rem;
             color: var(--text-secondary);
         }
+
         .bill-base {
             color: var(--text-primary);
             font-weight: 500;
         }
+
         .bill-addon {
             color: var(--text-secondary);
         }
+
         .bill-total {
             display: flex;
             justify-content: space-between;
@@ -332,6 +357,7 @@
             text-transform: none;
             font-family: var(--font-body);
         }
+
         .planner-opt-card.active .timeline-note {
             color: var(--text-secondary);
         }
@@ -342,6 +368,7 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 8px;
         }
+
         .pro-budget-card {
             display: flex !important;
             flex-direction: column !important;
@@ -351,6 +378,7 @@
             height: auto !important;
             min-height: unset !important;
         }
+
         .pro-budget-badge {
             position: absolute;
             top: -1px;
@@ -363,6 +391,7 @@
             letter-spacing: 0.2em;
             padding: 5px 10px;
         }
+
         .pro-budget-tier {
             font-family: var(--font-heading);
             font-size: 0.65rem;
@@ -371,6 +400,7 @@
             color: var(--text-tertiary);
             margin-bottom: 8px;
         }
+
         .pro-budget-price {
             font-family: var(--font-heading);
             font-size: 1.3rem;
@@ -381,14 +411,18 @@
             border-bottom: 1px solid var(--border);
             width: 100%;
         }
+
         .pro-budget-ideal {
             font-size: 0.75rem;
             color: var(--text-secondary);
             font-style: italic;
             margin-top: 4px;
         }
+
         @media (max-width: 768px) {
-            .pro-budget-options { grid-template-columns: 1fr !important; }
+            .pro-budget-options {
+                grid-template-columns: 1fr !important;
+            }
         }
 
         /* Footer spacing */
@@ -458,7 +492,8 @@
                 Configure<br><span>Your Project.</span>
             </h1>
             <p class="planner-page-subtitle fade-in">
-                Tell us a bit about your project — we'll take it from there. After you submit, we'll reach out to set up a conversation and walk you through everything together.
+                Tell us a bit about your project — we'll take it from there. After you submit, we'll reach out to set up
+                a conversation and walk you through everything together.
             </p>
         </div>
 
@@ -492,7 +527,8 @@
                 <div class="section-header">
                     <span class="section-tag">PLANNER</span>
                     <h2 class="section-title">Configure Your Project</h2>
-                    <p class="section-subtitle">Select your requirements below to build a customized blueprint and outline.</p>
+                    <p class="section-subtitle">Select your requirements below to build a customized blueprint and
+                        outline.</p>
                 </div>
 
                 <!-- Plan Type Switcher -->
@@ -507,25 +543,66 @@
                         <div>
                             <div class="student-base-label">BASE PLAN</div>
                             <div class="student-base-title">Student Starter Package</div>
-                            <div class="student-base-desc">1-page website · Mobile responsive · 1 revision · Basic deployment</div>
+                            <div class="student-base-desc">1-page website · Mobile responsive · 1 revision · Basic
+                                deployment</div>
                         </div>
                         <div class="student-base-price">&#8369;5,000</div>
                     </div>
 
                     <div class="step-label" style="margin-top: 32px;">ADD-ONS / Features</div>
-                    <p style="font-size:0.8rem; color:var(--text-tertiary); margin-bottom:20px;">Check what you need — your total updates in real time.</p>
+                    <p style="font-size:0.8rem; color:var(--text-tertiary); margin-bottom:20px;">Check what you need —
+                        your total updates in real time.</p>
 
                     <div class="addon-grid" id="addonGrid">
-                        <label class="addon-card"><input type="checkbox" data-price="1500" data-label="Additional Page"><div class="addon-inner"><span class="addon-name">Additional Page</span><span class="addon-price">+&#8369;1,500 <span class="addon-note">per page</span></span></div></label>
-                        <label class="addon-card"><input type="checkbox" data-price="1000" data-label="Contact Form"><div class="addon-inner"><span class="addon-name">Contact Form</span><span class="addon-price">+&#8369;1,000</span></div></label>
-                        <label class="addon-card"><input type="checkbox" data-price="2000" data-label="Portfolio / Gallery Section"><div class="addon-inner"><span class="addon-name">Portfolio / Gallery</span><span class="addon-price">+&#8369;2,000</span></div></label>
-                        <label class="addon-card"><input type="checkbox" data-price="2500" data-label="Blog Setup"><div class="addon-inner"><span class="addon-name">Blog Setup</span><span class="addon-price">+&#8369;2,500</span></div></label>
-                        <label class="addon-card"><input type="checkbox" data-price="1500" data-label="SEO Optimization"><div class="addon-inner"><span class="addon-name">SEO Optimization</span><span class="addon-price">+&#8369;1,500</span></div></label>
-                        <label class="addon-card"><input type="checkbox" data-price="2000" data-label="Animations & Interactions"><div class="addon-inner"><span class="addon-name">Animations &amp; Interactions</span><span class="addon-price">+&#8369;2,000</span></div></label>
-                        <label class="addon-card"><input type="checkbox" data-price="500" data-label="Custom Domain Setup"><div class="addon-inner"><span class="addon-name">Custom Domain Setup</span><span class="addon-price">+&#8369;500</span></div></label>
-                        <label class="addon-card"><input type="checkbox" data-price="3000" data-label="Logo / Branding Design"><div class="addon-inner"><span class="addon-name">Logo / Branding Design</span><span class="addon-price">+&#8369;3,000</span></div></label>
-                        <label class="addon-card"><input type="checkbox" data-price="800" data-label="Extra Revision Round"><div class="addon-inner"><span class="addon-name">Extra Revision Round</span><span class="addon-price">+&#8369;800 <span class="addon-note">per round</span></span></div></label>
-                        <label class="addon-card"><input type="checkbox" data-price="2000" data-label="Rush Delivery (under 2 weeks)"><div class="addon-inner"><span class="addon-name">Rush Delivery</span><span class="addon-price">+&#8369;2,000</span></div></label>
+                        <label class="addon-card"><input type="checkbox" data-price="1500" data-label="Additional Page">
+                            <div class="addon-inner"><span class="addon-name">Additional Page</span><span
+                                    class="addon-price">+&#8369;1,500 <span class="addon-note">per page</span></span>
+                            </div>
+                        </label>
+                        <label class="addon-card"><input type="checkbox" data-price="1000" data-label="Contact Form">
+                            <div class="addon-inner"><span class="addon-name">Contact Form</span><span
+                                    class="addon-price">+&#8369;1,000</span></div>
+                        </label>
+                        <label class="addon-card"><input type="checkbox" data-price="2000"
+                                data-label="Portfolio / Gallery Section">
+                            <div class="addon-inner"><span class="addon-name">Portfolio / Gallery</span><span
+                                    class="addon-price">+&#8369;2,000</span></div>
+                        </label>
+                        <label class="addon-card"><input type="checkbox" data-price="2500" data-label="Blog Setup">
+                            <div class="addon-inner"><span class="addon-name">Blog Setup</span><span
+                                    class="addon-price">+&#8369;2,500</span></div>
+                        </label>
+                        <label class="addon-card"><input type="checkbox" data-price="1500"
+                                data-label="SEO Optimization">
+                            <div class="addon-inner"><span class="addon-name">SEO Optimization</span><span
+                                    class="addon-price">+&#8369;1,500</span></div>
+                        </label>
+                        <label class="addon-card"><input type="checkbox" data-price="2000"
+                                data-label="Animations & Interactions">
+                            <div class="addon-inner"><span class="addon-name">Animations &amp; Interactions</span><span
+                                    class="addon-price">+&#8369;2,000</span></div>
+                        </label>
+                        <label class="addon-card"><input type="checkbox" data-price="500"
+                                data-label="Custom Domain Setup">
+                            <div class="addon-inner"><span class="addon-name">Custom Domain Setup</span><span
+                                    class="addon-price">+&#8369;500</span></div>
+                        </label>
+                        <label class="addon-card"><input type="checkbox" data-price="3000"
+                                data-label="Logo / Branding Design">
+                            <div class="addon-inner"><span class="addon-name">Logo / Branding Design</span><span
+                                    class="addon-price">+&#8369;3,000</span></div>
+                        </label>
+                        <label class="addon-card"><input type="checkbox" data-price="800"
+                                data-label="Extra Revision Round">
+                            <div class="addon-inner"><span class="addon-name">Extra Revision Round</span><span
+                                    class="addon-price">+&#8369;800 <span class="addon-note">per round</span></span>
+                            </div>
+                        </label>
+                        <label class="addon-card"><input type="checkbox" data-price="2000"
+                                data-label="Rush Delivery (under 2 weeks)">
+                            <div class="addon-inner"><span class="addon-name">Rush Delivery</span><span
+                                    class="addon-price">+&#8369;2,000</span></div>
+                        </label>
                     </div>
 
                     <div class="student-bill">
@@ -540,7 +617,8 @@
                             <span>TOTAL ESTIMATE</span>
                             <span id="billTotal">&#8369;5,000</span>
                         </div>
-                        <button class="btn-primary-large" id="applyStudentBlueprintBtn" style="width:100%; margin-top:20px;">Send This Quote to Inquiry</button>
+                        <button class="btn-primary-large" id="applyStudentBlueprintBtn"
+                            style="width:100%; margin-top:20px;">Send This Quote to Inquiry</button>
                     </div>
                 </div>
 
@@ -576,12 +654,14 @@
                     <div class="planner-step">
                         <div class="step-label">02 / Project Budget Range</div>
                         <div class="planner-options pro-budget-options" id="budgetOptions">
-                            <div class="planner-opt-card pro-budget-card" data-val="Starter (₱10k - ₱25k)" data-mult="1">
+                            <div class="planner-opt-card pro-budget-card" data-val="Starter (₱10k - ₱25k)"
+                                data-mult="1">
                                 <div class="pro-budget-tier">STARTER</div>
                                 <div class="pro-budget-price">₱10k – ₱25k</div>
                                 <div class="pro-budget-ideal">Small sites &amp; simple builds</div>
                             </div>
-                            <div class="planner-opt-card pro-budget-card active" data-val="Growth (₱25k - ₱60k)" data-mult="1.5">
+                            <div class="planner-opt-card pro-budget-card active" data-val="Growth (₱25k - ₱60k)"
+                                data-mult="1.5">
                                 <div class="pro-budget-badge">MOST POPULAR</div>
                                 <div class="pro-budget-tier">GROWTH</div>
                                 <div class="pro-budget-price">₱25k – ₱60k</div>
@@ -638,7 +718,7 @@
                         <button class="btn-primary-large" id="applyBlueprintBtn">Start the Conversation</button>
                     </div>
                 </div>
-                </div><!-- /proPlannerCard -->
+            </div><!-- /proPlannerCard -->
             </div>
         </section>
     </main>
@@ -650,7 +730,8 @@
                 <div class="logo-group">
                     <img src="assets/logo.png" alt="Next Technology Logo" class="logo-img">
                 </div>
-                <p class="footer-desc">Premium digital engineering and clean-cut UI/UX design. We design and construct digital foundations for high-tier brands.</p>
+                <p class="footer-desc">Premium digital engineering and clean-cut UI/UX design. We design and construct
+                    digital foundations for high-tier brands.</p>
             </div>
 
             <div class="footer-nav">
@@ -664,18 +745,34 @@
 
             <div class="footer-social">
                 <h4>Connect</h4>
-                                <div class="social-links">
+                <div class="social-links">
                     <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                        </svg>
                     </a>
                     <a href="https://x.com" target="_blank" rel="noopener" aria-label="X">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path
+                                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                        </svg>
                     </a>
                     <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                        </svg>
                     </a>
                     <a href="https://tiktok.com" target="_blank" rel="noopener" aria-label="TikTok">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path
+                                d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z" />
+                        </svg>
                     </a>
                 </div>
                 <span class="footer-url">nextechnology.com</span>
@@ -739,17 +836,17 @@
         // Named function, called inside DOMContentLoaded after DOM is ready
         function applyPlannerConfig() {
             let cfg;
-            try { cfg = JSON.parse(localStorage.getItem('nt_planner_config')); } catch(e) { return; }
+            try { cfg = JSON.parse(localStorage.getItem('nt_planner_config')); } catch (e) { return; }
             if (!cfg) return;
 
             // Student base banner
             if (cfg.student) {
                 const titleEl = document.querySelector('.student-base-title');
-                const descEl  = document.querySelector('.student-base-desc');
+                const descEl = document.querySelector('.student-base-desc');
                 const priceEl = document.querySelector('.student-base-price');
                 if (titleEl) titleEl.textContent = cfg.student.title;
-                if (descEl)  descEl.textContent  = cfg.student.desc;
-                if (priceEl) priceEl.innerHTML   = '&#8369;' + Number(cfg.student.base).toLocaleString();
+                if (descEl) descEl.textContent = cfg.student.desc;
+                if (priceEl) priceEl.innerHTML = '&#8369;' + Number(cfg.student.base).toLocaleString();
                 window._adminStudentBase = cfg.student.base;
             }
 
@@ -876,10 +973,10 @@
 
             // Planner Logic
             const serviceOptions = document.querySelectorAll('#serviceOptions .planner-opt-card');
-            const budgetOptions  = document.querySelectorAll('#budgetOptions .planner-opt-card');
+            const budgetOptions = document.querySelectorAll('#budgetOptions .planner-opt-card');
             const timelineOptions = document.querySelectorAll('#timelineOptions .planner-opt-card');
             const sumServices = document.getElementById('sumServices');
-            const sumBudget   = document.getElementById('sumBudget');
+            const sumBudget = document.getElementById('sumBudget');
             const sumTimeline = document.getElementById('sumTimeline');
             const sumEstimate = document.getElementById('sumEstimate');
             const applyBlueprintBtn = document.getElementById('applyBlueprintBtn');
@@ -916,9 +1013,9 @@
                 const score = totalWeight * budgetMultiplier;
                 sumEstimate.textContent = score === 0
                     ? 'Select Services Above'
-                    : score < 4  ? 'Light Intensity Blueprint'
-                    : score < 8  ? 'Medium Intensity Blueprint'
-                    : 'High Intensity (Enterprise Blueprint)';
+                    : score < 4 ? 'Light Intensity Blueprint'
+                        : score < 8 ? 'Medium Intensity Blueprint'
+                            : 'High Intensity (Enterprise Blueprint)';
             }
 
             serviceOptions.forEach(opt => opt.addEventListener('click', () => { opt.classList.toggle('active'); updateBlueprint(); }));
@@ -967,6 +1064,7 @@
         .nav-link-active {
             color: var(--text-primary) !important;
         }
+
         .nav-link-active::after {
             width: 100% !important;
         }
