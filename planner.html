@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Planner | Next Technology (NexTech)</title>
+    <meta name="description" content="Configure your custom project blueprint — select services, budget, and timeline to get started with NexTech.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Shared Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ── Planner Page Specific Styles ── */
+
+        .planner-page-hero {
+            padding: 180px 24px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 5;
+        }
+
+        .planner-page-title {
+            font-family: var(--font-heading);
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            line-height: 1;
+            margin-bottom: 24px;
+        }
+
+        .planner-page-title span {
+            color: var(--text-tertiary);
+        }
+
+        .planner-page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 300;
+            max-width: 520px;
+            line-height: 1.7;
+        }
+
+        /* Planner Section Override for full-page layout */
+        .planner-section {
+            padding-top: 0;
+        }
+
+        .planner-section .section-container {
+            padding-top: 20px;
+        }
+
+        .planner-section .section-header {
+            display: none; /* Hidden — we use the hero title instead */
+        }
+
+        /* Step progress indicator */
+        .planner-progress {
+            max-width: 1200px;
+            margin: 0 auto 0;
+            padding: 0 24px 40px;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            position: relative;
+            z-index: 5;
+        }
+
+        .progress-step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            position: relative;
+        }
+
+        .progress-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: calc(100% - 120px);
+            height: 1px;
+            background: var(--border);
+            left: 120px;
+        }
+
+        .progress-num {
+            font-family: var(--font-heading);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            color: var(--text-tertiary);
+            border: 1px solid var(--border);
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .progress-label {
+            font-family: var(--font-heading);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            white-space: nowrap;
+        }
+
+        /* Contact redirect note */
+        .planner-note {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px 24px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .planner-note p {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .planner-note svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+
+        /* Override apply button behavior on standalone page */
+        #applyBlueprintBtn {
+            width: 100%;
+        }
+
+        /* Plan Switcher */
+        .plan-switcher {
+            display: flex;
+            gap: 0;
+            margin-bottom: 32px;
+            border: 1px solid var(--border);
+            width: fit-content;
+        }
+        .plan-tab {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 12px 32px;
+            font-family: var(--font-heading);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+        .plan-tab.active {
+            background: var(--accent);
+            color: var(--btn-primary-text);
+        }
+        .plan-tab:not(.active):hover {
+            background: var(--card-hover);
+            color: var(--text-primary);
+        }
+
+        /* Student Base Banner */
+        .student-base-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 28px 32px;
+            margin-bottom: 8px;
+            gap: 24px;
+        }
+        .student-base-label {
+            font-family: var(--font-heading);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.25em;
+            color: var(--text-tertiary);
+            margin-bottom: 6px;
+        }
+        .student-base-title {
+            font-family: var(--font-heading);
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+        .student-base-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .student-base-price {
+            font-family: var(--font-heading);
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        /* Add-on Grid */
+        .addon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+        .addon-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border: 1px solid var(--border);
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            background: var(--card-bg);
+        }
+        .addon-card:hover {
+            border-color: var(--border-hover);
+            background: var(--card-hover);
+        }
+        .addon-card input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent);
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .addon-card:has(input:checked) {
+            border-color: var(--accent);
+            background: var(--card-hover);
+        }
+        .addon-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            gap: 12px;
+        }
+        .addon-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .addon-price {
+            font-family: var(--font-heading);
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        .addon-note {
+            font-size: 0.65rem;
+            font-weight: 400;
+            color: var(--text-tertiary);
+        }
+
+        /* Running Bill */
+        .student-bill {
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            padding: 28px 32px;
+        }
+        .bill-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-heading);
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            color: var(--text-tertiary);
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        .bill-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .bill-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .bill-base {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        .bill-addon {
+            color: var(--text-secondary);
+        }
+        .bill-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            font-family: var(--font-heading);
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: 0.05em;
+        }
+
+        /* Timeline note */
+        .timeline-note {
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 400;
+            color: var(--text-tertiary);
+            letter-spacing: 0.05em;
+            margin-top: 4px;
+            text-transform: none;
+            font-family: var(--font-body);
+        }
+        .planner-opt-card.active .timeline-note {
+            color: var(--text-secondary);
+        }
+
+        /* Pro Budget Tier Cards */
+        .pro-budget-options {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .pro-budget-card {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            padding: 24px !important;
+            position: relative;
+            height: auto !important;
+            min-height: unset !important;
+        }
+        .pro-budget-badge {
+            position: absolute;
+            top: -1px;
+            right: -1px;
+            background: var(--accent);
+            color: var(--btn-primary-text);
+            font-family: var(--font-heading);
+            font-size: 0.55rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            padding: 5px 10px;
+        }
+        .pro-budget-tier {
+            font-family: var(--font-heading);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.25em;
+            color: var(--text-tertiary);
+            margin-bottom: 8px;
+        }
+        .pro-budget-price {
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            width: 100%;
+        }
+        .pro-budget-ideal {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 4px;
+        }
+        @media (max-width: 768px) {
+            .pro-budget-options { grid-template-columns: 1fr !important; }
+        }
+
+        /* Footer spacing */
+        .planner-section {
+            margin-bottom: 0;
+        }
+
+
+        .planner-section {
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 600px) {
+            .planner-progress {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-grid"></div>
+    <div class="bg-glow" id="bgGlow"></div>
+
+    <!-- Navigation -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="index.html" class="logo-group">
+                <img src="assets/logo.png" alt="Next Technology Logo" class="logo-img">
+            </a>
+
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="portfolio.html" class="nav-link">Portfolio</a>
+                <a href="planner.html" class="nav-link nav-link-active">Planner</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="blog.html" class="nav-link">Blog</a>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Theme">
+                    <i data-lucide="sun" class="sun-icon"></i>
+                    <i data-lucide="moon" class="moon-icon"></i>
+                </button>
+                <a href="planner.html" class="btn-primary">Start Project</a>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="mobile-nav" id="mobileNav">
+            <a href="index.html" class="mobile-nav-link">Home</a>
+            <a href="portfolio.html" class="mobile-nav-link">Portfolio</a>
+            <a href="planner.html" class="mobile-nav-link">Planner</a>
+            <a href="contact.html" class="mobile-nav-link">Contact</a>
+            <a href="blog.html" class="mobile-nav-link">Blog</a>
+            <a href="planner.html" class="btn-primary mobile-btn">Start Project</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Page Hero -->
+        <div class="planner-page-hero">
+            <span class="section-tag fade-in">PLANNER</span>
+            <h1 class="planner-page-title fade-in">
+                Configure<br><span>Your Project.</span>
+            </h1>
+            <p class="planner-page-subtitle fade-in">
+                Tell us a bit about your project — we'll take it from there. After you submit, we'll reach out to set up a conversation and walk you through everything together.
+            </p>
+        </div>
+
+        <!-- Step Progress Bar -->
+        <div class="planner-progress fade-in">
+            <div class="progress-step">
+                <span class="progress-num">01</span>
+                <span class="progress-label">Services</span>
+            </div>
+            <div class="progress-step">
+                <span class="progress-num">02</span>
+                <span class="progress-label">Budget</span>
+            </div>
+            <div class="progress-step">
+                <span class="progress-num">03</span>
+                <span class="progress-label">Timeline</span>
+            </div>
+        </div>
+
+        <!-- Info note -->
+        <div class="planner-note fade-in">
+            <p>
+                <i data-lucide="info"></i>
+                Clicking "Start the Conversation" will take you to the contact form with your configuration pre-filled.
+            </p>
+        </div>
+
+        <!-- Planner Section (reused from index) -->
+        <section class="planner-section" id="planner">
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-tag">PLANNER</span>
+                    <h2 class="section-title">Configure Your Project</h2>
+                    <p class="section-subtitle">Select your requirements below to build a customized blueprint and outline.</p>
+                </div>
+
+                <!-- Plan Type Switcher -->
+                <div class="plan-switcher">
+                    <button class="plan-tab active" id="tabPro" onclick="switchPlan('pro')">Professional</button>
+                    <button class="plan-tab" id="tabStudent" onclick="switchPlan('student')">Student</button>
+                </div>
+
+                <!-- STUDENT PLANNER -->
+                <div class="planner-card" id="studentPlanner" style="display:none;">
+                    <div class="student-base-banner">
+                        <div>
+                            <div class="student-base-label">BASE PLAN</div>
+                            <div class="student-base-title">Student Starter Package</div>
+                            <div class="student-base-desc">1-page website · Mobile responsive · 1 revision · Basic deployment</div>
+                        </div>
+                        <div class="student-base-price">&#8369;5,000</div>
+                    </div>
+
+                    <div class="step-label" style="margin-top: 32px;">ADD-ONS / Features</div>
+                    <p style="font-size:0.8rem; color:var(--text-tertiary); margin-bottom:20px;">Check what you need — your total updates in real time.</p>
+
+                    <div class="addon-grid" id="addonGrid">
+                        <label class="addon-card"><input type="checkbox" data-price="1500" data-label="Additional Page"><div class="addon-inner"><span class="addon-name">Additional Page</span><span class="addon-price">+&#8369;1,500 <span class="addon-note">per page</span></span></div></label>
+                        <label class="addon-card"><input type="checkbox" data-price="1000" data-label="Contact Form"><div class="addon-inner"><span class="addon-name">Contact Form</span><span class="addon-price">+&#8369;1,000</span></div></label>
+                        <label class="addon-card"><input type="checkbox" data-price="2000" data-label="Portfolio / Gallery Section"><div class="addon-inner"><span class="addon-name">Portfolio / Gallery</span><span class="addon-price">+&#8369;2,000</span></div></label>
+                        <label class="addon-card"><input type="checkbox" data-price="2500" data-label="Blog Setup"><div class="addon-inner"><span class="addon-name">Blog Setup</span><span class="addon-price">+&#8369;2,500</span></div></label>
+                        <label class="addon-card"><input type="checkbox" data-price="1500" data-label="SEO Optimization"><div class="addon-inner"><span class="addon-name">SEO Optimization</span><span class="addon-price">+&#8369;1,500</span></div></label>
+                        <label class="addon-card"><input type="checkbox" data-price="2000" data-label="Animations & Interactions"><div class="addon-inner"><span class="addon-name">Animations &amp; Interactions</span><span class="addon-price">+&#8369;2,000</span></div></label>
+                        <label class="addon-card"><input type="checkbox" data-price="500" data-label="Custom Domain Setup"><div class="addon-inner"><span class="addon-name">Custom Domain Setup</span><span class="addon-price">+&#8369;500</span></div></label>
+                        <label class="addon-card"><input type="checkbox" data-price="3000" data-label="Logo / Branding Design"><div class="addon-inner"><span class="addon-name">Logo / Branding Design</span><span class="addon-price">+&#8369;3,000</span></div></label>
+                        <label class="addon-card"><input type="checkbox" data-price="800" data-label="Extra Revision Round"><div class="addon-inner"><span class="addon-name">Extra Revision Round</span><span class="addon-price">+&#8369;800 <span class="addon-note">per round</span></span></div></label>
+                        <label class="addon-card"><input type="checkbox" data-price="2000" data-label="Rush Delivery (under 2 weeks)"><div class="addon-inner"><span class="addon-name">Rush Delivery</span><span class="addon-price">+&#8369;2,000</span></div></label>
+                    </div>
+
+                    <div class="student-bill">
+                        <div class="bill-header">
+                            <span>YOUR RUNNING BILL</span>
+                            <span id="billItemCount">Base only</span>
+                        </div>
+                        <div class="bill-items" id="billItems">
+                            <div class="bill-row bill-base"><span>Base Plan</span><span>&#8369;5,000</span></div>
+                        </div>
+                        <div class="bill-total">
+                            <span>TOTAL ESTIMATE</span>
+                            <span id="billTotal">&#8369;5,000</span>
+                        </div>
+                        <button class="btn-primary-large" id="applyStudentBlueprintBtn" style="width:100%; margin-top:20px;">Send This Quote to Inquiry</button>
+                    </div>
+                </div>
+
+                <div class="planner-card" id="proPlannerCard">
+                    <!-- Step 1: Select Services -->
+                    <div class="planner-step">
+                        <div class="step-label">01 / Choose Services (Select multiple)</div>
+                        <div class="planner-options" id="serviceOptions">
+                            <div class="planner-opt-card" data-val="Website Development" data-weight="3">
+                                <i data-lucide="code-2"></i>
+                                <span>Website Development</span>
+                            </div>
+                            <div class="planner-opt-card" data-val="Landing Pages" data-weight="1">
+                                <i data-lucide="layers"></i>
+                                <span>Landing Page</span>
+                            </div>
+                            <div class="planner-opt-card" data-val="Portfolio Websites" data-weight="2">
+                                <i data-lucide="user"></i>
+                                <span>Portfolio Website</span>
+                            </div>
+                            <div class="planner-opt-card" data-val="Business Websites" data-weight="3">
+                                <i data-lucide="building-2"></i>
+                                <span>Business Website</span>
+                            </div>
+                            <div class="planner-opt-card" data-val="UI/UX Design" data-weight="2">
+                                <i data-lucide="palette"></i>
+                                <span>UI/UX Design</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Budget Select -->
+                    <div class="planner-step">
+                        <div class="step-label">02 / Project Budget Range</div>
+                        <div class="planner-options pro-budget-options" id="budgetOptions">
+                            <div class="planner-opt-card pro-budget-card" data-val="Starter (₱10k - ₱25k)" data-mult="1">
+                                <div class="pro-budget-tier">STARTER</div>
+                                <div class="pro-budget-price">₱10k – ₱25k</div>
+                                <div class="pro-budget-ideal">Small sites &amp; simple builds</div>
+                            </div>
+                            <div class="planner-opt-card pro-budget-card active" data-val="Growth (₱25k - ₱60k)" data-mult="1.5">
+                                <div class="pro-budget-badge">MOST POPULAR</div>
+                                <div class="pro-budget-tier">GROWTH</div>
+                                <div class="pro-budget-price">₱25k – ₱60k</div>
+                                <div class="pro-budget-ideal">Custom design &amp; full-featured sites</div>
+                            </div>
+                            <div class="planner-opt-card pro-budget-card" data-val="Enterprise (₱60k+)" data-mult="2.2">
+                                <div class="pro-budget-tier">ENTERPRISE</div>
+                                <div class="pro-budget-price">₱60k+</div>
+                                <div class="pro-budget-ideal">Complex projects &amp; large-scale builds</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Timeline Select -->
+                    <div class="planner-step">
+                        <div class="step-label">03 / Target Timeline</div>
+                        <div class="planner-options" id="timelineOptions">
+                            <div class="planner-opt-card" data-val="Rush (2–4 weeks)">
+                                <span>Rush</span>
+                                <small class="timeline-note">2–4 weeks</small>
+                            </div>
+                            <div class="planner-opt-card active" data-val="Standard (1–2 months)">
+                                <span>Standard</span>
+                                <small class="timeline-note">1–2 months · most common</small>
+                            </div>
+                            <div class="planner-opt-card" data-val="Relaxed (3+ months)">
+                                <span>Relaxed</span>
+                                <small class="timeline-note">3+ months · no hard deadline</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary & Action -->
+                    <div class="planner-summary">
+                        <div class="summary-details">
+                            <h4>Your Project Brief</h4>
+                            <div class="summary-item">
+                                <span class="summary-key">Services:</span>
+                                <span class="summary-val" id="sumServices">None selected</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-key">Budget Tier:</span>
+                                <span class="summary-val" id="sumBudget">Growth (₱25k - ₱60k)</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-key">Timeline:</span>
+                                <span class="summary-val" id="sumTimeline">Standard (1–2 months)</span>
+                            </div>
+                            <div class="summary-item total">
+                                <span class="summary-key">Estimated Blueprint Score:</span>
+                                <span class="summary-val" id="sumEstimate">Medium Intensity</span>
+                            </div>
+                        </div>
+                        <button class="btn-primary-large" id="applyBlueprintBtn">Start the Conversation</button>
+                    </div>
+                </div>
+                </div><!-- /proPlannerCard -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="logo-group">
+                    <img src="assets/logo.png" alt="Next Technology Logo" class="logo-img">
+                </div>
+                <p class="footer-desc">Premium digital engineering and clean-cut UI/UX design. We design and construct digital foundations for high-tier brands.</p>
+            </div>
+
+            <div class="footer-nav">
+                <h4>Navigation</h4>
+                <a href="index.html">Home</a>
+                <a href="portfolio.html">Portfolio</a>
+                <a href="planner.html">Planner</a>
+                <a href="contact.html">Contact</a>
+                <a href="blog.html">Blog</a>
+            </div>
+
+            <div class="footer-social">
+                <h4>Connect</h4>
+                                <div class="social-links">
+                    <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                    </a>
+                    <a href="https://x.com" target="_blank" rel="noopener" aria-label="X">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    </a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                    </a>
+                    <a href="https://tiktok.com" target="_blank" rel="noopener" aria-label="TikTok">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>
+                    </a>
+                </div>
+                <span class="footer-url">nextechnology.com</span>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Next Technology. All rights reserved. Designed with precision.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Plan Switcher
+        function switchPlan(plan) {
+            const proPlannerCard = document.getElementById('proPlannerCard');
+            const studentPlanner = document.getElementById('studentPlanner');
+            const tabPro = document.getElementById('tabPro');
+            const tabStudent = document.getElementById('tabStudent');
+            if (plan === 'student') {
+                proPlannerCard.style.display = 'none';
+                studentPlanner.style.display = 'block';
+                tabStudent.classList.add('active');
+                tabPro.classList.remove('active');
+            } else {
+                proPlannerCard.style.display = 'block';
+                studentPlanner.style.display = 'none';
+                tabPro.classList.add('active');
+                tabStudent.classList.remove('active');
+            }
+        }
+
+        // Student Add-on Calculator
+        function updateBill() {
+            const checkboxes = document.querySelectorAll('#addonGrid input[type="checkbox"]');
+            const billItems = document.getElementById('billItems');
+            const billTotal = document.getElementById('billTotal');
+            const billItemCount = document.getElementById('billItemCount');
+            const basePrice = window._adminStudentBase || 5000;
+            let total = basePrice;
+            let addons = [];
+
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    const price = parseInt(cb.dataset.price);
+                    const label = cb.dataset.label;
+                    total += price;
+                    addons.push({ label, price });
+                }
+            });
+
+            // Rebuild bill rows
+            let html = `<div class="bill-row bill-base"><span>Base Plan</span><span>&#8369;${basePrice.toLocaleString()}</span></div>`;
+            addons.forEach(a => {
+                html += `<div class="bill-row bill-addon"><span>${a.label}</span><span>+&#8369;${a.price.toLocaleString()}</span></div>`;
+            });
+            billItems.innerHTML = html;
+            billTotal.textContent = '&#8369;' + total.toLocaleString();
+            billItemCount.textContent = addons.length === 0 ? 'Base only' : `${addons.length} add-on${addons.length > 1 ? 's' : ''}`;
+        }
+
+        // ── ADMIN PLANNER CONFIG READER ──
+        // Named function, called inside DOMContentLoaded after DOM is ready
+        function applyPlannerConfig() {
+            let cfg;
+            try { cfg = JSON.parse(localStorage.getItem('nt_planner_config')); } catch(e) { return; }
+            if (!cfg) return;
+
+            // Student base banner
+            if (cfg.student) {
+                const titleEl = document.querySelector('.student-base-title');
+                const descEl  = document.querySelector('.student-base-desc');
+                const priceEl = document.querySelector('.student-base-price');
+                if (titleEl) titleEl.textContent = cfg.student.title;
+                if (descEl)  descEl.textContent  = cfg.student.desc;
+                if (priceEl) priceEl.innerHTML   = '&#8369;' + Number(cfg.student.base).toLocaleString();
+                window._adminStudentBase = cfg.student.base;
+            }
+
+            // Student add-on grid
+            if (cfg.addons && cfg.addons.length) {
+                const grid = document.getElementById('addonGrid');
+                if (grid) {
+                    grid.innerHTML = cfg.addons.map(a => `
+                        <label class="addon-card">
+                            <input type="checkbox" data-price="${a.price}" data-label="${a.label}">
+                            <div class="addon-inner">
+                                <span class="addon-name">${a.label}</span>
+                                <span class="addon-price">+&#8369;${Number(a.price).toLocaleString()}${a.note ? ` <span class="addon-note">${a.note}</span>` : ''}</span>
+                            </div>
+                        </label>`).join('');
+                    const basePriceVal = cfg.student ? cfg.student.base : 5000;
+                    const billBaseRow = document.querySelector('.bill-row.bill-base');
+                    if (billBaseRow) billBaseRow.innerHTML = `<span>Base Plan</span><span>&#8369;${Number(basePriceVal).toLocaleString()}</span>`;
+                    const billTotalEl = document.getElementById('billTotal');
+                    if (billTotalEl) billTotalEl.textContent = '&#8369;' + Number(basePriceVal).toLocaleString();
+                    // Re-bind add-on listeners after dynamic render
+                    grid.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener('change', updateBill));
+                }
+            }
+
+            // Pro budget tiers
+            if (cfg.tiers && cfg.tiers.length) {
+                const budgetContainer = document.getElementById('budgetOptions');
+                if (budgetContainer) {
+                    budgetContainer.innerHTML = cfg.tiers.map((t, i) => `
+                        <div class="planner-opt-card pro-budget-card${i === 1 ? ' active' : ''}" data-val="${t.name} (${t.range})" data-mult="${t.mult}">
+                            ${t.badge ? `<div class="pro-budget-badge">${t.badge}</div>` : ''}
+                            <div class="pro-budget-tier">${t.name.toUpperCase()}</div>
+                            <div class="pro-budget-price">${t.range}</div>
+                            <div class="pro-budget-ideal">${t.ideal}</div>
+                        </div>`).join('');
+                }
+            }
+
+            // Pro timeline options
+            if (cfg.timeline && cfg.timeline.length) {
+                const tlContainer = document.getElementById('timelineOptions');
+                if (tlContainer) {
+                    tlContainer.innerHTML = cfg.timeline.map((t, i) => `
+                        <div class="planner-opt-card${i === 1 ? ' active' : ''}" data-val="${t.label}${t.note ? ` (${t.note})` : ''}">
+                            <span>${t.label}</span>
+                            ${t.note ? `<small class="timeline-note">${t.note}</small>` : ''}
+                        </div>`).join('');
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply admin config first (prices, add-ons, tiers, timeline)
+            applyPlannerConfig();
+
+            // Student add-on listeners for hard-coded cards (admin cards bind themselves)
+            document.querySelectorAll('#addonGrid input[type="checkbox"]').forEach(cb => {
+                cb.addEventListener('change', updateBill);
+            });
+
+            // Student send to inquiry
+            const applyStudentBtn = document.getElementById('applyStudentBlueprintBtn');
+            if (applyStudentBtn) {
+                applyStudentBtn.addEventListener('click', () => {
+                    const checkboxes = document.querySelectorAll('#addonGrid input[type="checkbox"]:checked');
+                    const addons = Array.from(checkboxes).map(cb => cb.dataset.label).join(', ') || 'None';
+                    const total = document.getElementById('billTotal').textContent;
+                    sessionStorage.setItem('plannerData', JSON.stringify({
+                        services: 'Student Plan — Base Package',
+                        budget: `${total} (Student Pricing)`,
+                        timeline: 'TBD',
+                        addons: addons
+                    }));
+                    window.location.href = 'contact.html';
+                });
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            // Theme
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
+            const htmlElement = document.documentElement;
+            htmlElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+            themeToggleBtn.addEventListener('click', () => {
+                const newTheme = htmlElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                htmlElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+
+            // Mouse glow
+            const bgGlow = document.getElementById('bgGlow');
+            if (bgGlow && window.matchMedia('(pointer: fine)').matches) {
+                document.addEventListener('mousemove', (e) => {
+                    bgGlow.style.opacity = '1';
+                    bgGlow.style.left = `${e.clientX}px`;
+                    bgGlow.style.top = `${e.clientY}px`;
+                });
+                document.addEventListener('mouseleave', () => { bgGlow.style.opacity = '0'; });
+            }
+
+            // Mobile menu
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileNav = document.getElementById('mobileNav');
+            if (mobileMenuToggle && mobileNav) {
+                mobileMenuToggle.addEventListener('click', () => {
+                    const isOpen = mobileNav.classList.toggle('open');
+                    const icon = mobileMenuToggle.querySelector('i');
+                    if (icon) {
+                        icon.setAttribute('data-lucide', isOpen ? 'x' : 'menu');
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                    }
+                });
+                mobileNav.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('mobile-nav-link') || e.target.classList.contains('mobile-btn')) {
+                        mobileNav.classList.remove('open');
+                        const icon = mobileMenuToggle.querySelector('i');
+                        if (icon) {
+                            icon.setAttribute('data-lucide', 'menu');
+                            if (typeof lucide !== 'undefined') lucide.createIcons();
+                        }
+                    }
+                });
+            }
+
+            // Planner Logic
+            const serviceOptions = document.querySelectorAll('#serviceOptions .planner-opt-card');
+            const budgetOptions  = document.querySelectorAll('#budgetOptions .planner-opt-card');
+            const timelineOptions = document.querySelectorAll('#timelineOptions .planner-opt-card');
+            const sumServices = document.getElementById('sumServices');
+            const sumBudget   = document.getElementById('sumBudget');
+            const sumTimeline = document.getElementById('sumTimeline');
+            const sumEstimate = document.getElementById('sumEstimate');
+            const applyBlueprintBtn = document.getElementById('applyBlueprintBtn');
+
+            function updateBlueprint() {
+                const selectedServices = [];
+                let totalWeight = 0;
+                serviceOptions.forEach(opt => {
+                    if (opt.classList.contains('active')) {
+                        selectedServices.push(opt.getAttribute('data-val'));
+                        totalWeight += parseInt(opt.getAttribute('data-weight') || '0', 10);
+                    }
+                });
+                sumServices.textContent = selectedServices.length > 0
+                    ? selectedServices.join(', ')
+                    : 'None selected (Please choose at least one)';
+
+                let activeBudget = 'Growth (₱25k - ₱60k)';
+                let budgetMultiplier = 1.5;
+                budgetOptions.forEach(opt => {
+                    if (opt.classList.contains('active')) {
+                        activeBudget = opt.getAttribute('data-val');
+                        budgetMultiplier = parseFloat(opt.getAttribute('data-mult') || '1.0');
+                    }
+                });
+                sumBudget.textContent = activeBudget;
+
+                let activeTimeline = 'Standard (1–2 months)';
+                timelineOptions.forEach(opt => {
+                    if (opt.classList.contains('active')) activeTimeline = opt.getAttribute('data-val');
+                });
+                sumTimeline.textContent = activeTimeline;
+
+                const score = totalWeight * budgetMultiplier;
+                sumEstimate.textContent = score === 0
+                    ? 'Select Services Above'
+                    : score < 4  ? 'Light Intensity Blueprint'
+                    : score < 8  ? 'Medium Intensity Blueprint'
+                    : 'High Intensity (Enterprise Blueprint)';
+            }
+
+            serviceOptions.forEach(opt => opt.addEventListener('click', () => { opt.classList.toggle('active'); updateBlueprint(); }));
+            budgetOptions.forEach(opt => opt.addEventListener('click', () => { budgetOptions.forEach(o => o.classList.remove('active')); opt.classList.add('active'); updateBlueprint(); }));
+            timelineOptions.forEach(opt => opt.addEventListener('click', () => { timelineOptions.forEach(o => o.classList.remove('active')); opt.classList.add('active'); updateBlueprint(); }));
+
+            // Apply → redirect to contact page with blueprint in sessionStorage
+            if (applyBlueprintBtn) {
+                applyBlueprintBtn.addEventListener('click', () => {
+                    const selectedServices = [];
+                    serviceOptions.forEach(opt => { if (opt.classList.contains('active')) selectedServices.push(opt.getAttribute('data-val')); });
+
+                    if (selectedServices.length === 0) {
+                        alert('Please select at least one service from the blueprint configuration.');
+                        return;
+                    }
+
+                    let activeBudget = '', activeTimeline = '';
+                    budgetOptions.forEach(opt => { if (opt.classList.contains('active')) activeBudget = opt.getAttribute('data-val'); });
+                    timelineOptions.forEach(opt => { if (opt.classList.contains('active')) activeTimeline = opt.getAttribute('data-val'); });
+
+                    const formattedDesc =
+                        `Hello NexTech team, I have built a custom project blueprint:\n` +
+                        `- Required Services: ${selectedServices.join(', ')}\n` +
+                        `- Budget Bracket: ${activeBudget}\n` +
+                        `- Target Timeline: ${activeTimeline}\n` +
+                        `- Estimator: ${sumEstimate.textContent}\n` +
+                        `Please let me know how we can proceed.`;
+
+                    // Store blueprint and redirect to contact
+                    sessionStorage.setItem('nextech_blueprint', formattedDesc);
+                    window.location.href = 'contact.html';
+                });
+            }
+
+            updateBlueprint();
+
+            // Fade-in animations
+            document.querySelectorAll('.fade-in').forEach((el, i) => {
+                el.style.animationDelay = `${0.2 + i * 0.15}s`;
+            });
+        });
+    </script>
+
+    <style>
+        .nav-link-active {
+            color: var(--text-primary) !important;
+        }
+        .nav-link-active::after {
+            width: 100% !important;
+        }
+    </style>
+</body>
+
+</html>

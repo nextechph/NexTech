@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog | Next Technology (NexTech)</title>
+    <meta name="description" content="Insights, tutorials, and thoughts on web development, UI/UX design, and digital innovation from the NexTech team.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Shared Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ── Blog Page Specific Styles ── */
+
+        .blog-page-hero {
+            padding: 180px 24px 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 5;
+        }
+
+        .blog-page-title {
+            font-family: var(--font-heading);
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            line-height: 1;
+            margin-bottom: 24px;
+        }
+
+        .blog-page-title span {
+            color: var(--text-tertiary);
+        }
+
+        .blog-page-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 300;
+            max-width: 520px;
+            line-height: 1.7;
+        }
+
+        .blog-page-meta {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+        }
+
+        .meta-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .meta-stat-num {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1;
+        }
+
+        .meta-stat-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+        }
+
+        .meta-divider {
+            width: 1px;
+            height: 40px;
+            background: var(--border);
+        }
+
+        /* Filter Bar */
+        .blog-filter-bar {
+            max-width: 1200px;
+            margin: 0 auto 60px;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 5;
+        }
+
+        .filter-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            margin-right: 8px;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 8px 18px;
+            font-family: var(--font-heading);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            border-color: var(--accent);
+            color: var(--text-primary);
+            background: var(--card-hover);
+        }
+
+        /* Featured Post */
+        .blog-featured {
+            max-width: 1200px;
+            margin: 0 auto 4px;
+            padding: 0 24px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .featured-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            overflow: hidden;
+            transition: var(--transition-smooth);
+        }
+
+        .featured-card:hover {
+            border-color: var(--border-hover);
+            background: var(--card-hover);
+        }
+
+        .featured-image {
+            background: var(--bg-secondary);
+            min-height: 360px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .featured-image-placeholder {
+            font-family: var(--font-heading);
+            font-size: 6rem;
+            font-weight: 800;
+            color: var(--border);
+            user-select: none;
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--accent);
+            color: var(--btn-primary-text);
+            font-family: var(--font-heading);
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            padding: 6px 12px;
+        }
+
+        .featured-content {
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .post-category {
+            font-family: var(--font-heading);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+        }
+
+        .featured-title {
+            font-family: var(--font-heading);
+            font-size: clamp(1.4rem, 2.5vw, 2rem);
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: 0.02em;
+            color: var(--text-primary);
+        }
+
+        .featured-excerpt {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 300;
+            line-height: 1.8;
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .author-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-heading);
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-tertiary);
+        }
+
+        .author-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .author-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .post-date {
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+        }
+
+        .post-read-time {
+            margin-left: auto;
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .post-read-time i {
+            width: 12px;
+            height: 12px;
+        }
+
+        .read-more-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-heading);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: var(--transition-smooth);
+        }
+
+        .read-more-link i {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.3s ease;
+        }
+
+        .read-more-link:hover i {
+            transform: translateX(4px);
+        }
+
+        /* Blog Grid */
+        .blog-grid-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4px 24px 120px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+        }
+
+        .blog-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: var(--transition-smooth);
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .blog-card:hover {
+            border-color: var(--border-hover);
+            background: var(--card-hover);
+        }
+
+        .blog-card-image {
+            background: var(--bg-secondary);
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blog-card-image-placeholder {
+            font-family: var(--font-heading);
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--border);
+            user-select: none;
+        }
+
+        .blog-card-content {
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .blog-card-title {
+            font-family: var(--font-heading);
+            font-size: 1rem;
+            font-weight: 700;
+            line-height: 1.3;
+            letter-spacing: 0.02em;
+            color: var(--text-primary);
+        }
+
+        .blog-card-excerpt {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 300;
+            line-height: 1.7;
+            flex: 1;
+        }
+
+        .blog-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            margin-top: auto;
+        }
+
+        .card-date {
+            font-size: 0.7rem;
+            color: var(--text-tertiary);
+            letter-spacing: 0.05em;
+        }
+
+        .card-read-time {
+            font-size: 0.7rem;
+            color: var(--text-tertiary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .card-read-time i {
+            width: 11px;
+            height: 11px;
+        }
+
+        /* Newsletter Strip */
+        .blog-newsletter {
+            max-width: 1200px;
+            margin: 0 auto 80px;
+            padding: 0 24px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .newsletter-card {
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            padding: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+        }
+
+        .newsletter-text h3 {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .newsletter-text p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 300;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 0;
+            flex-shrink: 0;
+        }
+
+        .newsletter-input {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-right: none;
+            color: var(--text-primary);
+            padding: 14px 20px;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            width: 260px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .newsletter-input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .newsletter-input:focus {
+            border-color: var(--border-hover);
+        }
+
+        .newsletter-btn {
+            background: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+            border: 1px solid var(--btn-primary-bg);
+            padding: 14px 24px;
+            font-family: var(--font-heading);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            white-space: nowrap;
+        }
+
+        .newsletter-btn:hover {
+            opacity: 0.85;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .featured-card {
+                grid-template-columns: 1fr;
+            }
+            .featured-image {
+                min-height: 220px;
+            }
+            .featured-content {
+                padding: 32px;
+            }
+            .blog-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .newsletter-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .newsletter-form {
+                width: 100%;
+            }
+            .newsletter-input {
+                flex: 1;
+                width: auto;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+            .blog-page-meta {
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-grid"></div>
+    <div class="bg-glow" id="bgGlow"></div>
+
+    <!-- Navigation -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="index.html" class="logo-group">
+                <img src="assets/logo.png" alt="Next Technology Logo" class="logo-img">
+            </a>
+
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="portfolio.html" class="nav-link">Portfolio</a>
+                <a href="planner.html" class="nav-link">Planner</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="blog.html" class="nav-link nav-link-active">Blog</a>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Theme">
+                    <i data-lucide="sun" class="sun-icon"></i>
+                    <i data-lucide="moon" class="moon-icon"></i>
+                </button>
+                <a href="planner.html" class="btn-primary">Start Project</a>
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="mobile-nav" id="mobileNav">
+            <a href="index.html" class="mobile-nav-link">Home</a>
+            <a href="portfolio.html" class="mobile-nav-link">Portfolio</a>
+            <a href="planner.html" class="mobile-nav-link">Planner</a>
+            <a href="contact.html" class="mobile-nav-link">Contact</a>
+            <a href="blog.html" class="mobile-nav-link">Blog</a>
+            <a href="planner.html" class="btn-primary mobile-btn">Start Project</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Page Hero -->
+        <div class="blog-page-hero">
+            <span class="section-tag fade-in">BLOG</span>
+            <h1 class="blog-page-title fade-in">
+                Ideas &<br><span>Insights.</span>
+            </h1>
+            <p class="blog-page-subtitle fade-in">
+                Web development deep-dives, design thinking, and digital strategy — straight from the NexTech team.
+            </p>
+            <div class="blog-page-meta fade-in">
+                <div class="meta-stat">
+                    <span class="meta-stat-num">12</span>
+                    <span class="meta-stat-label">Articles</span>
+                </div>
+                <div class="meta-divider"></div>
+                <div class="meta-stat">
+                    <span class="meta-stat-num">4</span>
+                    <span class="meta-stat-label">Categories</span>
+                </div>
+                <div class="meta-divider"></div>
+                <div class="meta-stat">
+                    <span class="meta-stat-num">2026</span>
+                    <span class="meta-stat-label">Est.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="blog-filter-bar">
+            <span class="filter-label">Filter:</span>
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="dev">Development</button>
+            <button class="filter-btn" data-filter="design">Design</button>
+            <button class="filter-btn" data-filter="strategy">Strategy</button>
+            <button class="filter-btn" data-filter="tips">Tips & Tools</button>
+        </div>
+
+        <!-- Featured Post -->
+        <div class="blog-featured">
+            <div class="featured-card" data-category="dev">
+                <div class="featured-image">
+                    <span class="featured-image-placeholder">01</span>
+                    <span class="featured-badge">Featured</span>
+                </div>
+                <div class="featured-content">
+                    <span class="post-category">Development</span>
+                    <h2 class="featured-title">Why Every Business Website Needs a Performance Audit in 2026</h2>
+                    <p class="featured-excerpt">Page speed is no longer a luxury — it directly affects your search ranking, bounce rate, and conversions. Here's how we approach performance audits for every client project we take on.</p>
+                    <a href="#" class="read-more-link">
+                        Read Article <i data-lucide="arrow-right"></i>
+                    </a>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <div class="author-avatar">NT</div>
+                            <div class="author-info">
+                                <span class="author-name">NexTech Team</span>
+                                <span class="post-date">June 1, 2026</span>
+                            </div>
+                        </div>
+                        <span class="post-read-time">
+                            <i data-lucide="clock"></i> 7 min read
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blog Grid -->
+        <div class="blog-grid-wrapper">
+            <div class="blog-grid" id="blogGrid">
+
+                <!-- Card 1 -->
+                <div class="blog-card" data-category="design">
+                    <div class="blog-card-image">
+                        <span class="blog-card-image-placeholder">02</span>
+                    </div>
+                    <div class="blog-card-content">
+                        <span class="post-category">Design</span>
+                        <h3 class="blog-card-title">Minimalism in UI: When Less Actually Converts More</h3>
+                        <p class="blog-card-excerpt">Clean design isn't just aesthetic — it's a strategic choice that reduces cognitive load and drives user action.</p>
+                        <a href="#" class="read-more-link">Read More <i data-lucide="arrow-right"></i></a>
+                        <div class="blog-card-footer">
+                            <span class="card-date">May 22, 2026</span>
+                            <span class="card-read-time"><i data-lucide="clock"></i> 5 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="blog-card" data-category="strategy">
+                    <div class="blog-card-image">
+                        <span class="blog-card-image-placeholder">03</span>
+                    </div>
+                    <div class="blog-card-content">
+                        <span class="post-category">Strategy</span>
+                        <h3 class="blog-card-title">How to Brief a Web Agency Without Wasting Time</h3>
+                        <p class="blog-card-excerpt">A great project brief saves weeks. Here's the exact format we send to clients before any kickoff call.</p>
+                        <a href="#" class="read-more-link">Read More <i data-lucide="arrow-right"></i></a>
+                        <div class="blog-card-footer">
+                            <span class="card-date">May 14, 2026</span>
+                            <span class="card-read-time"><i data-lucide="clock"></i> 4 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="blog-card" data-category="tips">
+                    <div class="blog-card-image">
+                        <span class="blog-card-image-placeholder">04</span>
+                    </div>
+                    <div class="blog-card-content">
+                        <span class="post-category">Tips & Tools</span>
+                        <h3 class="blog-card-title">5 VS Code Extensions Every Web Developer Should Install</h3>
+                        <p class="blog-card-excerpt">From AI autocomplete to live previews — the tools we use daily to ship faster and with fewer bugs.</p>
+                        <a href="#" class="read-more-link">Read More <i data-lucide="arrow-right"></i></a>
+                        <div class="blog-card-footer">
+                            <span class="card-date">May 5, 2026</span>
+                            <span class="card-read-time"><i data-lucide="clock"></i> 3 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="blog-card" data-category="dev">
+                    <div class="blog-card-image">
+                        <span class="blog-card-image-placeholder">05</span>
+                    </div>
+                    <div class="blog-card-content">
+                        <span class="post-category">Development</span>
+                        <h3 class="blog-card-title">Vanilla JS vs Frameworks: Choosing the Right Stack for Your Project</h3>
+                        <p class="blog-card-excerpt">Not every project needs React. Here's how we decide which technology to reach for at the start of each build.</p>
+                        <a href="#" class="read-more-link">Read More <i data-lucide="arrow-right"></i></a>
+                        <div class="blog-card-footer">
+                            <span class="card-date">April 28, 2026</span>
+                            <span class="card-read-time"><i data-lucide="clock"></i> 6 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="blog-card" data-category="design">
+                    <div class="blog-card-image">
+                        <span class="blog-card-image-placeholder">06</span>
+                    </div>
+                    <div class="blog-card-content">
+                        <span class="post-category">Design</span>
+                        <h3 class="blog-card-title">Dark Mode Done Right: A Designer's Practical Guide</h3>
+                        <p class="blog-card-excerpt">Dark mode is more than inverting colors. Here's how to build a theme system that actually works in both modes.</p>
+                        <a href="#" class="read-more-link">Read More <i data-lucide="arrow-right"></i></a>
+                        <div class="blog-card-footer">
+                            <span class="card-date">April 18, 2026</span>
+                            <span class="card-read-time"><i data-lucide="clock"></i> 5 min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="blog-card" data-category="strategy">
+                    <div class="blog-card-image">
+                        <span class="blog-card-image-placeholder">07</span>
+                    </div>
+                    <div class="blog-card-content">
+                        <span class="post-category">Strategy</span>
+                        <h3 class="blog-card-title">Landing Page vs Full Website: What Does Your Business Actually Need?</h3>
+                        <p class="blog-card-excerpt">One focused page or a full multi-page site? The answer depends on your goal, budget, and growth stage.</p>
+                        <a href="#" class="read-more-link">Read More <i data-lucide="arrow-right"></i></a>
+                        <div class="blog-card-footer">
+                            <span class="card-date">April 9, 2026</span>
+                            <span class="card-read-time"><i data-lucide="clock"></i> 4 min</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="blog-newsletter">
+            <div class="newsletter-card">
+                <div class="newsletter-text">
+                    <h3>Stay in the Loop</h3>
+                    <p>New articles on web dev, design, and digital strategy — delivered to your inbox.</p>
+                </div>
+                <div class="newsletter-form">
+                    <input type="email" class="newsletter-input" placeholder="your@email.com">
+                    <button class="newsletter-btn">Subscribe</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <div class="logo-group">
+                    <img src="assets/logo.png" alt="Next Technology Logo" class="logo-img">
+                </div>
+                <p class="footer-desc">Premium digital engineering and clean-cut UI/UX design. We design and construct digital foundations for high-tier brands.</p>
+            </div>
+
+            <div class="footer-nav">
+                <h4>Navigation</h4>
+                <a href="index.html">Home</a>
+                <a href="portfolio.html">Portfolio</a>
+                <a href="planner.html">Planner</a>
+                <a href="contact.html">Contact</a>
+                <a href="blog.html">Blog</a>
+            </div>
+
+            <div class="footer-social">
+                <h4>Connect</h4>
+                                <div class="social-links">
+                    <a href="https://facebook.com" target="_blank" rel="noopener" aria-label="Facebook">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                    </a>
+                    <a href="https://x.com" target="_blank" rel="noopener" aria-label="X">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    </a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                    </a>
+                    <a href="https://tiktok.com" target="_blank" rel="noopener" aria-label="TikTok">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg>
+                    </a>
+                </div>
+                <span class="footer-url">nextechnology.com</span>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Next Technology. All rights reserved. Designed with precision.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Load admin posts from localStorage and inject into grid
+        function loadAdminPosts() {
+            try {
+                const posts = JSON.parse(localStorage.getItem('nt_blog_posts') || '[]')
+                    .filter(p => p.status === 'published');
+                if (!posts.length) return;
+
+                const grid = document.getElementById('blogGrid');
+                const featuredWrapper = document.querySelector('.blog-featured');
+
+                // Inject as featured if no static featured exists, else add to grid
+                posts.forEach((p, i) => {
+                    const catFilter = p.category.toLowerCase().replace(' & ', '-').replace(' ', '-');
+                    const imgHtml = p.image
+                        ? `<img src="${p.image}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;">`
+                        : `<span class="featured-image-placeholder">${String(i+1).padStart(2,'0')}</span>`;
+
+                    if (i === 0 && featuredWrapper) {
+                        // Replace featured card content
+                        const fc = featuredWrapper.querySelector('.featured-card');
+                        if (fc) {
+                            fc.setAttribute('data-category', catFilter);
+                            fc.querySelector('.featured-image').innerHTML = imgHtml + '<span class="featured-badge">Featured</span>';
+                            fc.querySelector('.post-category').textContent = p.category;
+                            fc.querySelector('.featured-title').textContent = p.title;
+                            fc.querySelector('.featured-excerpt').textContent = p.excerpt;
+                            fc.querySelector('.author-name').textContent = p.author;
+                            fc.querySelector('.post-date').textContent = p.date;
+                            fc.querySelector('.post-read-time').innerHTML = `<i data-lucide="clock"></i> ${p.readTime}`;
+                        }
+                    } else {
+                        const card = document.createElement('div');
+                        card.className = 'blog-card';
+                        card.setAttribute('data-category', catFilter);
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(24px)';
+                        card.style.transition = 'opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1)';
+                        card.innerHTML = `
+                            <div class="blog-card-image">${p.image ? `<img src="${p.image}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;">` : `<span class="blog-card-image-placeholder">${String(i+1).padStart(2,'0')}</span>`}</div>
+                            <div class="blog-card-content">
+                                <span class="post-category">${p.category}</span>
+                                <h3 class="blog-card-title">${p.title}</h3>
+                                <p class="blog-card-excerpt">${p.excerpt}</p>
+                                <a href="#" class="read-more-link">Read More <i data-lucide="arrow-right"></i></a>
+                                <div class="blog-card-footer">
+                                    <span class="card-date">${p.date}</span>
+                                    <span class="card-read-time"><i data-lucide="clock"></i> ${p.readTime}</span>
+                                </div>
+                            </div>`;
+                        grid.prepend(card);
+                        setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 100);
+                    }
+                });
+
+                // Update stats
+                const allPosts = document.querySelectorAll('.blog-card, .featured-card');
+                const statEl = document.querySelector('.meta-stat-num');
+                if (statEl) statEl.textContent = allPosts.length + posts.length;
+
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            } catch(e) { console.warn('Admin posts load error:', e); }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            loadAdminPosts();
+
+            // Theme
+            const themeToggleBtn = document.getElementById('themeToggleBtn');
+            const htmlElement = document.documentElement;
+            htmlElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+            themeToggleBtn.addEventListener('click', () => {
+                const newTheme = htmlElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                htmlElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+
+            // Mouse glow
+            const bgGlow = document.getElementById('bgGlow');
+            if (bgGlow && window.matchMedia('(pointer: fine)').matches) {
+                document.addEventListener('mousemove', (e) => {
+                    bgGlow.style.opacity = '1';
+                    bgGlow.style.left = `${e.clientX}px`;
+                    bgGlow.style.top = `${e.clientY}px`;
+                });
+                document.addEventListener('mouseleave', () => { bgGlow.style.opacity = '0'; });
+            }
+
+            // Mobile menu
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileNav = document.getElementById('mobileNav');
+            if (mobileMenuToggle && mobileNav) {
+                mobileMenuToggle.addEventListener('click', () => {
+                    const isOpen = mobileNav.classList.toggle('open');
+                    const icon = mobileMenuToggle.querySelector('i');
+                    if (icon) {
+                        icon.setAttribute('data-lucide', isOpen ? 'x' : 'menu');
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                    }
+                });
+                mobileNav.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('mobile-nav-link') || e.target.classList.contains('mobile-btn')) {
+                        mobileNav.classList.remove('open');
+                        const icon = mobileMenuToggle.querySelector('i');
+                        if (icon) {
+                            icon.setAttribute('data-lucide', 'menu');
+                            if (typeof lucide !== 'undefined') lucide.createIcons();
+                        }
+                    }
+                });
+            }
+
+            // Category filter
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const blogCards = document.querySelectorAll('#blogGrid .blog-card');
+            const featuredCard = document.querySelector('.featured-card');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const filter = btn.getAttribute('data-filter');
+
+                    // Featured post
+                    if (featuredCard) {
+                        const cat = featuredCard.getAttribute('data-category');
+                        featuredCard.style.display = (filter === 'all' || filter === cat) ? 'grid' : 'none';
+                    }
+
+                    // Grid cards
+                    blogCards.forEach(card => {
+                        const cat = card.getAttribute('data-category');
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(10px)';
+                        setTimeout(() => {
+                            card.style.display = (filter === 'all' || filter === cat) ? 'flex' : 'none';
+                            if (filter === 'all' || filter === cat) {
+                                requestAnimationFrame(() => {
+                                    card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                                    card.style.opacity = '1';
+                                    card.style.transform = 'translateY(0)';
+                                });
+                            }
+                        }, 150);
+                    });
+                });
+            });
+
+            // Newsletter
+            const newsletterBtn = document.querySelector('.newsletter-btn');
+            const newsletterInput = document.querySelector('.newsletter-input');
+            if (newsletterBtn && newsletterInput) {
+                newsletterBtn.addEventListener('click', () => {
+                    if (newsletterInput.value.includes('@')) {
+                        newsletterBtn.textContent = 'Subscribed!';
+                        newsletterInput.value = '';
+                        setTimeout(() => { newsletterBtn.textContent = 'Subscribe'; }, 3000);
+                    }
+                });
+            }
+
+            // Scroll reveal
+            const cards = document.querySelectorAll('.blog-card, .featured-card, .newsletter-card');
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.08 });
+                cards.forEach(card => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(24px)';
+                    card.style.transition = 'opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)';
+                    observer.observe(card);
+                });
+            }
+        });
+    </script>
+
+    <style>
+        .nav-link-active {
+            color: var(--text-primary) !important;
+        }
+        .nav-link-active::after {
+            width: 100% !important;
+        }
+    </style>
+</body>
+
+</html>
