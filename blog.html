@@ -608,7 +608,7 @@
         </div>
 
         <!-- Featured Post -->
-        <div class="blog-featured">
+        <div class="blog-featured" style="display: none;">
             <div class="featured-card" data-category="dev">
                 <div class="featured-image">
                     <span class="featured-image-placeholder">01</span>
@@ -642,117 +642,11 @@
         <!-- Blog Grid -->
         <div class="blog-grid-wrapper">
             <div class="blog-grid" id="blogGrid">
-
-                <!-- Card 1 -->
-                <div class="blog-card" data-category="design">
-                    <div class="blog-card-image">
-                        <span class="blog-card-image-placeholder">02</span>
-                    </div>
-                    <div class="blog-card-content">
-                        <span class="post-category">Design</span>
-                        <h3 class="blog-card-title">Minimalism in UI: When Less Actually Converts More</h3>
-                        <p class="blog-card-excerpt">Clean design isn't just aesthetic — it's a strategic choice that
-                            reduces cognitive load and drives user action.</p>
-                        <a href="#" class="read-more-link">Read More <i data-lucide="arrow-right"></i></a>
-                        <div class="blog-card-footer">
-                            <span class="card-date">May 22, 2026</span>
-                            <span class="card-read-time"><i data-lucide="clock"></i> 5 min</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="blog-card" data-category="strategy">
-                    <div class="blog-card-image">
-                        <span class="blog-card-image-placeholder">03</span>
-                    </div>
-                    <div class="blog-card-content">
-                        <span class="post-category">Strategy</span>
-                        <h3 class="blog-card-title">How to Brief a Web Agency Without Wasting Time</h3>
-                        <p class="blog-card-excerpt">A great project brief saves weeks. Here's the exact format we send
-                            to clients before any kickoff call.</p>
-                        <a href="#" class="read-more-link">Read More <i data-lucide="arrow-right"></i></a>
-                        <div class="blog-card-footer">
-                            <span class="card-date">May 14, 2026</span>
-                            <span class="card-read-time"><i data-lucide="clock"></i> 4 min</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="blog-card" data-category="tips">
-                    <div class="blog-card-image">
-                        <span class="blog-card-image-placeholder">04</span>
-                    </div>
-                    <div class="blog-card-content">
-                        <span class="post-category">Tips & Tools</span>
-                        <h3 class="blog-card-title">5 VS Code Extensions Every Web Developer Should Install</h3>
-                        <p class="blog-card-excerpt">From AI autocomplete to live previews — the tools we use daily to
-                            ship faster and with fewer bugs.</p>
-                        <a href="#" class="read-more-link">Read More <i data-lucide="arrow-right"></i></a>
-                        <div class="blog-card-footer">
-                            <span class="card-date">May 5, 2026</span>
-                            <span class="card-read-time"><i data-lucide="clock"></i> 3 min</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 4 -->
-                <div class="blog-card" data-category="dev">
-                    <div class="blog-card-image">
-                        <span class="blog-card-image-placeholder">05</span>
-                    </div>
-                    <div class="blog-card-content">
-                        <span class="post-category">Development</span>
-                        <h3 class="blog-card-title">Vanilla JS vs Frameworks: Choosing the Right Stack for Your Project
-                        </h3>
-                        <p class="blog-card-excerpt">Not every project needs React. Here's how we decide which
-                            technology to reach for at the start of each build.</p>
-                        <a href="#" class="read-more-link">Read More <i data-lucide="arrow-right"></i></a>
-                        <div class="blog-card-footer">
-                            <span class="card-date">April 28, 2026</span>
-                            <span class="card-read-time"><i data-lucide="clock"></i> 6 min</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 5 -->
-                <div class="blog-card" data-category="design">
-                    <div class="blog-card-image">
-                        <span class="blog-card-image-placeholder">06</span>
-                    </div>
-                    <div class="blog-card-content">
-                        <span class="post-category">Design</span>
-                        <h3 class="blog-card-title">Dark Mode Done Right: A Designer's Practical Guide</h3>
-                        <p class="blog-card-excerpt">Dark mode is more than inverting colors. Here's how to build a
-                            theme system that actually works in both modes.</p>
-                        <a href="#" class="read-more-link">Read More <i data-lucide="arrow-right"></i></a>
-                        <div class="blog-card-footer">
-                            <span class="card-date">April 18, 2026</span>
-                            <span class="card-read-time"><i data-lucide="clock"></i> 5 min</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 6 -->
-                <div class="blog-card" data-category="strategy">
-                    <div class="blog-card-image">
-                        <span class="blog-card-image-placeholder">07</span>
-                    </div>
-                    <div class="blog-card-content">
-                        <span class="post-category">Strategy</span>
-                        <h3 class="blog-card-title">Landing Page vs Full Website: What Does Your Business Actually Need?
-                        </h3>
-                        <p class="blog-card-excerpt">One focused page or a full multi-page site? The answer depends on
-                            your goal, budget, and growth stage.</p>
-                        <a href="#" class="read-more-link">Read More <i data-lucide="arrow-right"></i></a>
-                        <div class="blog-card-footer">
-                            <span class="card-date">April 9, 2026</span>
-                            <span class="card-read-time"><i data-lucide="clock"></i> 4 min</span>
-                        </div>
-                    </div>
-                </div>
-
+            </div>
+            <div id="blogEmptyState" style="text-align: center; padding: 80px 24px; border: 1px dashed var(--border); background: var(--card-bg); display: none;">
+                <i data-lucide="book-open" style="width: 48px; height: 48px; color: var(--text-tertiary); margin-bottom: 16px;"></i>
+                <h3 style="font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">No Articles Published</h3>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 300;">Please log into the admin dashboard to add and publish blog articles.</p>
             </div>
         </div>
 
@@ -832,95 +726,112 @@
     </footer>
 
     <script>
-        // Load admin posts from localStorage and inject into grid
+        // ── Helpers ───────────────────────────────────────────────────────────
+        function slugCategory(cat) {
+            return cat.toLowerCase().replace(/\s*&\s*/g, '-').replace(/\s+/g, '-');
+        }
+
+        // ── Load published posts from localStorage ────────────────────────────
         function loadAdminPosts() {
             try {
                 const posts = JSON.parse(localStorage.getItem('nt_blog_posts') || '[]')
                     .filter(p => p.status === 'published');
-                if (!posts.length) return;
 
-                const grid = document.getElementById('blogGrid');
+                const grid            = document.getElementById('blogGrid');
+                const emptyState      = document.getElementById('blogEmptyState');
                 const featuredWrapper = document.querySelector('.blog-featured');
 
-                // Inject as featured if no static featured exists, else add to grid
+                // Show empty state when no published posts
+                if (!posts.length) {
+                    if (emptyState) emptyState.style.display = 'block';
+                    return;
+                }
+                if (emptyState) emptyState.style.display = 'none';
+
                 posts.forEach((p, i) => {
-                    const catFilter = p.category.toLowerCase().replace(' & ', '-').replace(' ', '-');
+                    const catSlug = slugCategory(p.category);
                     const imgHtml = p.image
                         ? `<img src="${p.image}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;">`
                         : `<span class="featured-image-placeholder">${String(i + 1).padStart(2, '0')}</span>`;
 
                     if (i === 0 && featuredWrapper) {
-                        // Replace featured card content
+                        // ── First post → featured card ────────────────────────
                         const fc = featuredWrapper.querySelector('.featured-card');
                         if (fc) {
-                            fc.setAttribute('data-category', catFilter);
+                            fc.setAttribute('data-category', catSlug);
                             fc.querySelector('.featured-image').innerHTML = imgHtml + '<span class="featured-badge">Featured</span>';
-                            fc.querySelector('.post-category').textContent = p.category;
-                            fc.querySelector('.featured-title').textContent = p.title;
-                            fc.querySelector('.featured-excerpt').textContent = p.excerpt;
-                            fc.querySelector('.author-name').textContent = p.author;
-                            fc.querySelector('.post-date').textContent = p.date;
-                            fc.querySelector('.post-read-time').innerHTML = `<i data-lucide="clock"></i> ${p.readTime}`;
+                            fc.querySelector('.post-category').textContent   = p.category;
+                            fc.querySelector('.featured-title').textContent   = p.title;
+                            fc.querySelector('.featured-excerpt').textContent = p.excerpt   || '';
+                            fc.querySelector('.author-name').textContent      = p.author    || 'NexTech Team';
+                            fc.querySelector('.post-date').textContent        = p.date      || '';
+                            fc.querySelector('.post-read-time').innerHTML     = `<i data-lucide="clock"></i> ${p.readTime || '5 min read'}`;
+                            // Reveal the featured section
+                            featuredWrapper.style.display = '';
                         }
                     } else {
+                        // ── Remaining posts → grid cards ──────────────────────
+                        const cardImg = p.image
+                            ? `<img src="${p.image}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;">`
+                            : `<span class="blog-card-image-placeholder">${String(i + 1).padStart(2, '0')}</span>`;
                         const card = document.createElement('div');
                         card.className = 'blog-card';
-                        card.setAttribute('data-category', catFilter);
-                        card.style.opacity = '0';
-                        card.style.transform = 'translateY(24px)';
-                        card.style.transition = 'opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1)';
+                        card.setAttribute('data-category', catSlug);
+                        card.style.cssText = 'opacity:0;transform:translateY(24px);transition:opacity 0.7s cubic-bezier(0.16,1,0.3,1),transform 0.7s cubic-bezier(0.16,1,0.3,1);';
                         card.innerHTML = `
-                            <div class="blog-card-image">${p.image ? `<img src="${p.image}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;">` : `<span class="blog-card-image-placeholder">${String(i + 1).padStart(2, '0')}</span>`}</div>
+                            <div class="blog-card-image">${cardImg}</div>
                             <div class="blog-card-content">
                                 <span class="post-category">${p.category}</span>
                                 <h3 class="blog-card-title">${p.title}</h3>
-                                <p class="blog-card-excerpt">${p.excerpt}</p>
+                                <p class="blog-card-excerpt">${p.excerpt || ''}</p>
                                 <a href="#" class="read-more-link">Read More <i data-lucide="arrow-right"></i></a>
                                 <div class="blog-card-footer">
-                                    <span class="card-date">${p.date}</span>
-                                    <span class="card-read-time"><i data-lucide="clock"></i> ${p.readTime}</span>
+                                    <span class="card-date">${p.date || ''}</span>
+                                    <span class="card-read-time"><i data-lucide="clock"></i> ${p.readTime || '5 min read'}</span>
                                 </div>
                             </div>`;
-                        grid.prepend(card);
-                        setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 100);
+                        grid.appendChild(card);
+                        setTimeout(() => {
+                            card.style.opacity   = '1';
+                            card.style.transform = 'translateY(0)';
+                        }, 80 * i);
                     }
                 });
 
-                // Update stats
-                const allPosts = document.querySelectorAll('.blog-card, .featured-card');
+                // Update article count stat
                 const statEl = document.querySelector('.meta-stat-num');
-                if (statEl) statEl.textContent = allPosts.length + posts.length;
+                if (statEl) statEl.textContent = posts.length;
 
                 if (typeof lucide !== 'undefined') lucide.createIcons();
-            } catch (e) { console.warn('Admin posts load error:', e); }
+            } catch (e) { console.warn('Blog load error:', e); }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof lucide !== 'undefined') lucide.createIcons();
             loadAdminPosts();
 
-            // Theme
+            // ── Theme toggle ──────────────────────────────────────────────────
             const themeToggleBtn = document.getElementById('themeToggleBtn');
-            const htmlElement = document.documentElement;
-            htmlElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+            const htmlEl = document.documentElement;
+            htmlEl.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
             themeToggleBtn.addEventListener('click', () => {
-                const newTheme = htmlElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                htmlElement.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
+                const next = htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                htmlEl.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
             });
 
-            // Mouse glow
+            // ── Mouse glow ────────────────────────────────────────────────────
             const bgGlow = document.getElementById('bgGlow');
             if (bgGlow && window.matchMedia('(pointer: fine)').matches) {
                 document.addEventListener('mousemove', (e) => {
                     bgGlow.style.opacity = '1';
-                    bgGlow.style.left = `${e.clientX}px`;
-                    bgGlow.style.top = `${e.clientY}px`;
+                    bgGlow.style.left    = e.clientX + 'px';
+                    bgGlow.style.top     = e.clientY + 'px';
                 });
                 document.addEventListener('mouseleave', () => { bgGlow.style.opacity = '0'; });
             }
 
-            // Mobile menu
+            // ── Mobile menu ───────────────────────────────────────────────────
             const mobileMenuToggle = document.getElementById('mobileMenuToggle');
             const mobileNav = document.getElementById('mobileNav');
             if (mobileMenuToggle && mobileNav) {
@@ -944,36 +855,36 @@
                 });
             }
 
-            // Category filter
+            // ── Category filter (live DOM query — works with dynamic cards) ───
             const filterBtns = document.querySelectorAll('.filter-btn');
-            const blogCards = document.querySelectorAll('#blogGrid .blog-card');
-            const featuredCard = document.querySelector('.featured-card');
-
             filterBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
                     filterBtns.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-
                     const filter = btn.getAttribute('data-filter');
 
-                    // Featured post
-                    if (featuredCard) {
-                        const cat = featuredCard.getAttribute('data-category');
-                        featuredCard.style.display = (filter === 'all' || filter === cat) ? 'grid' : 'none';
+                    // Featured card
+                    const featuredCard    = document.querySelector('.featured-card');
+                    const featuredWrapper = document.querySelector('.blog-featured');
+                    if (featuredCard && featuredWrapper) {
+                        const cat  = featuredCard.getAttribute('data-category');
+                        const show = filter === 'all' || filter === cat;
+                        featuredWrapper.style.display = show ? '' : 'none';
                     }
 
-                    // Grid cards
-                    blogCards.forEach(card => {
-                        const cat = card.getAttribute('data-category');
-                        card.style.opacity = '0';
+                    // Grid cards — queried live so dynamic cards are included
+                    document.querySelectorAll('#blogGrid .blog-card').forEach(card => {
+                        const cat  = card.getAttribute('data-category');
+                        const show = filter === 'all' || filter === cat;
+                        card.style.opacity   = '0';
                         card.style.transform = 'translateY(10px)';
                         setTimeout(() => {
-                            card.style.display = (filter === 'all' || filter === cat) ? 'flex' : 'none';
-                            if (filter === 'all' || filter === cat) {
+                            card.style.display = show ? 'flex' : 'none';
+                            if (show) {
                                 requestAnimationFrame(() => {
                                     card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-                                    card.style.opacity = '1';
-                                    card.style.transform = 'translateY(0)';
+                                    card.style.opacity    = '1';
+                                    card.style.transform  = 'translateY(0)';
                                 });
                             }
                         }, 150);
@@ -981,8 +892,8 @@
                 });
             });
 
-            // Newsletter
-            const newsletterBtn = document.querySelector('.newsletter-btn');
+            // ── Newsletter ────────────────────────────────────────────────────
+            const newsletterBtn   = document.querySelector('.newsletter-btn');
             const newsletterInput = document.querySelector('.newsletter-input');
             if (newsletterBtn && newsletterInput) {
                 newsletterBtn.addEventListener('click', () => {
@@ -994,21 +905,21 @@
                 });
             }
 
-            // Scroll reveal
-            const cards = document.querySelectorAll('.blog-card, .featured-card, .newsletter-card');
+            // ── Scroll reveal (newsletter card) ───────────────────────────────
+            const revealCards = document.querySelectorAll('.newsletter-card');
             if ('IntersectionObserver' in window) {
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
-                            entry.target.style.opacity = '1';
+                            entry.target.style.opacity   = '1';
                             entry.target.style.transform = 'translateY(0)';
                             observer.unobserve(entry.target);
                         }
                     });
                 }, { threshold: 0.08 });
-                cards.forEach(card => {
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(24px)';
+                revealCards.forEach(card => {
+                    card.style.opacity    = '0';
+                    card.style.transform  = 'translateY(24px)';
                     card.style.transition = 'opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)';
                     observer.observe(card);
                 });
