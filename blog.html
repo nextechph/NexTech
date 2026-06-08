@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog | Next Technology</title>
+    <title>Blog | Next Technology (NexTech)</title>
     <meta name="description" content="Insights, tutorials, and thoughts on web development, UI/UX design, and digital innovation from the NexTech team.">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -795,8 +795,72 @@
     </footer>
 
     <script>
+        // Load admin posts from localStorage and inject into grid
+        function loadAdminPosts() {
+            try {
+                const posts = JSON.parse(localStorage.getItem('nt_blog_posts') || '[]')
+                    .filter(p => p.status === 'published');
+                if (!posts.length) return;
+
+                const grid = document.getElementById('blogGrid');
+                const featuredWrapper = document.querySelector('.blog-featured');
+
+                // Inject as featured if no static featured exists, else add to grid
+                posts.forEach((p, i) => {
+                    const catFilter = p.category.toLowerCase().replace(' & ', '-').replace(' ', '-');
+                    const imgHtml = p.image
+                        ? `<img src="${p.image}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;">`
+                        : `<span class="featured-image-placeholder">${String(i+1).padStart(2,'0')}</span>`;
+
+                    if (i === 0 && featuredWrapper) {
+                        // Replace featured card content
+                        const fc = featuredWrapper.querySelector('.featured-card');
+                        if (fc) {
+                            fc.setAttribute('data-category', catFilter);
+                            fc.querySelector('.featured-image').innerHTML = imgHtml + '<span class="featured-badge">Featured</span>';
+                            fc.querySelector('.post-category').textContent = p.category;
+                            fc.querySelector('.featured-title').textContent = p.title;
+                            fc.querySelector('.featured-excerpt').textContent = p.excerpt;
+                            fc.querySelector('.author-name').textContent = p.author;
+                            fc.querySelector('.post-date').textContent = p.date;
+                            fc.querySelector('.post-read-time').innerHTML = `<i data-lucide="clock"></i> ${p.readTime}`;
+                        }
+                    } else {
+                        const card = document.createElement('div');
+                        card.className = 'blog-card';
+                        card.setAttribute('data-category', catFilter);
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(24px)';
+                        card.style.transition = 'opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1)';
+                        card.innerHTML = `
+                            <div class="blog-card-image">${p.image ? `<img src="${p.image}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;">` : `<span class="blog-card-image-placeholder">${String(i+1).padStart(2,'0')}</span>`}</div>
+                            <div class="blog-card-content">
+                                <span class="post-category">${p.category}</span>
+                                <h3 class="blog-card-title">${p.title}</h3>
+                                <p class="blog-card-excerpt">${p.excerpt}</p>
+                                <a href="#" class="read-more-link">Read More <i data-lucide="arrow-right"></i></a>
+                                <div class="blog-card-footer">
+                                    <span class="card-date">${p.date}</span>
+                                    <span class="card-read-time"><i data-lucide="clock"></i> ${p.readTime}</span>
+                                </div>
+                            </div>`;
+                        grid.prepend(card);
+                        setTimeout(() => { card.style.opacity = '1'; card.style.transform = 'translateY(0)'; }, 100);
+                    }
+                });
+
+                // Update stats
+                const allPosts = document.querySelectorAll('.blog-card, .featured-card');
+                const statEl = document.querySelector('.meta-stat-num');
+                if (statEl) statEl.textContent = allPosts.length + posts.length;
+
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            } catch(e) { console.warn('Admin posts load error:', e); }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof lucide !== 'undefined') lucide.createIcons();
+            loadAdminPosts();
 
             // Theme
             const themeToggleBtn = document.getElementById('themeToggleBtn');

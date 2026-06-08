@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexTech Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0a0a0a;
+            --bg2: #111111;
+            --bg3: #181818;
+            --border: #2a2a2a;
+            --border2: #3a3a3a;
+            --text: #f0f0f0;
+            --text2: #888;
+            --text3: #555;
+            --accent: #f0f0f0;
+            --accent-bg: #1a1a1a;
+            --danger: #ff4444;
+            --success: #44cc88;
+            --sidebar: 240px;
+            --header: 60px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── LOGIN ── */
+        #loginScreen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .login-box {
+            width: 380px;
+            border: 1px solid var(--border);
+            background: var(--bg2);
+            padding: 48px;
+        }
+
+        .login-logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--text3);
+            margin-bottom: 32px;
+        }
+
+        .login-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .login-sub {
+            font-size: 0.82rem;
+            color: var(--text2);
+            margin-bottom: 36px;
+        }
+
+        .login-field {
+            margin-bottom: 16px;
+        }
+
+        .login-field label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text2);
+            margin-bottom: 8px;
+        }
+
+        .login-field input {
+            width: 100%;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .login-field input:focus { border-color: var(--border2); }
+
+        .login-btn {
+            width: 100%;
+            background: var(--text);
+            color: var(--bg);
+            border: none;
+            padding: 14px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: opacity 0.2s;
+        }
+
+        .login-btn:hover { opacity: 0.85; }
+
+        .login-error {
+            font-size: 0.78rem;
+            color: var(--danger);
+            margin-top: 12px;
+            display: none;
+        }
+
+        /* ── APP SHELL ── */
+        #appShell { display: none; height: 100vh; }
+
+        .admin-header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--header);
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 100;
+        }
+
+        .admin-brand {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--text2);
+        }
+
+        .admin-brand span { color: var(--text); }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-user {
+            font-size: 0.78rem;
+            color: var(--text2);
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text2);
+            padding: 6px 14px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover { border-color: var(--border2); color: var(--text); }
+
+        /* ── SIDEBAR ── */
+        .admin-sidebar {
+            position: fixed;
+            top: var(--header);
+            left: 0;
+            bottom: 0;
+            width: var(--sidebar);
+            background: var(--bg2);
+            border-right: 1px solid var(--border);
+            padding: 24px 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            padding: 0 16px;
+            margin-bottom: 32px;
+        }
+
+        .sidebar-label {
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text3);
+            padding: 0 8px;
+            margin-bottom: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text2);
+            cursor: pointer;
+            border-radius: 2px;
+            transition: all 0.15s;
+            border: 1px solid transparent;
+        }
+
+        .nav-item:hover { background: var(--bg3); color: var(--text); }
+
+        .nav-item.active {
+            background: var(--bg3);
+            color: var(--text);
+            border-color: var(--border);
+        }
+
+        .nav-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text2);
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            letter-spacing: 0.05em;
+        }
+
+        /* ── MAIN CONTENT ── */
+        .admin-main {
+            margin-left: var(--sidebar);
+            padding-top: var(--header);
+            min-height: 100vh;
+        }
+
+        .admin-view {
+            display: none;
+            padding: 40px;
+            max-width: 1000px;
+        }
+
+        .admin-view.active { display: block; }
+
+        .view-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .view-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .view-sub {
+            font-size: 0.82rem;
+            color: var(--text2);
+            margin-top: 4px;
+        }
+
+        /* ── FORM ── */
+        .form-section {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .form-section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text2);
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text2);
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.88rem;
+            outline: none;
+            transition: border-color 0.2s;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus { border-color: var(--border2); }
+
+        .form-group textarea { min-height: 180px; line-height: 1.7; }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* ── IMAGE UPLOAD ── */
+        .img-upload-area {
+            border: 2px dashed var(--border);
+            background: var(--bg3);
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            position: relative;
+        }
+
+        .img-upload-area:hover { border-color: var(--border2); }
+        .img-upload-area.has-img { border-style: solid; border-color: var(--border2); padding: 0; }
+
+        .img-upload-area input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+        }
+
+        .upload-placeholder {
+            pointer-events: none;
+        }
+
+        .upload-icon {
+            width: 32px;
+            height: 32px;
+            margin: 0 auto 12px;
+            color: var(--text3);
+        }
+
+        .upload-text {
+            font-size: 0.82rem;
+            color: var(--text2);
+            margin-bottom: 4px;
+        }
+
+        .upload-hint {
+            font-size: 0.72rem;
+            color: var(--text3);
+        }
+
+        .img-preview {
+            width: 100%;
+            max-height: 240px;
+            object-fit: cover;
+            display: none;
+        }
+
+        .img-preview.visible { display: block; }
+
+        /* ── BUTTONS ── */
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn-primary {
+            background: var(--text);
+            color: var(--bg);
+            border: none;
+            padding: 12px 28px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary:hover { opacity: 0.85; }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text2);
+            border: 1px solid var(--border);
+            padding: 12px 24px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover { border-color: var(--border2); color: var(--text); }
+
+        .btn-danger {
+            background: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            padding: 6px 14px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-danger:hover { background: var(--danger); color: #fff; }
+
+        .save-status {
+            font-size: 0.78rem;
+            color: var(--success);
+            display: none;
+        }
+
+        /* ── CONTENT LIST ── */
+        .content-list { display: flex; flex-direction: column; gap: 2px; }
+
+        .content-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            padding: 16px 20px;
+            transition: border-color 0.2s;
+        }
+
+        .content-item:hover { border-color: var(--border2); }
+
+        .content-item-thumb {
+            width: 56px;
+            height: 40px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text3);
+            font-size: 0.6rem;
+        }
+
+        .content-item-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+        .content-item-info { flex: 1; min-width: 0; }
+
+        .content-item-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .content-item-meta {
+            font-size: 0.72rem;
+            color: var(--text2);
+            margin-top: 3px;
+        }
+
+        .content-item-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+        .btn-edit {
+            background: transparent;
+            color: var(--text2);
+            border: 1px solid var(--border);
+            padding: 5px 12px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.62rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-edit:hover { border-color: var(--border2); color: var(--text); }
+
+        .status-tag {
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border: 1px solid;
+        }
+
+        .status-published { color: var(--success); border-color: var(--success); }
+        .status-draft { color: var(--text3); border-color: var(--border); }
+
+        /* ── DASHBOARD STATS ── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            padding: 28px;
+        }
+
+        .stat-num {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text2);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px;
+        }
+
+        .quick-action {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .quick-action:hover { border-color: var(--border2); background: var(--bg3); }
+
+        .qa-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .qa-icon svg { width: 18px; height: 18px; color: var(--text2); }
+
+        .qa-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .qa-sub { font-size: 0.75rem; color: var(--text2); margin-top: 2px; }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            padding: 14px 20px;
+            font-size: 0.82rem;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 999;
+        }
+
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); flex-shrink: 0; }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            text-align: center;
+            padding: 60px 24px;
+            border: 1px dashed var(--border);
+            background: var(--bg2);
+        }
+
+        .empty-state-icon { color: var(--text3); margin: 0 auto 16px; display: block; }
+        .empty-state-title { font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+        .empty-state-sub { font-size: 0.82rem; color: var(--text2); }
+
+        /* ── DIVIDER ── */
+        .section-divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 32px 0;
+        }
+
+        @media (max-width: 768px) {
+            .admin-sidebar { display: none; }
+            .admin-main { margin-left: 0; }
+            .admin-view { padding: 24px 16px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .quick-actions { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── LOGIN SCREEN ── -->
+<div id="loginScreen">
+    <div class="login-box">
+        <div class="login-logo">NexTech · Admin Portal</div>
+        <div class="login-title">Sign In</div>
+        <div class="login-sub">Restricted access. Authorized personnel only.</div>
+        <div class="login-field">
+            <label>Username</label>
+            <input type="text" id="loginUser" placeholder="admin" autocomplete="username">
+        </div>
+        <div class="login-field">
+            <label>Password</label>
+            <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="login-btn" onclick="doLogin()">Access Admin Panel</button>
+        <div class="login-error" id="loginError">Invalid credentials. Try again.</div>
+    </div>
+</div>
+
+<!-- ── APP SHELL ── -->
+<div id="appShell">
+
+    <header class="admin-header">
+        <div class="admin-brand">NexTech · <span>Admin</span></div>
+        <div class="header-right">
+            <span class="header-user" id="headerUser"></span>
+            <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+        </div>
+    </header>
+
+    <aside class="admin-sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-label">Overview</div>
+            <div class="nav-item active" onclick="switchView('dashboard')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Dashboard
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-label">Content</div>
+            <div class="nav-item" onclick="switchView('blog-new')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                New Blog Post
+            </div>
+            <div class="nav-item" onclick="switchView('blog-list')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h10"/></svg>
+                All Posts
+                <span class="nav-badge" id="blogBadge">0</span>
+            </div>
+        </div>
+        <div class="sidebar-section">
+            <div class="sidebar-label">Portfolio</div>
+            <div class="nav-item" onclick="switchView('project-new')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                Add Project
+            </div>
+            <div class="nav-item" onclick="switchView('project-list')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                All Projects
+                <span class="nav-badge" id="projectBadge">0</span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+
+        <!-- DASHBOARD -->
+        <div class="admin-view active" id="view-dashboard">
+            <div class="view-header">
+                <div>
+                    <div class="view-title">Dashboard</div>
+                    <div class="view-sub">Welcome back. Here's what's going on.</div>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-num" id="statPosts">0</div>
+                    <div class="stat-label">Blog Posts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="statPublished">0</div>
+                    <div class="stat-label">Published</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="statProjects">0</div>
+                    <div class="stat-label">Portfolio Projects</div>
+                </div>
+            </div>
+            <div class="form-section-title">Quick Actions</div>
+            <div class="quick-actions">
+                <div class="quick-action" onclick="switchView('blog-new')">
+                    <div class="qa-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                    </div>
+                    <div><div class="qa-title">Write Blog Post</div><div class="qa-sub">Compose and publish a new article</div></div>
+                </div>
+                <div class="quick-action" onclick="switchView('project-new')">
+                    <div class="qa-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                    </div>
+                    <div><div class="qa-title">Add Portfolio Project</div><div class="qa-sub">Upload screenshot, name, and link</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW BLOG POST -->
+        <div class="admin-view" id="view-blog-new">
+            <div class="view-header">
+                <div>
+                    <div class="view-title" id="blogFormTitle">New Blog Post</div>
+                    <div class="view-sub">Fill in the details below and publish when ready.</div>
+                </div>
+            </div>
+            <input type="hidden" id="editBlogId">
+
+            <div class="form-section">
+                <div class="form-section-title">Post Details</div>
+                <div class="form-group">
+                    <label>Title *</label>
+                    <input type="text" id="blogTitle" placeholder="Enter post title...">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="blogCategory">
+                            <option value="Development">Development</option>
+                            <option value="Design">Design</option>
+                            <option value="Strategy">Strategy</option>
+                            <option value="Tips & Tools">Tips & Tools</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Read Time (e.g. "5 min")</label>
+                        <input type="text" id="blogReadTime" placeholder="5 min">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Excerpt (short summary)</label>
+                    <textarea id="blogExcerpt" style="min-height:80px" placeholder="A one or two sentence summary shown on the blog listing..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Full Content</label>
+                    <textarea id="blogContent" placeholder="Write your full blog post here..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-title">Cover Image</div>
+                <div class="form-group">
+                    <div class="img-upload-area" id="blogImgArea">
+                        <input type="file" accept="image/*" id="blogImgInput" onchange="previewImage('blogImgInput','blogImgPreview','blogImgArea','blogImgData')">
+                        <img class="img-preview" id="blogImgPreview" alt="">
+                        <div class="upload-placeholder" id="blogImgPlaceholder">
+                            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            <div class="upload-text">Click to upload cover image</div>
+                            <div class="upload-hint">PNG, JPG, WEBP — recommended 1200×630</div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="blogImgData">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-title">Author & Status</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Author Name</label>
+                        <input type="text" id="blogAuthor" placeholder="NexTech Team">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="blogStatus">
+                            <option value="published">Published</option>
+                            <option value="draft">Draft</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn-primary" onclick="saveBlogPost()">Publish Post</button>
+                <button class="btn-secondary" onclick="saveBlogPost('draft')">Save as Draft</button>
+                <button class="btn-secondary" onclick="resetBlogForm()">Clear</button>
+                <span class="save-status" id="blogSaveStatus">✓ Saved</span>
+            </div>
+        </div>
+
+        <!-- BLOG LIST -->
+        <div class="admin-view" id="view-blog-list">
+            <div class="view-header">
+                <div>
+                    <div class="view-title">All Posts</div>
+                    <div class="view-sub">Manage your published and draft blog posts.</div>
+                </div>
+                <button class="btn-primary" onclick="switchView('blog-new')">+ New Post</button>
+            </div>
+            <div id="blogListContainer"></div>
+        </div>
+
+        <!-- NEW PROJECT -->
+        <div class="admin-view" id="view-project-new">
+            <div class="view-header">
+                <div>
+                    <div class="view-title" id="projectFormTitle">Add Project</div>
+                    <div class="view-sub">Upload a screenshot, add the project name and live URL.</div>
+                </div>
+            </div>
+            <input type="hidden" id="editProjectId">
+
+            <div class="form-section">
+                <div class="form-section-title">Project Details</div>
+                <div class="form-group">
+                    <label>Project Name *</label>
+                    <input type="text" id="projectName" placeholder="e.g. AA2000 Connect CRM">
+                </div>
+                <div class="form-group">
+                    <label>Live URL</label>
+                    <input type="text" id="projectUrl" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="projectDesc" style="min-height:100px" placeholder="Brief description of the project..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category / Tag</label>
+                        <select id="projectTag">
+                            <option value="web-app">Web App</option>
+                            <option value="landing">Landing Page</option>
+                            <option value="portfolio">Portfolio</option>
+                            <option value="business">Business</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="projectStatus">
+                            <option value="live">Live</option>
+                            <option value="coming-soon">Coming Soon</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-section-title">Screenshot</div>
+                <div class="form-group">
+                    <div class="img-upload-area" id="projectImgArea">
+                        <input type="file" accept="image/*" id="projectImgInput" onchange="previewImage('projectImgInput','projectImgPreview','projectImgArea','projectImgData')">
+                        <img class="img-preview" id="projectImgPreview" alt="">
+                        <div class="upload-placeholder" id="projectImgPlaceholder">
+                            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            <div class="upload-text">Click to upload project screenshot</div>
+                            <div class="upload-hint">PNG, JPG, WEBP — recommended 1280×800</div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="projectImgData">
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn-primary" onclick="saveProject()">Save Project</button>
+                <button class="btn-secondary" onclick="resetProjectForm()">Clear</button>
+                <span class="save-status" id="projectSaveStatus">✓ Saved</span>
+            </div>
+        </div>
+
+        <!-- PROJECT LIST -->
+        <div class="admin-view" id="view-project-list">
+            <div class="view-header">
+                <div>
+                    <div class="view-title">All Projects</div>
+                    <div class="view-sub">Manage your portfolio projects.</div>
+                </div>
+                <button class="btn-primary" onclick="switchView('project-new')">+ Add Project</button>
+            </div>
+            <div id="projectListContainer"></div>
+        </div>
+
+    </main>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+    <div class="toast-dot"></div>
+    <span id="toastMsg"></span>
+</div>
+
+<script>
+    // ── CREDENTIALS (change these) ──
+    const USERS = [
+        { username: 'admin', password: 'nextech2026', role: 'Admin' },
+        { username: 'team', password: 'nextech123', role: 'Editor' }
+    ];
+
+    let currentUser = null;
+
+    // ── AUTH ──
+    function doLogin() {
+        const u = document.getElementById('loginUser').value.trim();
+        const p = document.getElementById('loginPass').value;
+        const match = USERS.find(x => x.username === u && x.password === p);
+        if (match) {
+            currentUser = match;
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('appShell').style.display = 'block';
+            document.getElementById('headerUser').textContent = `${match.role} · ${match.username}`;
+            refreshAll();
+        } else {
+            document.getElementById('loginError').style.display = 'block';
+        }
+    }
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') doLogin();
+    });
+
+    function doLogout() {
+        currentUser = null;
+        document.getElementById('loginScreen').style.display = 'flex';
+        document.getElementById('appShell').style.display = 'none';
+        document.getElementById('loginUser').value = '';
+        document.getElementById('loginPass').value = '';
+        document.getElementById('loginError').style.display = 'none';
+    }
+
+    // ── NAVIGATION ──
+    function switchView(view) {
+        document.querySelectorAll('.admin-view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(`view-${view}`).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => {
+            if (n.getAttribute('onclick')?.includes(view)) n.classList.add('active');
+        });
+        if (view === 'blog-list') renderBlogList();
+        if (view === 'project-list') renderProjectList();
+        if (view === 'dashboard') refreshDashboard();
+        if (view === 'blog-new') {
+            document.getElementById('blogFormTitle').textContent = 'New Blog Post';
+            document.getElementById('editBlogId').value = '';
+        }
+        if (view === 'project-new') {
+            document.getElementById('projectFormTitle').textContent = 'Add Project';
+            document.getElementById('editProjectId').value = '';
+        }
+        window.scrollTo(0, 0);
+    }
+
+    // ── STORAGE ──
+    function getPosts() { try { return JSON.parse(localStorage.getItem('nt_blog_posts') || '[]'); } catch { return []; } }
+    function setPosts(d) { localStorage.setItem('nt_blog_posts', JSON.stringify(d)); }
+    function getProjects() { try { return JSON.parse(localStorage.getItem('nt_portfolio_projects') || '[]'); } catch { return []; } }
+    function setProjects(d) { localStorage.setItem('nt_portfolio_projects', JSON.stringify(d)); }
+
+    // ── IMAGE PREVIEW ──
+    function previewImage(inputId, previewId, areaId, dataId) {
+        const file = document.getElementById(inputId).files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            const img = document.getElementById(previewId);
+            const area = document.getElementById(areaId);
+            const placeholder = area.querySelector('.upload-placeholder');
+            img.src = e.target.result;
+            img.classList.add('visible');
+            if (placeholder) placeholder.style.display = 'none';
+            area.classList.add('has-img');
+            document.getElementById(dataId).value = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // ── BLOG ──
+    function saveBlogPost(forceDraft) {
+        const title = document.getElementById('blogTitle').value.trim();
+        if (!title) { showToast('Please enter a post title.'); return; }
+
+        const editId = document.getElementById('editBlogId').value;
+        const posts = getPosts();
+        const status = forceDraft === 'draft' ? 'draft' : document.getElementById('blogStatus').value;
+
+        const post = {
+            id: editId || Date.now().toString(),
+            title,
+            category: document.getElementById('blogCategory').value,
+            excerpt: document.getElementById('blogExcerpt').value.trim(),
+            content: document.getElementById('blogContent').value.trim(),
+            readTime: document.getElementById('blogReadTime').value.trim() || '5 min',
+            author: document.getElementById('blogAuthor').value.trim() || 'NexTech Team',
+            status,
+            image: document.getElementById('blogImgData').value,
+            date: editId ? (posts.find(p => p.id === editId)?.date || new Date().toLocaleDateString('en-US', {month:'long',day:'numeric',year:'numeric'})) : new Date().toLocaleDateString('en-US', {month:'long',day:'numeric',year:'numeric'}),
+            updatedAt: Date.now()
+        };
+
+        if (editId) {
+            const idx = posts.findIndex(p => p.id === editId);
+            if (idx > -1) posts[idx] = post; else posts.unshift(post);
+        } else {
+            posts.unshift(post);
+        }
+
+        setPosts(posts);
+        refreshAll();
+        showToast(status === 'draft' ? 'Draft saved.' : 'Post published!');
+
+        const s = document.getElementById('blogSaveStatus');
+        s.style.display = 'inline';
+        setTimeout(() => s.style.display = 'none', 2500);
+    }
+
+    function resetBlogForm() {
+        ['blogTitle','blogExcerpt','blogContent','blogReadTime','blogAuthor'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('blogCategory').value = 'Development';
+        document.getElementById('blogStatus').value = 'published';
+        document.getElementById('blogImgData').value = '';
+        document.getElementById('editBlogId').value = '';
+        const img = document.getElementById('blogImgPreview');
+        img.src = ''; img.classList.remove('visible');
+        const area = document.getElementById('blogImgArea');
+        area.classList.remove('has-img');
+        const ph = area.querySelector('.upload-placeholder');
+        if (ph) ph.style.display = '';
+        document.getElementById('blogFormTitle').textContent = 'New Blog Post';
+    }
+
+    function editPost(id) {
+        const post = getPosts().find(p => p.id === id);
+        if (!post) return;
+        document.getElementById('editBlogId').value = post.id;
+        document.getElementById('blogTitle').value = post.title;
+        document.getElementById('blogCategory').value = post.category;
+        document.getElementById('blogExcerpt').value = post.excerpt;
+        document.getElementById('blogContent').value = post.content;
+        document.getElementById('blogReadTime').value = post.readTime;
+        document.getElementById('blogAuthor').value = post.author;
+        document.getElementById('blogStatus').value = post.status;
+        document.getElementById('blogImgData').value = post.image || '';
+        if (post.image) {
+            const img = document.getElementById('blogImgPreview');
+            img.src = post.image; img.classList.add('visible');
+            document.getElementById('blogImgArea').classList.add('has-img');
+            const ph = document.getElementById('blogImgArea').querySelector('.upload-placeholder');
+            if (ph) ph.style.display = 'none';
+        }
+        document.getElementById('blogFormTitle').textContent = 'Edit Post';
+        switchView('blog-new');
+    }
+
+    function deletePost(id) {
+        if (!confirm('Delete this post?')) return;
+        setPosts(getPosts().filter(p => p.id !== id));
+        refreshAll();
+        renderBlogList();
+        showToast('Post deleted.');
+    }
+
+    function renderBlogList() {
+        const posts = getPosts();
+        const container = document.getElementById('blogListContainer');
+        if (!posts.length) {
+            container.innerHTML = `<div class="empty-state"><svg class="empty-state-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 10h16M4 14h10"/></svg><div class="empty-state-title">No posts yet</div><div class="empty-state-sub">Create your first blog post to get started.</div></div>`;
+            return;
+        }
+        container.innerHTML = `<div class="content-list">${posts.map(p => `
+            <div class="content-item">
+                <div class="content-item-thumb">${p.image ? `<img src="${p.image}" alt="">` : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18"/></svg>'}</div>
+                <div class="content-item-info">
+                    <div class="content-item-title">${p.title}</div>
+                    <div class="content-item-meta">${p.category} · ${p.date} · ${p.readTime}</div>
+                </div>
+                <span class="status-tag ${p.status === 'published' ? 'status-published' : 'status-draft'}">${p.status}</span>
+                <div class="content-item-actions">
+                    <button class="btn-edit" onclick="editPost('${p.id}')">Edit</button>
+                    <button class="btn-danger" onclick="deletePost('${p.id}')">Delete</button>
+                </div>
+            </div>`).join('')}</div>`;
+    }
+
+    // ── PROJECTS ──
+    function saveProject() {
+        const name = document.getElementById('projectName').value.trim();
+        if (!name) { showToast('Please enter a project name.'); return; }
+
+        const editId = document.getElementById('editProjectId').value;
+        const projects = getProjects();
+
+        const project = {
+            id: editId || Date.now().toString(),
+            name,
+            url: document.getElementById('projectUrl').value.trim(),
+            desc: document.getElementById('projectDesc').value.trim(),
+            tag: document.getElementById('projectTag').value,
+            status: document.getElementById('projectStatus').value,
+            image: document.getElementById('projectImgData').value,
+            date: new Date().toLocaleDateString('en-US', {month:'long',year:'numeric'})
+        };
+
+        if (editId) {
+            const idx = projects.findIndex(p => p.id === editId);
+            if (idx > -1) projects[idx] = project; else projects.unshift(project);
+        } else {
+            projects.unshift(project);
+        }
+
+        setProjects(projects);
+        refreshAll();
+        showToast('Project saved!');
+        const s = document.getElementById('projectSaveStatus');
+        s.style.display = 'inline';
+        setTimeout(() => s.style.display = 'none', 2500);
+    }
+
+    function resetProjectForm() {
+        ['projectName','projectUrl','projectDesc'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('projectTag').value = 'web-app';
+        document.getElementById('projectStatus').value = 'live';
+        document.getElementById('projectImgData').value = '';
+        document.getElementById('editProjectId').value = '';
+        const img = document.getElementById('projectImgPreview');
+        img.src = ''; img.classList.remove('visible');
+        const area = document.getElementById('projectImgArea');
+        area.classList.remove('has-img');
+        const ph = area.querySelector('.upload-placeholder');
+        if (ph) ph.style.display = '';
+        document.getElementById('projectFormTitle').textContent = 'Add Project';
+    }
+
+    function editProject(id) {
+        const p = getProjects().find(p => p.id === id);
+        if (!p) return;
+        document.getElementById('editProjectId').value = p.id;
+        document.getElementById('projectName').value = p.name;
+        document.getElementById('projectUrl').value = p.url;
+        document.getElementById('projectDesc').value = p.desc;
+        document.getElementById('projectTag').value = p.tag;
+        document.getElementById('projectStatus').value = p.status;
+        document.getElementById('projectImgData').value = p.image || '';
+        if (p.image) {
+            const img = document.getElementById('projectImgPreview');
+            img.src = p.image; img.classList.add('visible');
+            document.getElementById('projectImgArea').classList.add('has-img');
+            const ph = document.getElementById('projectImgArea').querySelector('.upload-placeholder');
+            if (ph) ph.style.display = 'none';
+        }
+        document.getElementById('projectFormTitle').textContent = 'Edit Project';
+        switchView('project-new');
+    }
+
+    function deleteProject(id) {
+        if (!confirm('Delete this project?')) return;
+        setProjects(getProjects().filter(p => p.id !== id));
+        refreshAll();
+        renderProjectList();
+        showToast('Project deleted.');
+    }
+
+    function renderProjectList() {
+        const projects = getProjects();
+        const container = document.getElementById('projectListContainer');
+        if (!projects.length) {
+            container.innerHTML = `<div class="empty-state"><svg class="empty-state-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><div class="empty-state-title">No projects yet</div><div class="empty-state-sub">Add your first portfolio project.</div></div>`;
+            return;
+        }
+        container.innerHTML = `<div class="content-list">${projects.map(p => `
+            <div class="content-item">
+                <div class="content-item-thumb">${p.image ? `<img src="${p.image}" alt="">` : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18"/></svg>'}</div>
+                <div class="content-item-info">
+                    <div class="content-item-title">${p.name}</div>
+                    <div class="content-item-meta">${p.tag} · ${p.url || 'No URL'} · ${p.date}</div>
+                </div>
+                <span class="status-tag ${p.status === 'live' ? 'status-published' : 'status-draft'}">${p.status}</span>
+                <div class="content-item-actions">
+                    <button class="btn-edit" onclick="editProject('${p.id}')">Edit</button>
+                    <button class="btn-danger" onclick="deleteProject('${p.id}')">Delete</button>
+                </div>
+            </div>`).join('')}</div>`;
+    }
+
+    // ── DASHBOARD ──
+    function refreshDashboard() {
+        const posts = getPosts();
+        const projects = getProjects();
+        document.getElementById('statPosts').textContent = posts.length;
+        document.getElementById('statPublished').textContent = posts.filter(p => p.status === 'published').length;
+        document.getElementById('statProjects').textContent = projects.length;
+    }
+
+    function refreshAll() {
+        const posts = getPosts();
+        const projects = getProjects();
+        document.getElementById('blogBadge').textContent = posts.length;
+        document.getElementById('projectBadge').textContent = projects.length;
+        refreshDashboard();
+    }
+
+    // ── TOAST ──
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        document.getElementById('toastMsg').textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+    }
+</script>
+</body>
+</html>
