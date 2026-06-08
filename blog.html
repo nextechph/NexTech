@@ -581,12 +581,12 @@
             </p>
             <div class="blog-page-meta fade-in">
                 <div class="meta-stat">
-                    <span class="meta-stat-num">12</span>
+                    <span class="meta-stat-num" id="statArticles">0</span>
                     <span class="meta-stat-label">Articles</span>
                 </div>
                 <div class="meta-divider"></div>
                 <div class="meta-stat">
-                    <span class="meta-stat-num">4</span>
+                    <span class="meta-stat-num" id="statCategories">0</span>
                     <span class="meta-stat-label">Categories</span>
                 </div>
                 <div class="meta-divider"></div>
@@ -741,6 +741,20 @@
                 const emptyState      = document.getElementById('blogEmptyState');
                 const featuredWrapper = document.querySelector('.blog-featured');
 
+                // Always update stats (even when 0)
+                const uniqueCats = new Set(posts.map(p => p.category)).size;
+                const statArticles   = document.getElementById('statArticles');
+                const statCategories = document.getElementById('statCategories');
+                if (statArticles)   statArticles.textContent   = posts.length;
+                if (statCategories) statCategories.textContent = uniqueCats || 0;
+
+                // Always update stats first (even when 0 posts)
+                const uniqueCats = new Set(posts.map(p => p.category)).size;
+                const statArticlesEl   = document.getElementById('statArticles');
+                const statCategoriesEl = document.getElementById('statCategories');
+                if (statArticlesEl)   statArticlesEl.textContent   = posts.length;
+                if (statCategoriesEl) statCategoriesEl.textContent = uniqueCats || 0;
+
                 // Show empty state when no published posts
                 if (!posts.length) {
                     if (emptyState) emptyState.style.display = 'block';
@@ -797,11 +811,6 @@
                         }, 80 * i);
                     }
                 });
-
-                // Update article count stat
-                const statEl = document.querySelector('.meta-stat-num');
-                if (statEl) statEl.textContent = posts.length;
-
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             } catch (e) { console.warn('Blog load error:', e); }
         }
