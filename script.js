@@ -119,135 +119,137 @@ document.addEventListener('DOMContentLoaded', () => {
     const applyBlueprintBtn = document.getElementById('applyBlueprintBtn');
     const projectDetails = document.getElementById('projectDetails');
 
-    function updateBlueprint() {
-        // Services
-        const selectedServices = [];
-        let totalWeight = 0;
-        
-        serviceOptions.forEach(opt => {
-            if (opt.classList.contains('active')) {
-                selectedServices.push(opt.getAttribute('data-val'));
-                totalWeight += parseInt(opt.getAttribute('data-weight') || '0', 10);
-            }
-        });
-        
-        sumServices.textContent = selectedServices.length > 0 
-            ? selectedServices.join(', ') 
-            : 'None selected (Please choose at least one)';
-            
-        // Budget
-        let activeBudget = 'Growth ($5k - $10k)';
-        let budgetMultiplier = 1.5;
-        budgetOptions.forEach(opt => {
-            if (opt.classList.contains('active')) {
-                activeBudget = opt.getAttribute('data-val');
-                budgetMultiplier = parseFloat(opt.getAttribute('data-mult') || '1.0');
-            }
-        });
-        sumBudget.textContent = activeBudget;
-        
-        // Timeline
-        let activeTimeline = 'Standard (1 - 2 months)';
-        timelineOptions.forEach(opt => {
-            if (opt.classList.contains('active')) {
-                activeTimeline = opt.getAttribute('data-val');
-            }
-        });
-        sumTimeline.textContent = activeTimeline;
-        
-        // Intensity Score Calculation
-        const score = totalWeight * budgetMultiplier;
-        let intensityText = 'Light Intensity';
-        
-        if (score === 0) {
-            intensityText = 'Select Services Above';
-        } else if (score < 4) {
-            intensityText = 'Light Intensity Blueprint';
-        } else if (score < 8) {
-            intensityText = 'Medium Intensity Blueprint';
-        } else {
-            intensityText = 'High Intensity (Enterprise Blueprint)';
-        }
-        
-        sumEstimate.textContent = intensityText;
-    }
-    
-    // Service Option Clicks (Multiple Select)
-    serviceOptions.forEach(opt => {
-        opt.addEventListener('click', () => {
-            opt.classList.toggle('active');
-            updateBlueprint();
-        });
-    });
-    
-    // Budget Option Clicks (Single Select)
-    budgetOptions.forEach(opt => {
-        opt.addEventListener('click', () => {
-            budgetOptions.forEach(o => o.classList.remove('active'));
-            opt.classList.add('active');
-            updateBlueprint();
-        });
-    });
-    
-    // Timeline Option Clicks (Single Select)
-    timelineOptions.forEach(opt => {
-        opt.addEventListener('click', () => {
-            timelineOptions.forEach(o => o.classList.remove('active'));
-            opt.classList.add('active');
-            updateBlueprint();
-        });
-    });
-    
-    // Apply Blueprint to Inquiry Form
-    if (applyBlueprintBtn && projectDetails) {
-        applyBlueprintBtn.addEventListener('click', () => {
+    if (sumServices) {
+        function updateBlueprint() {
+            // Services
             const selectedServices = [];
+            let totalWeight = 0;
+            
             serviceOptions.forEach(opt => {
                 if (opt.classList.contains('active')) {
                     selectedServices.push(opt.getAttribute('data-val'));
+                    totalWeight += parseInt(opt.getAttribute('data-weight') || '0', 10);
                 }
             });
             
-            let activeBudget = '';
-            budgetOptions.forEach(opt => {
-                if (opt.classList.contains('active')) activeBudget = opt.getAttribute('data-val');
-            });
-            
-            let activeTimeline = '';
-            timelineOptions.forEach(opt => {
-                if (opt.classList.contains('active')) activeTimeline = opt.getAttribute('data-val');
-            });
-            
-            if (selectedServices.length === 0) {
-                alert('Please select at least one service from the blueprint configuration.');
-                return;
-            }
-            
-            // Format descriptive text block
-            const formattedDesc = `Hello NexTech team, I have built a custom project blueprint:\n` +
-                `- Required Services: ${selectedServices.join(', ')}\n` +
-                `- Budget Bracket: ${activeBudget}\n` +
-                `- Target Timeline: ${activeTimeline}\n` +
-                `- Estimator: ${sumEstimate.textContent}\n` +
-                `Please let me know how we can proceed.`;
+            sumServices.textContent = selectedServices.length > 0 
+                ? selectedServices.join(', ') 
+                : 'None selected (Please choose at least one)';
                 
-            projectDetails.value = formattedDesc;
+            // Budget
+            let activeBudget = 'Growth ($5k - $10k)';
+            let budgetMultiplier = 1.5;
+            budgetOptions.forEach(opt => {
+                if (opt.classList.contains('active')) {
+                    activeBudget = opt.getAttribute('data-val');
+                    budgetMultiplier = parseFloat(opt.getAttribute('data-mult') || '1.0');
+                }
+            });
+            if (sumBudget) sumBudget.textContent = activeBudget;
             
-            // Smooth scroll to contact section
-            const contactSection = document.getElementById('contact');
-            if (contactSection) {
-                // contactSection.scrollIntoView({ behavior: 'smooth' });
-                // Focus on contact details
-                setTimeout(() => {
-                    const clientNameInput = document.getElementById('clientName');
-                    if (clientNameInput) clientNameInput.focus();
-                }, 800);
+            // Timeline
+            let activeTimeline = 'Standard (1 - 2 months)';
+            timelineOptions.forEach(opt => {
+                if (opt.classList.contains('active')) {
+                    activeTimeline = opt.getAttribute('data-val');
+                }
+            });
+            if (sumTimeline) sumTimeline.textContent = activeTimeline;
+            
+            // Intensity Score Calculation
+            const score = totalWeight * budgetMultiplier;
+            let intensityText = 'Light Intensity';
+            
+            if (score === 0) {
+                intensityText = 'Select Services Above';
+            } else if (score < 4) {
+                intensityText = 'Light Intensity Blueprint';
+            } else if (score < 8) {
+                intensityText = 'Medium Intensity Blueprint';
+            } else {
+                intensityText = 'High Intensity (Enterprise Blueprint)';
             }
+            
+            if (sumEstimate) sumEstimate.textContent = intensityText;
+        }
+        
+        // Service Option Clicks (Multiple Select)
+        serviceOptions.forEach(opt => {
+            opt.addEventListener('click', () => {
+                opt.classList.toggle('active');
+                updateBlueprint();
+            });
         });
+        
+        // Budget Option Clicks (Single Select)
+        budgetOptions.forEach(opt => {
+            opt.addEventListener('click', () => {
+                budgetOptions.forEach(o => o.classList.remove('active'));
+                opt.classList.add('active');
+                updateBlueprint();
+            });
+        });
+        
+        // Timeline Option Clicks (Single Select)
+        timelineOptions.forEach(opt => {
+            opt.addEventListener('click', () => {
+                timelineOptions.forEach(o => o.classList.remove('active'));
+                opt.classList.add('active');
+                updateBlueprint();
+            });
+        });
+        
+        // Apply Blueprint to Inquiry Form
+        if (applyBlueprintBtn && projectDetails) {
+            applyBlueprintBtn.addEventListener('click', () => {
+                const selectedServices = [];
+                serviceOptions.forEach(opt => {
+                    if (opt.classList.contains('active')) {
+                        selectedServices.push(opt.getAttribute('data-val'));
+                    }
+                });
+                
+                let activeBudget = '';
+                budgetOptions.forEach(opt => {
+                    if (opt.classList.contains('active')) activeBudget = opt.getAttribute('data-val');
+                });
+                
+                let activeTimeline = '';
+                timelineOptions.forEach(opt => {
+                    if (opt.classList.contains('active')) activeTimeline = opt.getAttribute('data-val');
+                });
+                
+                if (selectedServices.length === 0) {
+                    alert('Please select at least one service from the blueprint configuration.');
+                    return;
+                }
+                
+                // Format descriptive text block
+                const formattedDesc = `Hello NexTech team, I have built a custom project blueprint:\n` +
+                    `- Required Services: ${selectedServices.join(', ')}\n` +
+                    `- Budget Bracket: ${activeBudget}\n` +
+                    `- Target Timeline: ${activeTimeline}\n` +
+                    `- Estimator: ${sumEstimate ? sumEstimate.textContent : ''}\n` +
+                    `Please let me know how we can proceed.`;
+                    
+                projectDetails.value = formattedDesc;
+                
+                // Smooth scroll to contact section
+                const contactSection = document.getElementById('contact');
+                if (contactSection) {
+                    // contactSection.scrollIntoView({ behavior: 'smooth' });
+                    // Focus on contact details
+                    setTimeout(() => {
+                        const clientNameInput = document.getElementById('clientName');
+                        if (clientNameInput) clientNameInput.focus();
+                    }, 800);
+                }
+            });
+        }
+        
+        // Run initial print
+        updateBlueprint();
     }
-    
-    // Run initial print
-    updateBlueprint();
 
     // 6. Interactive 3D Tilt Effect on Showcase Cards (Desktop Only)
     const tiltCards = document.querySelectorAll('.card-tilt');
