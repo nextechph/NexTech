@@ -741,13 +741,6 @@
                 const emptyState      = document.getElementById('blogEmptyState');
                 const featuredWrapper = document.querySelector('.blog-featured');
 
-                // Always update stats (even when 0)
-                const uniqueCats = new Set(posts.map(p => p.category)).size;
-                const statArticles   = document.getElementById('statArticles');
-                const statCategories = document.getElementById('statCategories');
-                if (statArticles)   statArticles.textContent   = posts.length;
-                if (statCategories) statCategories.textContent = uniqueCats || 0;
-
                 // Always update stats first (even when 0 posts)
                 const uniqueCats = new Set(posts.map(p => p.category)).size;
                 const statArticlesEl   = document.getElementById('statArticles');
