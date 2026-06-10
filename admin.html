@@ -1327,9 +1327,12 @@
                 <div class="view-header">
                     <div>
                         <div class="view-title">Services Editor</div>
-                        <div class="view-sub">Edit the 5 service cards displayed on the homepage.</div>
+                        <div class="view-sub">Edit the services displayed on the homepage.</div>
                     </div>
-                    <button class="btn-primary" onclick="saveServicesConfig()">Save All Changes</button>
+                    <div style="display:flex;gap:8px;">
+                        <button class="btn-secondary" onclick="addServiceRow()">+ Add Service</button>
+                        <button class="btn-primary" onclick="saveServicesConfig()">Save All Changes</button>
+                    </div>
                 </div>
                 <div id="se-cards-container"></div>
                 <div class="btn-row" style="margin-top:8px;">
@@ -2004,12 +2007,30 @@
         }
         function setServicesConfig(d) { localStorage.setItem('nt_services', JSON.stringify(d)); }
 
-        function loadServicesEditor() {
-            const services = getServicesConfig() || SERVICES_DEFAULTS;
+        function getCurrentServicesDraft() {
+            const sections = document.querySelectorAll('#se-cards-container .form-section');
+            return Array.from(sections).map((sec, i) => {
+                const title = document.getElementById(`se-title-${i}`).value.trim();
+                const desc = document.getElementById(`se-desc-${i}`).value.trim();
+                const icon = document.getElementById(`se-icon-${i}`).value.trim() || 'globe';
+                const bullets = [
+                    document.getElementById(`se-b0-${i}`).value.trim(),
+                    document.getElementById(`se-b1-${i}`).value.trim(),
+                    document.getElementById(`se-b2-${i}`).value.trim()
+                ];
+                const num = String(i + 1).padStart(2, '0');
+                return { num, icon, title, desc, bullets };
+            });
+        }
+
+        function renderServicesEditorWithData(services) {
             const container = document.getElementById('se-cards-container');
             container.innerHTML = services.map((s, i) => `
             <div class="form-section" style="margin-bottom:16px;">
-                <div class="form-section-title">Service ${s.num} — ${s.title}</div>
+                <div class="form-section-title" style="display:flex;justify-content:space-between;align-items:center;">
+                    <span>Service ${s.num} — ${s.title || 'New Service'}</span>
+                    <button class="btn-danger" onclick="deleteServiceRow(${i})" style="padding:6px 12px;font-size:0.65rem;">✕ Delete Service</button>
+                </div>
                 <div class="form-group">
                     <label>Title</label>
                     <input type="text" id="se-title-${i}" value="${s.title}" placeholder="Service title">
@@ -2017,6 +2038,25 @@
                 <div class="form-group">
                     <label>Description</label>
                     <textarea id="se-desc-${i}" style="min-height:80px;">${s.desc}</textarea>
+                </div>
+                <div class="form-group">
+                    <label>Icon (Lucide name)</label>
+                    <div style="display:grid;grid-template-columns:1fr 180px;gap:8px;">
+                        <input type="text" id="se-icon-${i}" value="${s.icon || 'globe'}" placeholder="e.g. code-2">
+                        <select onchange="document.getElementById('se-icon-${i}').value = this.value; this.selectedIndex = 0;" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:Inter,sans-serif;font-size:0.85rem;outline:none;">
+                            <option value="">Select standard...</option>
+                            <option value="code-2">code-2 (Web Dev)</option>
+                            <option value="layers">layers (Landing Pages)</option>
+                            <option value="user">user (Portfolio)</option>
+                            <option value="building-2">building-2 (Business)</option>
+                            <option value="palette">palette (UI/UX Design)</option>
+                            <option value="shopping-cart">shopping-cart (E-commerce)</option>
+                            <option value="smartphone">smartphone (Mobile App)</option>
+                            <option value="globe">globe (SEO/General)</option>
+                            <option value="database">database (Backend/Data)</option>
+                            <option value="settings">settings (System/Tools)</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Bullet Point 1</label>
@@ -2033,18 +2073,36 @@
             </div>`).join('');
         }
 
+        function loadServicesEditor() {
+            const services = getServicesConfig() || SERVICES_DEFAULTS;
+            renderServicesEditorWithData(services);
+        }
+
+        function addServiceRow() {
+            const draft = getCurrentServicesDraft();
+            draft.push({
+                num: String(draft.length + 1).padStart(2, '0'),
+                icon: 'globe',
+                title: 'New Service',
+                desc: 'Description of the new service...',
+                bullets: ['Feature 1', 'Feature 2', 'Feature 3']
+            });
+            renderServicesEditorWithData(draft);
+        }
+
+        function deleteServiceRow(i) {
+            if (!confirm('Are you sure you want to delete this service?')) return;
+            const draft = getCurrentServicesDraft();
+            draft.splice(i, 1);
+            // Re-assign numbers
+            draft.forEach((s, idx) => {
+                s.num = String(idx + 1).padStart(2, '0');
+            });
+            renderServicesEditorWithData(draft);
+        }
+
         function saveServicesConfig() {
-            const services = (getServicesConfig() || SERVICES_DEFAULTS).map((s, i) => ({
-                num: s.num,
-                icon: s.icon,
-                title: document.getElementById(`se-title-${i}`).value || s.title,
-                desc: document.getElementById(`se-desc-${i}`).value || s.desc,
-                bullets: [
-                    document.getElementById(`se-b0-${i}`).value,
-                    document.getElementById(`se-b1-${i}`).value,
-                    document.getElementById(`se-b2-${i}`).value
-                ]
-            }));
+            const services = getCurrentServicesDraft();
             setServicesConfig(services);
             showToast('Services saved!');
             const s = document.getElementById('servicesSaveStatus');
@@ -2052,7 +2110,7 @@
         }
 
         function resetServicesConfig() {
-            if (!confirm('Reset services to defaults?')) return;
+            if (!confirm('Reset services to defaults? This cannot be undone.')) return;
             localStorage.removeItem('nt_services');
             loadServicesEditor();
             showToast('Services reset to defaults.');

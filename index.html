@@ -295,30 +295,54 @@
 
             // ── SERVICES ──
             try {
-                const services = JSON.parse(localStorage.getItem('nt_services'));
-                if (services && services.length) {
-                    const cards = document.querySelectorAll('.service-card');
-                    cards.forEach((card, i) => {
-                        const svc = services[i];
-                        if (!svc) return;
-                        const title = card.querySelector('.service-title');
-                        const desc = card.querySelector('.service-desc');
-                        const lis = card.querySelectorAll('.service-list li');
-                        if (title) title.textContent = svc.title;
-                        if (desc) desc.textContent = svc.desc;
-                        if (svc.bullets) {
-                            lis.forEach((li, j) => {
-                                if (svc.bullets[j] !== undefined) {
-                                    // Keep the lucide icon <i> element, replace only the text node
-                                    const icon = li.querySelector('i');
-                                    li.textContent = svc.bullets[j];
-                                    if (icon) li.prepend(icon);
-                                }
-                            });
-                        }
-                    });
+                const defaultServices = [
+                    { num: '01', icon: 'code-2', title: 'Website Development', desc: 'Tailored web applications built with clean, semantic code, optimized for speed, scalability, and security.', bullets: ['Custom Framework Architectures', 'Blazing Fast Load Speed', 'SEO Optimized Build'] },
+                    { num: '02', icon: 'layers', title: 'Landing Pages', desc: 'High-converting single-page layouts designed to present your product clearly and drive user action.', bullets: ['Copywriting-optimized Layout', 'Conversion Rate Focus', 'Integrated A/B Analytics'] },
+                    { num: '03', icon: 'user', title: 'Portfolio Websites', desc: 'Sophisticated digital showcases for artists, designers, and agencies to display their work with premium flair.', bullets: ['Smooth Motion Design', 'Responsive Image Galleries', 'Premium Visual Layouts'] },
+                    { num: '04', icon: 'building-2', title: 'Business Websites', desc: 'Professional corporate web platforms that project credibility, match branding, and capture leads.', bullets: ['CMS Integration (WordPress/Headless)', 'Customer Portal Setups', 'Lead Capture Pipelines'] },
+                    { num: '05', icon: 'palette', title: 'UI/UX Design', desc: 'Figma-crafted user flows, interactive prototypes, and wireframes designed with absolute visual precision.', bullets: ['User Journey Mapping', 'Interactive High-Fi Prototypes', 'Clean Component-Based Design'] }
+                ];
+                
+                let services = JSON.parse(localStorage.getItem('nt_services'));
+                if (!services || !services.length) {
+                    services = defaultServices;
                 }
-            } catch (e) { }
+                
+                const grid = document.querySelector('.services-grid');
+                if (grid) {
+                    grid.innerHTML = services.map((svc, idx) => {
+                        const num = svc.num || String(idx + 1).padStart(2, '0');
+                        const dataSvc = svc.title ? svc.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'service';
+                        
+                        // Render bullets list
+                        const bulletsArray = svc.bullets || [];
+                        const bulletListHtml = bulletsArray
+                            .filter(b => b && b.trim() !== '')
+                            .map(b => `<li><i data-lucide="check"></i> ${b}</li>`)
+                            .join('');
+                            
+                        return `
+                        <div class="service-card" data-service="${dataSvc}">
+                            <div class="card-bg-glow"></div>
+                            <div class="service-number">${num}</div>
+                            <div class="service-icon">
+                                <i data-lucide="${svc.icon || 'globe'}"></i>
+                            </div>
+                            <h3 class="service-title">${svc.title}</h3>
+                            <p class="service-desc">${svc.desc}</p>
+                            <ul class="service-list">
+                                ${bulletListHtml}
+                            </ul>
+                        </div>`;
+                    }).join('');
+                    
+                    if (typeof lucide !== 'undefined') {
+                        lucide.createIcons();
+                    }
+                }
+            } catch (e) {
+                console.error('Error rendering dynamic services:', e);
+            }
         })();
     </script>
 

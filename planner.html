@@ -899,7 +899,44 @@
             }
         }
 
+        function applyServicesConfigToPlanner() {
+            try {
+                const defaultServices = [
+                    { num: '01', icon: 'code-2', title: 'Website Development', desc: 'Tailored web applications built with clean, semantic code, optimized for speed, scalability, and security.', bullets: ['Custom Framework Architectures', 'Blazing Fast Load Speed', 'SEO Optimized Build'] },
+                    { num: '02', icon: 'layers', title: 'Landing Pages', desc: 'High-converting single-page layouts designed to present your product clearly and drive user action.', bullets: ['Copywriting-optimized Layout', 'Conversion Rate Focus', 'Integrated A/B Analytics'] },
+                    { num: '03', icon: 'user', title: 'Portfolio Websites', desc: 'Sophisticated digital showcases for artists, designers, and agencies to display their work with premium flair.', bullets: ['Smooth Motion Design', 'Responsive Image Galleries', 'Premium Visual Layouts'] },
+                    { num: '04', icon: 'building-2', title: 'Business Websites', desc: 'Professional corporate web platforms that project credibility, match branding, and capture leads.', bullets: ['CMS Integration (WordPress/Headless)', 'Customer Portal Setups', 'Lead Capture Pipelines'] },
+                    { num: '05', icon: 'palette', title: 'UI/UX Design', desc: 'Figma-crafted user flows, interactive prototypes, and wireframes designed with absolute visual precision.', bullets: ['User Journey Mapping', 'Interactive High-Fi Prototypes', 'Clean Component-Based Design'] }
+                ];
+                let services = JSON.parse(localStorage.getItem('nt_services'));
+                if (!services || !services.length) {
+                    services = defaultServices;
+                }
+                const container = document.getElementById('serviceOptions');
+                if (container) {
+                    container.innerHTML = services.map(s => {
+                        let weight = 2;
+                        if (s.title.toLowerCase().includes('development') || s.title.toLowerCase().includes('business')) {
+                            weight = 3;
+                        } else if (s.title.toLowerCase().includes('landing') || s.title.toLowerCase().includes('page')) {
+                            weight = 1;
+                        }
+                        return `
+                        <div class="planner-opt-card" data-val="${s.title}" data-weight="${weight}">
+                            <i data-lucide="${s.icon || 'globe'}"></i>
+                            <span>${s.title}</span>
+                        </div>`;
+                    }).join('');
+                }
+            } catch (e) {
+                console.error('Error rendering dynamic planner services:', e);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
+            // Render dynamic services for the planner step 01
+            applyServicesConfigToPlanner();
+
             // Apply admin config first (prices, add-ons, tiers, timeline)
             applyPlannerConfig();
 
