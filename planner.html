@@ -828,7 +828,7 @@
                 html += `<div class="bill-row bill-addon"><span>${a.label}</span><span>+&#8369;${a.price.toLocaleString()}</span></div>`;
             });
             billItems.innerHTML = html;
-            billTotal.textContent = '&#8369;' + total.toLocaleString();
+            billTotal.textContent = '₱' + total.toLocaleString();
             billItemCount.textContent = addons.length === 0 ? 'Base only' : `${addons.length} add-on${addons.length > 1 ? 's' : ''}`;
         }
 
@@ -866,7 +866,7 @@
                     const billBaseRow = document.querySelector('.bill-row.bill-base');
                     if (billBaseRow) billBaseRow.innerHTML = `<span>Base Plan</span><span>&#8369;${Number(basePriceVal).toLocaleString()}</span>`;
                     const billTotalEl = document.getElementById('billTotal');
-                    if (billTotalEl) billTotalEl.textContent = '&#8369;' + Number(basePriceVal).toLocaleString();
+                    if (billTotalEl) billTotalEl.textContent = '₱' + Number(basePriceVal).toLocaleString();
                     // Re-bind add-on listeners after dynamic render
                     grid.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener('change', updateBill));
                 }

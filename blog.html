@@ -483,6 +483,32 @@
             opacity: 0.85;
         }
 
+        .newsletter-btn.success {
+            background: #10b981 !important;
+            border-color: #10b981 !important;
+            color: #0d0d0d !important;
+        }
+
+        .newsletter-btn.error {
+            background: #ef4444 !important;
+            border-color: #ef4444 !important;
+            color: #ffffff !important;
+        }
+
+        .newsletter-input.error {
+            border-color: #ef4444 !important;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
+        .shake-form {
+            animation: shake 0.4s ease-in-out;
+        }
+
         /* Responsive */
         @media (max-width: 900px) {
             .featured-card {
@@ -895,14 +921,59 @@
             });
 
             // ── Newsletter ────────────────────────────────────────────────────
+            const newsletterForm  = document.querySelector('.newsletter-form');
             const newsletterBtn   = document.querySelector('.newsletter-btn');
             const newsletterInput = document.querySelector('.newsletter-input');
-            if (newsletterBtn && newsletterInput) {
-                newsletterBtn.addEventListener('click', () => {
-                    if (newsletterInput.value.includes('@')) {
-                        newsletterBtn.textContent = 'Subscribed!';
+            
+            if (newsletterForm && newsletterBtn && newsletterInput) {
+                const handleSubscribe = () => {
+                    const email = newsletterInput.value.trim();
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    
+                    if (emailRegex.test(email)) {
+                        // Success state
+                        newsletterBtn.textContent = 'SUBSCRIBED! ✓';
+                        newsletterBtn.classList.remove('error');
+                        newsletterBtn.classList.add('success');
+                        newsletterInput.classList.remove('error');
                         newsletterInput.value = '';
-                        setTimeout(() => { newsletterBtn.textContent = 'Subscribe'; }, 3000);
+                        
+                        // Save email to localStorage
+                        try {
+                            let subscribers = JSON.parse(localStorage.getItem('nt_subscribers') || '[]');
+                            if (!subscribers.includes(email)) {
+                                subscribers.push(email);
+                                localStorage.setItem('nt_subscribers', JSON.stringify(subscribers));
+                            }
+                        } catch (e) {
+                            console.error('Error saving subscriber:', e);
+                        }
+                        
+                        setTimeout(() => {
+                            newsletterBtn.textContent = 'Subscribe';
+                            newsletterBtn.classList.remove('success');
+                        }, 3000);
+                    } else {
+                        // Error state
+                        newsletterInput.classList.add('error');
+                        newsletterBtn.classList.add('error');
+                        newsletterBtn.textContent = 'INVALID EMAIL';
+                        newsletterForm.classList.add('shake-form');
+                        
+                        setTimeout(() => {
+                            newsletterInput.classList.remove('error');
+                            newsletterBtn.classList.remove('error');
+                            newsletterBtn.textContent = 'Subscribe';
+                            newsletterForm.classList.remove('shake-form');
+                        }, 1500);
+                    }
+                };
+
+                newsletterBtn.addEventListener('click', handleSubscribe);
+                newsletterInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleSubscribe();
                     }
                 });
             }

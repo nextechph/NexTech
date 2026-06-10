@@ -557,7 +557,7 @@
             </p>
             <div class="portfolio-page-meta fade-in">
                 <div class="meta-stat">
-                    <span class="meta-stat-num">4</span>
+                    <span class="meta-stat-num" id="statProjectsShipped">0</span>
                     <span class="meta-stat-label">Projects Shipped</span>
                 </div>
                 <div class="meta-divider"></div>
@@ -667,6 +667,11 @@
             const grid = document.getElementById('projectsGrid');
             let projects = [];
             try { projects = JSON.parse(localStorage.getItem('nt_portfolio_projects') || '[]'); } catch (e) { }
+
+            // Update the stat counter dynamically (only count published/live projects)
+            const liveProjects = projects.filter(p => p.status === 'live');
+            const statEl = document.getElementById('statProjectsShipped');
+            if (statEl) statEl.textContent = liveProjects.length;
 
             if (!projects.length) {
                 // Empty state

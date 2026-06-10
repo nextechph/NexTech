@@ -1516,7 +1516,7 @@
         }
 
         // ── NAVIGATION (updated) ──
-        function switchView(view) {
+        function switchView(view, isEdit) {
             document.querySelectorAll('.admin-view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(`view-${view}`).classList.add('active');
@@ -1529,13 +1529,15 @@
             if (view === 'planner-editor') loadPlannerEditor();
             if (view === 'services-editor') loadServicesEditor();
             if (view === 'site-settings') loadSiteSettings();
-            if (view === 'blog-new') {
+            if (view === 'blog-new' && !isEdit) {
                 document.getElementById('blogFormTitle').textContent = 'New Blog Post';
                 document.getElementById('editBlogId').value = '';
+                resetBlogForm();
             }
-            if (view === 'project-new') {
+            if (view === 'project-new' && !isEdit) {
                 document.getElementById('projectFormTitle').textContent = 'Add Project';
                 document.getElementById('editProjectId').value = '';
+                resetProjectForm();
             }
             window.scrollTo(0, 0);
         }
@@ -1583,12 +1585,12 @@
                 author: document.getElementById('blogAuthor').value.trim() || 'NexTech Team',
                 status,
                 image: document.getElementById('blogImgData').value,
-                date: editId ? (posts.find(p => p.id === editId)?.date || new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })) : new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+                date: editId ? (posts.find(p => p.id == editId)?.date || new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })) : new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
                 updatedAt: Date.now()
             };
 
             if (editId) {
-                const idx = posts.findIndex(p => p.id === editId);
+                const idx = posts.findIndex(p => p.id == editId);
                 if (idx > -1) posts[idx] = post; else posts.unshift(post);
             } else {
                 posts.unshift(post);
@@ -1601,6 +1603,12 @@
             const s = document.getElementById('blogSaveStatus');
             s.style.display = 'inline';
             setTimeout(() => s.style.display = 'none', 2500);
+
+            // Redirect back to blog list view
+            setTimeout(() => {
+                switchView('blog-list');
+                resetBlogForm();
+            }, 1000);
         }
 
         function resetBlogForm() {
@@ -1619,31 +1627,37 @@
         }
 
         function editPost(id) {
-            const post = getPosts().find(p => p.id === id);
+            const post = getPosts().find(p => p.id == id);
             if (!post) return;
+            // Switch view first (isEdit=true skips the form reset inside switchView)
+            switchView('blog-new', true);
             document.getElementById('editBlogId').value = post.id;
             document.getElementById('blogTitle').value = post.title;
             document.getElementById('blogCategory').value = post.category;
-            document.getElementById('blogExcerpt').value = post.excerpt;
-            document.getElementById('blogContent').value = post.content;
-            document.getElementById('blogReadTime').value = post.readTime;
-            document.getElementById('blogAuthor').value = post.author;
+            document.getElementById('blogExcerpt').value = post.excerpt || '';
+            document.getElementById('blogContent').value = post.content || '';
+            document.getElementById('blogReadTime').value = post.readTime || '';
+            document.getElementById('blogAuthor').value = post.author || '';
             document.getElementById('blogStatus').value = post.status;
             document.getElementById('blogImgData').value = post.image || '';
+            // Reset image area first, then re-populate if image exists
+            const imgEl = document.getElementById('blogImgPreview');
+            imgEl.src = ''; imgEl.classList.remove('visible');
+            const areaEl = document.getElementById('blogImgArea');
+            areaEl.classList.remove('has-img');
+            const phEl = areaEl.querySelector('.upload-placeholder');
+            if (phEl) phEl.style.display = '';
             if (post.image) {
-                const img = document.getElementById('blogImgPreview');
-                img.src = post.image; img.classList.add('visible');
-                document.getElementById('blogImgArea').classList.add('has-img');
-                const ph = document.getElementById('blogImgArea').querySelector('.upload-placeholder');
-                if (ph) ph.style.display = 'none';
+                imgEl.src = post.image; imgEl.classList.add('visible');
+                areaEl.classList.add('has-img');
+                if (phEl) phEl.style.display = 'none';
             }
             document.getElementById('blogFormTitle').textContent = 'Edit Post';
-            switchView('blog-new');
         }
 
         function deletePost(id) {
             if (!confirm('Delete this post?')) return;
-            setPosts(getPosts().filter(p => p.id !== id));
+            setPosts(getPosts().filter(p => p.id != id));
             refreshAll();
             renderBlogList();
             showToast('Post deleted.');
@@ -1691,7 +1705,7 @@
             };
 
             if (editId) {
-                const idx = projects.findIndex(p => p.id === editId);
+                const idx = projects.findIndex(p => p.id == editId);
                 if (idx > -1) projects[idx] = project; else projects.unshift(project);
             } else {
                 projects.unshift(project);
@@ -1703,6 +1717,12 @@
             const s = document.getElementById('projectSaveStatus');
             s.style.display = 'inline';
             setTimeout(() => s.style.display = 'none', 2500);
+
+            // Redirect back to project list view
+            setTimeout(() => {
+                switchView('project-list');
+                resetProjectForm();
+            }, 1000);
         }
 
         function resetProjectForm() {
@@ -1721,29 +1741,35 @@
         }
 
         function editProject(id) {
-            const p = getProjects().find(p => p.id === id);
+            const p = getProjects().find(p => p.id == id);
             if (!p) return;
+            // Switch view first (isEdit=true skips the form reset inside switchView)
+            switchView('project-new', true);
             document.getElementById('editProjectId').value = p.id;
             document.getElementById('projectName').value = p.name;
-            document.getElementById('projectUrl').value = p.url;
-            document.getElementById('projectDesc').value = p.desc;
+            document.getElementById('projectUrl').value = p.url || '';
+            document.getElementById('projectDesc').value = p.desc || '';
             document.getElementById('projectTag').value = p.tag;
             document.getElementById('projectStatus').value = p.status;
             document.getElementById('projectImgData').value = p.image || '';
+            // Reset image area first, then re-populate if image exists
+            const imgEl = document.getElementById('projectImgPreview');
+            imgEl.src = ''; imgEl.classList.remove('visible');
+            const areaEl = document.getElementById('projectImgArea');
+            areaEl.classList.remove('has-img');
+            const phEl = areaEl.querySelector('.upload-placeholder');
+            if (phEl) phEl.style.display = '';
             if (p.image) {
-                const img = document.getElementById('projectImgPreview');
-                img.src = p.image; img.classList.add('visible');
-                document.getElementById('projectImgArea').classList.add('has-img');
-                const ph = document.getElementById('projectImgArea').querySelector('.upload-placeholder');
-                if (ph) ph.style.display = 'none';
+                imgEl.src = p.image; imgEl.classList.add('visible');
+                areaEl.classList.add('has-img');
+                if (phEl) phEl.style.display = 'none';
             }
             document.getElementById('projectFormTitle').textContent = 'Edit Project';
-            switchView('project-new');
         }
 
         function deleteProject(id) {
             if (!confirm('Delete this project?')) return;
-            setProjects(getProjects().filter(p => p.id !== id));
+            setProjects(getProjects().filter(p => p.id != id));
             refreshAll();
             renderProjectList();
             showToast('Project deleted.');
