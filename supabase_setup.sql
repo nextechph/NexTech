@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS public.site_settings (
     instagram text,
     tiktok text,
     email text,
+    location text DEFAULT 'Global / Distributed Remote',
     updated_at timestamptz DEFAULT now(),
     CONSTRAINT one_row CHECK (id = 1)
 );
@@ -95,7 +96,7 @@ CREATE TABLE IF NOT EXISTS public.contact_submissions (
 -- --------------------------------------------------
 
 -- Default Site Settings
-INSERT INTO public.site_settings (id, badge, subtitle, footer_desc, copyright, footer_url, facebook, twitter, instagram, tiktok, email)
+INSERT INTO public.site_settings (id, badge, subtitle, footer_desc, copyright, footer_url, facebook, twitter, instagram, tiktok, email, location)
 VALUES (
     1, 
     'Empowering Innovation', 
@@ -107,7 +108,8 @@ VALUES (
     'twitter.com/nextech',
     'instagram.com/nextech',
     'tiktok.com/@nextech',
-    'hello@nextechnology.com'
+    'hello@nextechnology.com',
+    'Global / Distributed Remote'
 )
 ON CONFLICT (id) DO NOTHING;
 

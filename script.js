@@ -60,7 +60,8 @@ async function initSiteSettings() {
                         instagram: data.instagram,
                         tiktok: data.tiktok,
                         footerUrl: data.footer_url,
-                        email: data.email
+                        email: data.email,
+                        location: data.location
                     };
                     
                     // Save to cache
@@ -126,6 +127,28 @@ function applySettingsDOM(s) {
         // Hero subtitle (index.html only — no-op on other pages)
         const sub = document.querySelector('.hero-subtitle');
         if (sub && s.subtitle) sub.textContent = s.subtitle;
+
+        // Contact page elements
+        const contactEmail = document.getElementById('contactEmail');
+        if (contactEmail && s.email) {
+            contactEmail.textContent = s.email;
+            contactEmail.href = 'mailto:' + s.email;
+        }
+
+        const contactWeb = document.getElementById('contactWeb');
+        if (contactWeb && s.footerUrl) {
+            contactWeb.textContent = s.footerUrl;
+            let webUrl = s.footerUrl.trim();
+            if (webUrl && !/^https?:\/\//i.test(webUrl)) {
+                webUrl = 'https://' + webUrl;
+            }
+            contactWeb.href = webUrl;
+        }
+
+        const contactLocation = document.getElementById('contactLocation');
+        if (contactLocation && s.location) {
+            contactLocation.textContent = s.location;
+        }
     } catch (e) {
         console.error("Error applying site settings DOM:", e);
     }
