@@ -127,11 +127,18 @@
             transition: var(--transition-smooth);
         }
 
-        .filter-btn:hover,
         .filter-btn.active {
             border-color: var(--accent);
             color: var(--text-primary);
             background: var(--card-hover);
+        }
+
+        @media (hover: hover) {
+            .filter-btn:hover {
+                border-color: var(--accent);
+                color: var(--text-primary);
+                background: var(--card-hover);
+            }
         }
 
         /* Featured Post */
@@ -152,9 +159,11 @@
             transition: var(--transition-smooth);
         }
 
-        .featured-card:hover {
-            border-color: var(--border-hover);
-            background: var(--card-hover);
+        @media (hover: hover) {
+            .featured-card:hover {
+                border-color: var(--border-hover);
+                background: var(--card-hover);
+            }
         }
 
         .featured-image {
@@ -302,8 +311,10 @@
             transition: transform 0.3s ease;
         }
 
-        .read-more-link:hover i {
-            transform: translateX(4px);
+        @media (hover: hover) {
+            .read-more-link:hover i {
+                transform: translateX(4px);
+            }
         }
 
         /* Blog Grid */
@@ -331,9 +342,11 @@
             cursor: pointer;
         }
 
-        .blog-card:hover {
-            border-color: var(--border-hover);
-            background: var(--card-hover);
+        @media (hover: hover) {
+            .blog-card:hover {
+                border-color: var(--border-hover);
+                background: var(--card-hover);
+            }
         }
 
         .blog-card-image {
@@ -483,8 +496,10 @@
             white-space: nowrap;
         }
 
-        .newsletter-btn:hover {
-            opacity: 0.85;
+        @media (hover: hover) {
+            .newsletter-btn:hover {
+                opacity: 0.85;
+            }
         }
 
         .newsletter-btn.success {
@@ -553,6 +568,25 @@
 
             .blog-page-meta {
                 gap: 20px;
+            }
+
+            .newsletter-card {
+                padding: 32px 20px;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+                gap: 12px;
+                width: 100%;
+            }
+
+            .newsletter-input {
+                width: 100%;
+                border-right: 1px solid var(--border) !important;
+            }
+
+            .newsletter-btn {
+                width: 100%;
             }
         }
     </style>

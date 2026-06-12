@@ -139,8 +139,10 @@
             transition: opacity 0.2s, background-color 0.2s, color 0.2s;
         }
 
-        .login-btn:hover:not(:disabled) {
-            opacity: 0.85;
+        @media (hover: hover) {
+            .login-btn:hover:not(:disabled) {
+                opacity: 0.85;
+            }
         }
 
         .login-btn:disabled {

@@ -131,11 +131,18 @@
             transition: var(--transition-smooth);
         }
 
-        .filter-btn:hover,
         .filter-btn.active {
             border-color: var(--accent);
             color: var(--text-primary);
             background: var(--card-hover);
+        }
+
+        @media (hover: hover) {
+            .filter-btn:hover {
+                border-color: var(--accent);
+                color: var(--text-primary);
+                background: var(--card-hover);
+            }
         }
 
         /* Projects Grid */
@@ -161,8 +168,10 @@
             flex-direction: column;
         }
 
-        .project-card:hover {
-            border-color: var(--border-hover);
+        @media (hover: hover) {
+            .project-card:hover {
+                border-color: var(--border-hover);
+            }
         }
 
         /* Screenshot Wrapper */
@@ -184,8 +193,10 @@
             display: block;
         }
 
-        .project-card:hover .project-screenshot img {
-            transform: scale(1.04);
+        @media (hover: hover) {
+            .project-card:hover .project-screenshot img {
+                transform: scale(1.04);
+            }
         }
 
         /* Placeholder for empty screenshot slots */
@@ -363,13 +374,19 @@
             z-index: -1;
         }
 
-        .project-link:hover {
-            color: var(--btn-primary-text);
-            border-color: var(--accent);
-        }
+        @media (hover: hover) {
+            .project-link:hover {
+                color: var(--btn-primary-text);
+                border-color: var(--accent);
+            }
 
-        .project-link:hover::before {
-            left: 0;
+            .project-link:hover::before {
+                left: 0;
+            }
+
+            .project-link:hover svg {
+                transform: translate(3px, -3px);
+            }
         }
 
         .project-link svg {
@@ -377,10 +394,6 @@
             height: 14px;
             transition: transform 0.3s ease;
             flex-shrink: 0;
-        }
-
-        .project-link:hover svg {
-            transform: translate(3px, -3px);
         }
 
         /* Coming soon card */

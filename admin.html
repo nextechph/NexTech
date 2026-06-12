@@ -164,8 +164,10 @@
             transition: opacity 0.2s, background-color 0.2s, color 0.2s;
         }
 
-        .login-btn:hover:not(:disabled) {
-            opacity: 0.85;
+        @media (hover: hover) {
+            .login-btn:hover:not(:disabled) {
+                opacity: 0.85;
+            }
         }
 
         .login-btn:disabled {
@@ -271,9 +273,11 @@
             transition: all 0.2s;
         }
 
-        .logout-btn:hover {
-            border-color: var(--border2);
-            color: var(--text);
+        @media (hover: hover) {
+            .logout-btn:hover {
+                border-color: var(--border2);
+                color: var(--text);
+            }
         }
 
         /* ── SIDEBAR ── */
@@ -318,9 +322,11 @@
             border: 1px solid transparent;
         }
 
-        .nav-item:hover {
-            background: var(--bg3);
-            color: var(--text);
+        @media (hover: hover) {
+            .nav-item:hover {
+                background: var(--bg3);
+                color: var(--text);
+            }
         }
 
         .nav-item.active {
@@ -477,8 +483,10 @@
             position: relative;
         }
 
-        .img-upload-area:hover {
-            border-color: var(--border2);
+        @media (hover: hover) {
+            .img-upload-area:hover {
+                border-color: var(--border2);
+            }
         }
 
         .img-upload-area.has-img {
@@ -550,8 +558,10 @@
             transition: opacity 0.2s;
         }
 
-        .btn-primary:hover {
-            opacity: 0.85;
+        @media (hover: hover) {
+            .btn-primary:hover {
+                opacity: 0.85;
+            }
         }
 
         .btn-secondary {
@@ -568,9 +578,11 @@
             transition: all 0.2s;
         }
 
-        .btn-secondary:hover {
-            border-color: var(--border2);
-            color: var(--text);
+        @media (hover: hover) {
+            .btn-secondary:hover {
+                border-color: var(--border2);
+                color: var(--text);
+            }
         }
 
         .btn-danger {
@@ -587,9 +599,11 @@
             transition: all 0.2s;
         }
 
-        .btn-danger:hover {
-            background: var(--danger);
-            color: #fff;
+        @media (hover: hover) {
+            .btn-danger:hover {
+                background: var(--danger);
+                color: #fff;
+            }
         }
 
         .save-status {
@@ -615,8 +629,10 @@
             transition: border-color 0.2s;
         }
 
-        .content-item:hover {
-            border-color: var(--border2);
+        @media (hover: hover) {
+            .content-item:hover {
+                border-color: var(--border2);
+            }
         }
 
         .content-item-thumb {
@@ -679,9 +695,11 @@
             transition: all 0.2s;
         }
 
-        .btn-edit:hover {
-            border-color: var(--border2);
-            color: var(--text);
+        @media (hover: hover) {
+            .btn-edit:hover {
+                border-color: var(--border2);
+                color: var(--text);
+            }
         }
 
         .status-tag {
@@ -750,9 +768,11 @@
             gap: 16px;
         }
 
-        .quick-action:hover {
-            border-color: var(--border2);
-            background: var(--bg3);
+        @media (hover: hover) {
+            .quick-action:hover {
+                border-color: var(--border2);
+                background: var(--bg3);
+            }
         }
 
         .qa-icon {
@@ -851,9 +871,118 @@
             margin: 32px 0;
         }
 
+        /* ── MENU TOGGLE BUTTON (mobile only) ── */
+        .menu-toggle {
+            display: none;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text2);
+            width: 36px;
+            height: 36px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .menu-toggle svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* ── SIDEBAR OVERLAY (mobile) ── */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 98;
+            backdrop-filter: blur(2px);
+        }
+
+        .sidebar-overlay.visible {
+            display: block;
+        }
+
+        /* ── PLANNER EDITOR ROWS ── */
+        .pe-addon-row {
+            display: grid;
+            grid-template-columns: 1fr 120px 160px 40px;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .pe-tier-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 80px 40px;
+            gap: 8px;
+            align-items: center;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            padding: 16px 20px;
+        }
+
+        .pe-timeline-row {
+            display: grid;
+            grid-template-columns: 180px 1fr 40px;
+            gap: 8px;
+            align-items: center;
+        }
+
+        /* shared input style for pe rows */
+        .pe-row-input {
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px 12px;
+            font-family: Inter, sans-serif;
+            font-size: 0.85rem;
+            outline: none;
+            width: 100%;
+        }
+
+        .pe-tier-input {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 10px;
+            font-family: Inter, sans-serif;
+            font-size: 0.82rem;
+            outline: none;
+            width: 100%;
+        }
+
+        .pe-col-label {
+            font-size: 0.6rem;
+            color: var(--text3);
+            margin-bottom: 4px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        /* ── VIEW HEADER MOBILE FIX ── */
         @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+
             .admin-sidebar {
-                display: none;
+                position: fixed;
+                top: var(--header);
+                left: 0;
+                bottom: 0;
+                width: 260px;
+                z-index: 99;
+                transform: translateX(-100%);
+                visibility: hidden;
+                transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
+                /* override default positioning which is already fixed */
+            }
+
+            .admin-sidebar.open {
+                transform: translateX(0);
+                visibility: visible;
             }
 
             .admin-main {
@@ -861,11 +990,12 @@
             }
 
             .admin-view {
-                padding: 24px 16px;
+                padding: 20px 14px;
             }
 
             .stats-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
+                gap: 2px;
             }
 
             .form-row {
@@ -874,6 +1004,157 @@
 
             .quick-actions {
                 grid-template-columns: 1fr;
+            }
+
+            .view-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+                margin-bottom: 24px;
+            }
+
+            .view-title {
+                font-size: 1.2rem;
+            }
+
+            .form-section {
+                padding: 20px 16px;
+            }
+
+            .btn-row {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .btn-primary, .btn-secondary {
+                padding: 12px 18px;
+                font-size: 0.7rem;
+            }
+
+            /* content list items: wrap actions onto bottom row */
+            .content-item {
+                flex-wrap: wrap;
+                gap: 10px;
+                padding: 14px;
+                position: relative;
+            }
+
+            .content-item-info {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .content-item-actions {
+                width: 100%;
+                border-top: 1px solid var(--border);
+                padding-top: 10px;
+                justify-content: flex-start;
+                gap: 8px;
+            }
+
+            .status-tag {
+                order: -1;
+                align-self: flex-start;
+            }
+
+            /* header user email truncation */
+            .header-user {
+                display: none;
+            }
+
+            .admin-header {
+                padding: 0 14px;
+                gap: 10px;
+            }
+
+            .toast {
+                bottom: 16px;
+                right: 12px;
+                left: 12px;
+                right: 12px;
+            }
+
+            /* planner editor rows: stack on mobile */
+            .pe-addon-row {
+                grid-template-columns: 1fr 90px;
+                grid-template-rows: auto auto;
+            }
+
+            .pe-addon-row > input:nth-child(1) {
+                grid-column: 1 / 2;
+                grid-row: 1;
+            }
+
+            .pe-addon-row > input:nth-child(2) {
+                grid-column: 2 / 3;
+                grid-row: 1;
+            }
+
+            .pe-addon-row > input:nth-child(3) {
+                grid-column: 1 / 2;
+                grid-row: 2;
+            }
+
+            .pe-addon-row > button {
+                grid-column: 2 / 3;
+                grid-row: 2;
+            }
+
+            .pe-tier-row {
+                grid-template-columns: 1fr 1fr;
+                padding: 12px;
+            }
+
+            .pe-tier-row > div:last-child {
+                grid-column: 1 / -1;
+                display: flex;
+                justify-content: flex-end;
+            }
+
+            .pe-timeline-row {
+                grid-template-columns: 1fr 40px;
+                grid-template-rows: auto auto;
+            }
+
+            .pe-timeline-row > input:nth-child(1) {
+                grid-column: 1;
+                grid-row: 1;
+            }
+
+            .pe-timeline-row > input:nth-child(2) {
+                grid-column: 1;
+                grid-row: 2;
+            }
+
+            .pe-timeline-row > button {
+                grid-column: 2;
+                grid-row: 1 / 3;
+                align-self: center;
+            }
+
+            /* services editor icon picker: stack */
+            #se-cards-container [style*="grid-template-columns:1fr 180px"] {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .stat-card {
+                padding: 20px;
+            }
+
+            .stat-num {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .login-box {
+                width: calc(100vw - 32px);
+                padding: 32px 24px;
             }
         }
     </style>
@@ -892,8 +1173,20 @@
     <!-- ── APP SHELL ── -->
     <div id="appShell">
 
+        <!-- Sidebar overlay backdrop -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
         <header class="admin-header">
-            <div class="admin-brand">NexTech · <span>Admin</span></div>
+            <div style="display:flex;align-items:center;gap:12px;">
+                <button class="menu-toggle" id="menuToggle" onclick="toggleAdminSidebar()" aria-label="Open menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <line x1="3" y1="12" x2="21" y2="12"/>
+                        <line x1="3" y1="18" x2="21" y2="18"/>
+                    </svg>
+                </button>
+                <div class="admin-brand">NexTech · <span>Admin</span></div>
+            </div>
             <div class="header-right">
                 <span class="header-user" id="headerUser"></span>
                 <button class="logout-btn" onclick="doLogout()">Sign Out</button>
@@ -1495,7 +1788,30 @@
                 document.getElementById('editProjectId').value = '';
                 resetProjectForm();
             }
+            // Close sidebar on mobile after navigation
+            closeSidebar();
             window.scrollTo(0, 0);
+        }
+
+        // ── MOBILE SIDEBAR TOGGLE ──
+        function toggleAdminSidebar() {
+            const sidebar = document.querySelector('.admin-sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const isOpen = sidebar.classList.contains('open');
+            if (isOpen) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('visible');
+            } else {
+                sidebar.classList.add('open');
+                overlay.classList.add('visible');
+            }
+        }
+
+        function closeSidebar() {
+            const sidebar = document.querySelector('.admin-sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('visible');
         }
 
         // ── IMAGE PREVIEW ──
@@ -2022,10 +2338,10 @@
         function renderAddonRows(addons) {
             const list = document.getElementById('pe-addon-list');
             list.innerHTML = addons.map((a, i) => `
-            <div class="pe-row" data-i="${i}" style="display:grid;grid-template-columns:1fr 120px 160px 40px;gap:8px;align-items:center;">
-                <input type="text" value="${a.label || ''}" placeholder="Add-on name" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:Inter,sans-serif;font-size:0.85rem;outline:none;">
-                <input type="number" value="${a.price !== undefined && a.price !== null ? a.price : ''}" placeholder="Price" min="0" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:Inter,sans-serif;font-size:0.85rem;outline:none;">
-                <input type="text" value="${a.note || ''}" placeholder="Note (e.g. per page)" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:Inter,sans-serif;font-size:0.85rem;outline:none;">
+            <div class="pe-row pe-addon-row" data-i="${i}">
+                <input type="text" class="pe-row-input" value="${a.label || ''}" placeholder="Add-on name">
+                <input type="number" class="pe-row-input" value="${a.price !== undefined && a.price !== null ? a.price : ''}" placeholder="Price" min="0">
+                <input type="text" class="pe-row-input" value="${a.note || ''}" placeholder="Note (e.g. per page)">
                 <button class="btn-danger" onclick="removeAddonRow(${i})" style="padding:8px;">✕</button>
             </div>`).join('');
         }
@@ -2045,13 +2361,13 @@
         function renderTierRows(tiers) {
             const list = document.getElementById('pe-tier-list');
             list.innerHTML = tiers.map((t, i) => `
-            <div class="pe-row" style="background:var(--bg3);border:1px solid var(--border);padding:16px 20px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr 80px 40px;gap:8px;align-items:center;">
-                <div><div style="font-size:0.6rem;color:var(--text3);margin-bottom:4px;letter-spacing:0.15em;">TIER NAME</div><input type="text" value="${t.name || ''}" placeholder="e.g. Growth" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-family:Inter,sans-serif;font-size:0.82rem;outline:none;"></div>
-                <div><div style="font-size:0.6rem;color:var(--text3);margin-bottom:4px;letter-spacing:0.15em;">PRICE RANGE</div><input type="text" value="${t.range || ''}" placeholder="₱25k – ₱60k" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-family:Inter,sans-serif;font-size:0.82rem;outline:none;"></div>
-                <div><div style="font-size:0.6rem;color:var(--text3);margin-bottom:4px;letter-spacing:0.15em;">IDEAL FOR</div><input type="text" value="${t.ideal || ''}" placeholder="Ideal for..." style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-family:Inter,sans-serif;font-size:0.82rem;outline:none;"></div>
-                <div><div style="font-size:0.6rem;color:var(--text3);margin-bottom:4px;letter-spacing:0.15em;">BADGE (optional)</div><input type="text" value="${t.badge || ''}" placeholder="MOST POPULAR" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-family:Inter,sans-serif;font-size:0.82rem;outline:none;"></div>
-                <div><div style="font-size:0.6rem;color:var(--text3);margin-bottom:4px;letter-spacing:0.15em;">MULTIPLIER</div><input type="number" value="${t.mult !== undefined && t.mult !== null ? t.mult : ''}" step="0.1" min="0.1" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-family:Inter,sans-serif;font-size:0.82rem;outline:none;"></div>
-                <button class="btn-danger" onclick="removeTierRow(${i})" style="padding:8px;margin-top:18px;">✕</button>
+            <div class="pe-row pe-tier-row" data-i="${i}">
+                <div><div class="pe-col-label">TIER NAME</div><input type="text" class="pe-tier-input" value="${t.name || ''}" placeholder="e.g. Growth"></div>
+                <div><div class="pe-col-label">PRICE RANGE</div><input type="text" class="pe-tier-input" value="${t.range || ''}" placeholder="₱25k – ₱60k"></div>
+                <div><div class="pe-col-label">IDEAL FOR</div><input type="text" class="pe-tier-input" value="${t.ideal || ''}" placeholder="Ideal for..."></div>
+                <div><div class="pe-col-label">BADGE (optional)</div><input type="text" class="pe-tier-input" value="${t.badge || ''}" placeholder="MOST POPULAR"></div>
+                <div><div class="pe-col-label">MULTIPLIER</div><input type="number" class="pe-tier-input" value="${t.mult !== undefined && t.mult !== null ? t.mult : ''}" step="0.1" min="0.1"></div>
+                <div><button class="btn-danger" onclick="removeTierRow(${i})" style="padding:8px;margin-top:18px;">✕</button></div>
             </div>`).join('');
         }
 
@@ -2070,9 +2386,9 @@
         function renderTimelineRows(timeline) {
             const list = document.getElementById('pe-timeline-list');
             list.innerHTML = timeline.map((t, i) => `
-            <div class="pe-row" style="display:grid;grid-template-columns:180px 1fr 40px;gap:8px;align-items:center;">
-                <input type="text" value="${t.label || ''}" placeholder="Label (e.g. Rush)" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:Inter,sans-serif;font-size:0.85rem;outline:none;">
-                <input type="text" value="${t.note || ''}" placeholder="Note (e.g. 2–4 weeks)" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:Inter,sans-serif;font-size:0.85rem;outline:none;">
+            <div class="pe-row pe-timeline-row" data-i="${i}">
+                <input type="text" class="pe-row-input" value="${t.label || ''}" placeholder="Label (e.g. Rush)">
+                <input type="text" class="pe-row-input" value="${t.note || ''}" placeholder="Note (e.g. 2–4 weeks)">
                 <button class="btn-danger" onclick="removeTimelineRow(${i})" style="padding:8px;">✕</button>
             </div>`).join('');
         }

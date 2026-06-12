@@ -214,12 +214,13 @@ a {
     z-index: -1;
 }
 
-.btn-primary:hover {
-    color: var(--text-primary);
-}
-
-.btn-primary:hover::before {
-    left: 0;
+@media (hover: hover) {
+    .btn-primary:hover {
+        color: var(--text-primary);
+    }
+    .btn-primary:hover::before {
+        left: 0;
+    }
 }
 
 .btn-primary-large {
@@ -254,12 +255,13 @@ a {
     z-index: -1;
 }
 
-.btn-primary-large:hover {
-    color: var(--text-primary);
-}
-
-.btn-primary-large:hover::before {
-    left: 0;
+@media (hover: hover) {
+    .btn-primary-large:hover {
+        color: var(--text-primary);
+    }
+    .btn-primary-large:hover::before {
+        left: 0;
+    }
 }
 
 .btn-secondary-large {
@@ -281,9 +283,11 @@ a {
     overflow: hidden;
 }
 
-.btn-secondary-large:hover {
-    border-color: var(--accent);
-    background-color: var(--btn-secondary-hover-bg);
+@media (hover: hover) {
+    .btn-secondary-large:hover {
+        border-color: var(--accent);
+        background-color: var(--btn-secondary-hover-bg);
+    }
 }
 
 /* Header & Sticky Navigation */
@@ -347,8 +351,10 @@ a {
     margin-top: 2px;
 }
 
-.logo-group:hover .logo-svg {
-    transform: rotate(90deg);
+@media (hover: hover) {
+    .logo-group:hover .logo-svg {
+        transform: rotate(90deg);
+    }
 }
 
 .nav-links {
@@ -382,12 +388,13 @@ a {
     transition: var(--transition-smooth);
 }
 
-.nav-link:hover {
-    color: var(--text-primary);
-}
-
-.nav-link:hover::after {
-    width: 100%;
+@media (hover: hover) {
+    .nav-link:hover {
+        color: var(--text-primary);
+    }
+    .nav-link:hover::after {
+        width: 100%;
+    }
 }
 
 .nav-actions {
@@ -414,9 +421,11 @@ a {
     overflow: hidden;
 }
 
-.theme-toggle:hover {
-    color: var(--text-primary);
-    border-color: var(--border-hover);
+@media (hover: hover) {
+    .theme-toggle:hover {
+        color: var(--text-primary);
+        border-color: var(--border-hover);
+    }
 }
 
 .theme-toggle::before {
@@ -494,7 +503,7 @@ a {
 
 /* Mobile Nav Menu Drawer */
 .mobile-nav {
-    display: none;
+    display: flex;
     position: absolute;
     top: 100%;
     left: 0;
@@ -507,15 +516,16 @@ a {
     transform: translateY(-20px);
     opacity: 0;
     pointer-events: none;
-    transition: var(--transition-smooth);
+    visibility: hidden;
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 999;
 }
 
 .mobile-nav.open {
-    display: flex;
     transform: translateY(0);
     opacity: 1;
     pointer-events: all;
+    visibility: visible;
 }
 
 .mobile-nav-link {
@@ -802,20 +812,22 @@ a {
     color: var(--accent);
 }
 
-.service-card:hover {
-    border-color: var(--border-hover);
-    transform: translateY(-6px);
-    background-color: var(--card-hover);
-    box-shadow: var(--shadow);
-}
+@media (hover: hover) {
+    .service-card:hover {
+        border-color: var(--border-hover);
+        transform: translateY(-6px);
+        background-color: var(--card-hover);
+        box-shadow: var(--shadow);
+    }
 
-.service-card:hover .card-bg-glow {
-    opacity: 1;
-}
+    .service-card:hover .card-bg-glow {
+        opacity: 1;
+    }
 
-.service-card:hover .service-icon {
-    transform: rotate(10deg) scale(1.1);
-    border-color: var(--accent);
+    .service-card:hover .service-icon {
+        transform: rotate(10deg) scale(1.1);
+        border-color: var(--accent);
+    }
 }
 
 /* Portfolio Showcase Section */
@@ -916,16 +928,18 @@ a {
     transition: var(--transition-smooth);
 }
 
-.portfolio-item:hover img {
-    transform: scale(1.05);
-}
+@media (hover: hover) {
+    .portfolio-item:hover img {
+        transform: scale(1.05);
+    }
 
-.portfolio-item:hover .portfolio-overlay {
-    opacity: 1;
-}
+    .portfolio-item:hover .portfolio-overlay {
+        opacity: 1;
+    }
 
-.portfolio-item:hover .portfolio-link svg {
-    transform: translateX(6px);
+    .portfolio-item:hover .portfolio-link svg {
+        transform: translateX(6px);
+    }
 }
 
 /* 3D Card Hover Effect styling classes */
@@ -1006,9 +1020,11 @@ a {
     transition: var(--transition-smooth);
 }
 
-.planner-opt-card:hover {
-    border-color: var(--border-hover);
-    background-color: var(--card-hover);
+@media (hover: hover) {
+    .planner-opt-card:hover {
+        border-color: var(--border-hover);
+        background-color: var(--card-hover);
+    }
 }
 
 .planner-opt-card.active {
@@ -1230,22 +1246,24 @@ a {
     z-index: -1;
 }
 
-.btn-submit:hover {
-    color: var(--text-primary);
-}
+@media (hover: hover) {
+    .btn-submit:hover {
+        color: var(--text-primary);
+    }
 
-.btn-submit:hover::before {
-    left: 0;
+    .btn-submit:hover::before {
+        left: 0;
+    }
+
+    .btn-submit:hover svg {
+        transform: translateX(6px);
+    }
 }
 
 .btn-submit svg {
     width: 18px;
     height: 18px;
     transition: var(--transition-smooth);
-}
-
-.btn-submit:hover svg {
-    transform: translateX(6px);
 }
 
 .form-status {
@@ -1314,9 +1332,11 @@ a {
     font-size: 0.9rem;
 }
 
-.footer-nav a:hover {
-    color: var(--text-primary);
-    transform: translateX(4px);
+@media (hover: hover) {
+    .footer-nav a:hover {
+        color: var(--text-primary);
+        transform: translateX(4px);
+    }
 }
 
 .footer-social {
@@ -1340,10 +1360,12 @@ a {
     color: var(--text-secondary);
 }
 
-.social-links a:hover {
-    color: var(--text-primary);
-    border-color: var(--border-hover);
-    transform: translateY(-3px);
+@media (hover: hover) {
+    .social-links a:hover {
+        color: var(--text-primary);
+        border-color: var(--border-hover);
+        transform: translateY(-3px);
+    }
 }
 
 .social-links a svg {
@@ -1435,6 +1457,22 @@ a {
     }
     .footer-container {
         grid-template-columns: 1fr;
+    }
+    .title-top,
+    .title-bottom {
+        font-size: clamp(3rem, 15vw, 6rem);
+    }
+}
+
+@media (max-width: 600px) {
+    .section-container {
+        padding: 60px 16px;
+    }
+    .planner-card {
+        padding: 24px;
+    }
+    .planner-summary {
+        padding: 20px;
     }
 }
 
