@@ -675,15 +675,15 @@
             grid.innerHTML = `<div style="grid-column: span 2; text-align:center; padding: 40px; color: var(--text-tertiary);">Loading projects...</div>`;
 
             // Wait briefly for Supabase CDN to load
-            if (typeof supabase === 'undefined') {
+            if (typeof window.supabase === 'undefined') {
                 await new Promise(resolve => setTimeout(resolve, 300));
             }
 
-            const supabase = window.supabaseClient || (typeof getSupabaseClient === 'function' ? getSupabaseClient() : null);
-            if (!supabase) return;
+            const supabaseClient = window.supabaseClient || (typeof getSupabaseClient === 'function' ? getSupabaseClient() : null);
+            if (!supabaseClient) return;
 
             try {
-                const { data: projects, error } = await supabase
+                const { data: projects, error } = await supabaseClient
                     .from('portfolio_projects')
                     .select('*')
                     .order('sort_order', { ascending: true })

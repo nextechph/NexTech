@@ -272,15 +272,15 @@
     <script>
         (async function applyAdminConfig() {
             // Wait briefly for Supabase CDN to load
-            if (typeof supabase === 'undefined') {
+            if (typeof window.supabase === 'undefined') {
                 await new Promise(resolve => setTimeout(resolve, 300));
             }
 
-            const supabase = window.supabaseClient || (typeof getSupabaseClient === 'function' ? getSupabaseClient() : null);
-            if (!supabase) return;
+            const supabaseClientInstance = window.supabaseClient || (typeof getSupabaseClient === 'function' ? getSupabaseClient() : null);
+            if (!supabaseClientInstance) return;
 
             try {
-                const { data: services, error } = await supabase
+                const { data: services, error } = await supabaseClientInstance
                     .from('services')
                     .select('*')
                     .order('sort_order', { ascending: true });
