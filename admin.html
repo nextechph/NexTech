@@ -1989,8 +1989,14 @@
                 .eq('id', 1)
                 .single();
 
-            if (error || !data) {
-                console.error("Error loading planner config:", error);
+            if (error) {
+                console.error("Error loading planner config from database:", error);
+                applyPlannerConfigUIData(PLANNER_DEFAULTS);
+                return;
+            }
+
+            if (!data) {
+                console.log("No planner config found in database, loading default configurations.");
                 applyPlannerConfigUIData(PLANNER_DEFAULTS);
                 return;
             }
@@ -2011,9 +2017,9 @@
             const list = document.getElementById('pe-addon-list');
             list.innerHTML = addons.map((a, i) => `
             <div class="pe-row" data-i="${i}" style="display:grid;grid-template-columns:1fr 120px 160px 40px;gap:8px;align-items:center;">
-                <input type="text" value="${a.label}" placeholder="Add-on name" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:Inter,sans-serif;font-size:0.85rem;outline:none;">
-                <input type="number" value="${a.price}" placeholder="Price" min="0" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:Inter,sans-serif;font-size:0.85rem;outline:none;">
-                <input type="text" value="${a.note}" placeholder="Note (e.g. per page)" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:Inter,sans-serif;font-size:0.85rem;outline:none;">
+                <input type="text" value="${a.label || ''}" placeholder="Add-on name" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:Inter,sans-serif;font-size:0.85rem;outline:none;">
+                <input type="number" value="${a.price !== undefined && a.price !== null ? a.price : ''}" placeholder="Price" min="0" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:Inter,sans-serif;font-size:0.85rem;outline:none;">
+                <input type="text" value="${a.note || ''}" placeholder="Note (e.g. per page)" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:Inter,sans-serif;font-size:0.85rem;outline:none;">
                 <button class="btn-danger" onclick="removeAddonRow(${i})" style="padding:8px;">✕</button>
             </div>`).join('');
         }
@@ -2034,11 +2040,11 @@
             const list = document.getElementById('pe-tier-list');
             list.innerHTML = tiers.map((t, i) => `
             <div class="pe-row" style="background:var(--bg3);border:1px solid var(--border);padding:16px 20px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr 80px 40px;gap:8px;align-items:center;">
-                <div><div style="font-size:0.6rem;color:var(--text3);margin-bottom:4px;letter-spacing:0.15em;">TIER NAME</div><input type="text" value="${t.name}" placeholder="e.g. Growth" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-family:Inter,sans-serif;font-size:0.82rem;outline:none;"></div>
-                <div><div style="font-size:0.6rem;color:var(--text3);margin-bottom:4px;letter-spacing:0.15em;">PRICE RANGE</div><input type="text" value="${t.range}" placeholder="₱25k – ₱60k" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-family:Inter,sans-serif;font-size:0.82rem;outline:none;"></div>
-                <div><div style="font-size:0.6rem;color:var(--text3);margin-bottom:4px;letter-spacing:0.15em;">IDEAL FOR</div><input type="text" value="${t.ideal}" placeholder="Ideal for..." style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-family:Inter,sans-serif;font-size:0.82rem;outline:none;"></div>
-                <div><div style="font-size:0.6rem;color:var(--text3);margin-bottom:4px;letter-spacing:0.15em;">BADGE (optional)</div><input type="text" value="${t.badge}" placeholder="MOST POPULAR" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-family:Inter,sans-serif;font-size:0.82rem;outline:none;"></div>
-                <div><div style="font-size:0.6rem;color:var(--text3);margin-bottom:4px;letter-spacing:0.15em;">MULTIPLIER</div><input type="number" value="${t.mult}" step="0.1" min="0.1" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-family:Inter,sans-serif;font-size:0.82rem;outline:none;"></div>
+                <div><div style="font-size:0.6rem;color:var(--text3);margin-bottom:4px;letter-spacing:0.15em;">TIER NAME</div><input type="text" value="${t.name || ''}" placeholder="e.g. Growth" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-family:Inter,sans-serif;font-size:0.82rem;outline:none;"></div>
+                <div><div style="font-size:0.6rem;color:var(--text3);margin-bottom:4px;letter-spacing:0.15em;">PRICE RANGE</div><input type="text" value="${t.range || ''}" placeholder="₱25k – ₱60k" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-family:Inter,sans-serif;font-size:0.82rem;outline:none;"></div>
+                <div><div style="font-size:0.6rem;color:var(--text3);margin-bottom:4px;letter-spacing:0.15em;">IDEAL FOR</div><input type="text" value="${t.ideal || ''}" placeholder="Ideal for..." style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-family:Inter,sans-serif;font-size:0.82rem;outline:none;"></div>
+                <div><div style="font-size:0.6rem;color:var(--text3);margin-bottom:4px;letter-spacing:0.15em;">BADGE (optional)</div><input type="text" value="${t.badge || ''}" placeholder="MOST POPULAR" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-family:Inter,sans-serif;font-size:0.82rem;outline:none;"></div>
+                <div><div style="font-size:0.6rem;color:var(--text3);margin-bottom:4px;letter-spacing:0.15em;">MULTIPLIER</div><input type="number" value="${t.mult !== undefined && t.mult !== null ? t.mult : ''}" step="0.1" min="0.1" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-family:Inter,sans-serif;font-size:0.82rem;outline:none;"></div>
                 <button class="btn-danger" onclick="removeTierRow(${i})" style="padding:8px;margin-top:18px;">✕</button>
             </div>`).join('');
         }
@@ -2059,8 +2065,8 @@
             const list = document.getElementById('pe-timeline-list');
             list.innerHTML = timeline.map((t, i) => `
             <div class="pe-row" style="display:grid;grid-template-columns:180px 1fr 40px;gap:8px;align-items:center;">
-                <input type="text" value="${t.label}" placeholder="Label (e.g. Rush)" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:Inter,sans-serif;font-size:0.85rem;outline:none;">
-                <input type="text" value="${t.note}" placeholder="Note (e.g. 2–4 weeks)" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:Inter,sans-serif;font-size:0.85rem;outline:none;">
+                <input type="text" value="${t.label || ''}" placeholder="Label (e.g. Rush)" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:Inter,sans-serif;font-size:0.85rem;outline:none;">
+                <input type="text" value="${t.note || ''}" placeholder="Note (e.g. 2–4 weeks)" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:Inter,sans-serif;font-size:0.85rem;outline:none;">
                 <button class="btn-danger" onclick="removeTimelineRow(${i})" style="padding:8px;">✕</button>
             </div>`).join('');
         }
@@ -2175,8 +2181,14 @@
                 .select('*')
                 .order('sort_order', { ascending: true });
 
-            if (error || !services || !services.length) {
-                console.error("Error loading services:", error);
+            if (error) {
+                console.error("Error loading services from database:", error);
+                renderServicesEditorWithData(SERVICES_DEFAULTS);
+                return;
+            }
+
+            if (!services || !services.length) {
+                console.log("No services found in database, loading default services.");
                 renderServicesEditorWithData(SERVICES_DEFAULTS);
                 return;
             }
@@ -2373,8 +2385,14 @@
                 .eq('id', 1)
                 .single();
 
-            if (error || !s) {
-                console.error("Error loading site settings:", error);
+            if (error) {
+                console.error("Error loading site settings from database:", error);
+                applySiteSettingsUIData(SITE_DEFAULTS);
+                return;
+            }
+
+            if (!s) {
+                console.log("No site settings found in database, loading default site settings.");
                 applySiteSettingsUIData(SITE_DEFAULTS);
                 return;
             }

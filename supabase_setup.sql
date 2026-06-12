@@ -115,23 +115,28 @@ ON CONFLICT (id) DO NOTHING;
 INSERT INTO public.planner_config (id, student, addons, tiers, timeline)
 VALUES (
     1,
-    '{"title": "Student Discount", "desc": "Are you a student or building an educational project? We offer up to 20% discount on development rates.", "base": -20}'::jsonb,
+    '{"title": "Student Starter Package", "base": 5000, "desc": "1-page website · Mobile responsive · 1 revision · Basic deployment"}'::jsonb,
     '[
-        {"id": "seo", "name": "SEO Package", "desc": "Search engine optimization setup, meta tags, and indexing support.", "price": 150},
-        {"id": "auth", "name": "User Auth & Profiles", "desc": "Login/Signup, social logins, and secure user profile databases.", "price": 300},
-        {"id": "payment", "name": "Stripe/Payment Integration", "desc": "Accept credit cards, subscriptions, and issue invoices.", "price": 450},
-        {"id": "admin", "name": "Admin Dashboard", "desc": "A custom back-office dashboard to manage your users and data.", "price": 600},
-        {"id": "multilingual", "name": "Multilingual Support", "desc": "Translate your site or app into up to 3 different languages.", "price": 250}
+        {"label": "Additional Page", "price": 1500, "note": "per page"},
+        {"label": "Contact Form", "price": 1000, "note": ""},
+        {"label": "Portfolio / Gallery Section", "price": 2000, "note": ""},
+        {"label": "Blog Setup", "price": 2500, "note": ""},
+        {"label": "SEO Optimization", "price": 1500, "note": ""},
+        {"label": "Animations & Interactions", "price": 2000, "note": ""},
+        {"label": "Custom Domain Setup", "price": 500, "note": ""},
+        {"label": "Logo / Branding Design", "price": 3000, "note": ""},
+        {"label": "Extra Revision Round", "price": 800, "note": "per round"},
+        {"label": "Rush Delivery (under 2 weeks)", "price": 2000, "note": ""}
     ]'::jsonb,
     '[
-        {"id": "budget", "name": "Budget Tier", "desc": "Simple brochure website or MVP focused on core features with standard components.", "price": 1000},
-        {"id": "growth", "name": "Growth Tier", "desc": "Fully custom site or mobile app with interactive states, custom animations, and CMS.", "price": 3500},
-        {"id": "enterprise", "name": "Enterprise Tier", "desc": "Complex web app, custom backend integrations, high performance & scaling.", "price": 8000}
+        {"name": "Starter", "range": "₱10k – ₱25k", "ideal": "Small sites & simple builds", "badge": "", "mult": 1},
+        {"name": "Growth", "range": "₱25k – ₱60k", "ideal": "Custom design & full-featured sites", "badge": "MOST POPULAR", "mult": 1.5},
+        {"name": "Enterprise", "range": "₱60k+", "ideal": "Complex projects & large-scale builds", "badge": "", "mult": 2.2}
     ]'::jsonb,
     '[
-        {"id": "rush", "name": "Rush (2-4 weeks)", "desc": "Fast-tracked schedule, dedicated developers.", "multiplier": 1.3},
-        {"id": "standard", "name": "Standard (6-8 weeks)", "desc": "Our standard paced development cycle.", "multiplier": 1.0},
-        {"id": "flexible", "name": "Flexible (3+ months)", "desc": "Lower priority, best value for long-term projects.", "multiplier": 0.9}
+        {"label": "Rush", "note": "2–4 weeks"},
+        {"label": "Standard", "note": "1–2 months · most common"},
+        {"label": "Relaxed", "note": "3+ months · no hard deadline"}
     ]'::jsonb
 )
 ON CONFLICT (id) DO NOTHING;
