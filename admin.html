@@ -2118,6 +2118,7 @@
             if (error) {
                 showToast('Error saving planner config: ' + error.message);
             } else {
+                localStorage.removeItem('nt_planner_config');
                 showToast('Planner config saved!');
                 const s = document.getElementById('plannerSaveStatus');
                 s.style.display = 'inline'; setTimeout(() => s.style.display = 'none', 2500);
@@ -2143,6 +2144,7 @@
             if (error) {
                 showToast('Error resetting planner: ' + error.message);
             } else {
+                localStorage.removeItem('nt_planner_config');
                 applyPlannerConfigUIData(PLANNER_DEFAULTS);
                 showToast('Planner reset to defaults.');
             }
@@ -2307,6 +2309,7 @@
             if (insertError) {
                 showToast('Error saving services: ' + insertError.message);
             } else {
+                localStorage.removeItem('nt_services');
                 showToast('Services saved!');
                 const s = document.getElementById('servicesSaveStatus');
                 s.style.display = 'inline'; setTimeout(() => s.style.display = 'none', 2500);
@@ -2333,6 +2336,7 @@
             if (error) {
                 showToast('Error resetting: ' + error.message);
             } else {
+                localStorage.removeItem('nt_services');
                 renderServicesEditorWithData(SERVICES_DEFAULTS);
                 showToast('Services reset to defaults.');
             }
@@ -2425,6 +2429,7 @@
             if (error) {
                 showToast('Error saving settings: ' + error.message);
             } else {
+                localStorage.removeItem('nt_site_settings');
                 showToast('Site settings saved!');
                 const s = document.getElementById('settingsSaveStatus');
                 if (s) {
@@ -2459,6 +2464,7 @@
             if (error) {
                 showToast('Error resetting settings: ' + error.message);
             } else {
+                localStorage.removeItem('nt_site_settings');
                 applySiteSettingsUIData(SITE_DEFAULTS);
                 showToast('Settings reset to defaults.');
             }
