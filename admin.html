@@ -1587,6 +1587,8 @@
                 s.style.display = 'inline';
                 setTimeout(() => s.style.display = 'none', 2500);
 
+                refreshAll();
+
                 setTimeout(() => {
                     switchView('blog-list');
                     resetBlogForm();
@@ -1774,6 +1776,8 @@
                 const s = document.getElementById('projectSaveStatus');
                 s.style.display = 'inline';
                 setTimeout(() => s.style.display = 'none', 2500);
+
+                refreshAll();
 
                 setTimeout(() => {
                     switchView('project-list');
