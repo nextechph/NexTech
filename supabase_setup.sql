@@ -229,3 +229,11 @@ CREATE POLICY "Allow authenticated users to update images" ON storage.objects
 
 CREATE POLICY "Allow authenticated users to delete images" ON storage.objects
     FOR DELETE TO authenticated USING (bucket_id = 'images');
+
+-- --------------------------------------------------
+-- 6. Grant Permissions to API Roles
+-- --------------------------------------------------
+
+GRANT ALL ON ALL TABLES IN SCHEMA public TO postgres, anon, authenticated, service_role;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO postgres, anon, authenticated, service_role;
+GRANT ALL ON ALL FUNCTIONS IN SCHEMA public TO postgres, anon, authenticated, service_role;
