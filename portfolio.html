@@ -162,7 +162,6 @@
             background: var(--card-bg);
             border: 1px solid var(--border);
             overflow: hidden;
-            cursor: pointer;
             transition: border-color 0.4s ease;
             display: flex;
             flex-direction: column;
@@ -358,8 +357,11 @@
             transition: var(--transition-smooth);
             position: relative;
             overflow: hidden;
-            z-index: 1;
+            z-index: 2;
             flex-shrink: 0;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            cursor: pointer;
         }
 
         .project-link::before {
