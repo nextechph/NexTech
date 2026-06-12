@@ -19,10 +19,35 @@ window.scrollTo(0, 0);
         // Social links (order: facebook, twitter, instagram, tiktok)
         const socials = document.querySelectorAll('.social-links a');
         const urls = [s.facebook, s.twitter, s.instagram, s.tiktok];
-        socials.forEach((a, i) => { if (urls[i]) a.href = urls[i]; });
+        const defaults = [
+            'https://facebook.com',
+            'https://x.com',
+            'https://instagram.com',
+            'https://tiktok.com'
+        ];
+        socials.forEach((a, i) => {
+            let href = urls[i] ? urls[i].trim() : '';
+            if (href) {
+                if (!/^https?:\/\//i.test(href)) {
+                    href = 'https://' + href;
+                }
+                a.href = href;
+            } else {
+                a.href = defaults[i];
+            }
+        });
         // Footer URL display
         const footerUrl = document.querySelector('.footer-url');
-        if (footerUrl && s.footerUrl) footerUrl.textContent = s.footerUrl;
+        if (footerUrl && s.footerUrl) {
+            footerUrl.textContent = s.footerUrl;
+            let url = s.footerUrl.trim();
+            if (url && !/^https?:\/\//i.test(url)) {
+                url = 'https://' + url;
+            }
+            if (footerUrl.tagName === 'A') {
+                footerUrl.href = url;
+            }
+        }
         // Hero badge (index.html only — no-op on other pages)
         const badge = document.querySelector('.hero-badge span:last-child');
         if (badge && s.badge) badge.textContent = s.badge;

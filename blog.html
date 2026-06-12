@@ -743,13 +743,16 @@
                         </svg>
                     </a>
                 </div>
-                <span class="footer-url">nextechnology.com</span>
+                <a href="https://nextechnology.com" target="_blank" class="footer-url">nextechnology.com</a>
             </div>
         </div>
         <div class="footer-bottom">
             <p>&copy; 2026 Next Technology. All rights reserved. Designed with precision.</p>
         </div>
     </footer>
+
+    <!-- Shared Settings applicator -->
+    <script src="script.js"></script>
 
     <script>
         // ── Helpers ───────────────────────────────────────────────────────────
@@ -858,51 +861,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof lucide !== 'undefined') lucide.createIcons();
             loadAdminPosts();
-
-            // ── Theme toggle ──────────────────────────────────────────────────
-            const themeToggleBtn = document.getElementById('themeToggleBtn');
-            const htmlEl = document.documentElement;
-            htmlEl.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
-            themeToggleBtn.addEventListener('click', () => {
-                const next = htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                htmlEl.setAttribute('data-theme', next);
-                localStorage.setItem('theme', next);
-            });
-
-            // ── Mouse glow ────────────────────────────────────────────────────
-            const bgGlow = document.getElementById('bgGlow');
-            if (bgGlow && window.matchMedia('(pointer: fine)').matches) {
-                document.addEventListener('mousemove', (e) => {
-                    bgGlow.style.opacity = '1';
-                    bgGlow.style.left    = e.clientX + 'px';
-                    bgGlow.style.top     = e.clientY + 'px';
-                });
-                document.addEventListener('mouseleave', () => { bgGlow.style.opacity = '0'; });
-            }
-
-            // ── Mobile menu ───────────────────────────────────────────────────
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const mobileNav = document.getElementById('mobileNav');
-            if (mobileMenuToggle && mobileNav) {
-                mobileMenuToggle.addEventListener('click', () => {
-                    const isOpen = mobileNav.classList.toggle('open');
-                    const icon = mobileMenuToggle.querySelector('i');
-                    if (icon) {
-                        icon.setAttribute('data-lucide', isOpen ? 'x' : 'menu');
-                        if (typeof lucide !== 'undefined') lucide.createIcons();
-                    }
-                });
-                mobileNav.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('mobile-nav-link') || e.target.classList.contains('mobile-btn')) {
-                        mobileNav.classList.remove('open');
-                        const icon = mobileMenuToggle.querySelector('i');
-                        if (icon) {
-                            icon.setAttribute('data-lucide', 'menu');
-                            if (typeof lucide !== 'undefined') lucide.createIcons();
-                        }
-                    }
-                });
-            }
 
             // ── Category filter (live DOM query — works with dynamic cards) ───
             const filterBtns = document.querySelectorAll('.filter-btn');

@@ -218,8 +218,8 @@
             <div class="footer-nav">
                 <h4>Navigation</h4>
                 <a href="#">Home</a>
-                <a href="#portfolio">Work</a>
-                <a href="#planner">Planner</a>
+                <a href="portfolio.html">Portfolio</a>
+                <a href="planner.html">Planner</a>
                 <a href="contact.html">Contact</a>
                 <a href="blog.html">Blog</a>
             </div>
@@ -256,7 +256,7 @@
                         </svg>
                     </a>
                 </div>
-                <span class="footer-url">nextechnology.com</span>
+                <a href="https://nextechnology.com" target="_blank" class="footer-url">nextechnology.com</a>
             </div>
         </div>
         <div class="footer-bottom">
@@ -267,32 +267,6 @@
     <!-- Admin Config Reader — applies site settings & services from admin panel -->
     <script>
         (function applyAdminConfig() {
-            // ── SITE SETTINGS ──
-            try {
-                const s = JSON.parse(localStorage.getItem('nt_site_settings'));
-                if (s) {
-                    // Hero badge
-                    const badge = document.querySelector('.hero-badge span:last-child');
-                    if (badge && s.badge) badge.textContent = s.badge;
-                    // Hero subtitle
-                    const sub = document.querySelector('.hero-subtitle');
-                    if (sub && s.subtitle) sub.textContent = s.subtitle;
-                    // Footer tagline
-                    const footerDesc = document.querySelector('.footer-desc');
-                    if (footerDesc && s.footerDesc) footerDesc.textContent = s.footerDesc;
-                    // Copyright
-                    const copyright = document.querySelector('.footer-bottom p');
-                    if (copyright && s.copyright) copyright.textContent = s.copyright;
-                    // Social links
-                    const socials = document.querySelectorAll('.social-links a');
-                    const urls = [s.facebook, s.twitter, s.instagram, s.tiktok].filter(Boolean);
-                    socials.forEach((a, i) => { if (urls[i]) a.href = urls[i]; });
-                    // Footer URL display
-                    const footerUrl = document.querySelector('.footer-url');
-                    if (footerUrl && s.footerUrl) footerUrl.textContent = s.footerUrl;
-                }
-            } catch (e) { }
-
             // ── SERVICES ──
             try {
                 const defaultServices = [

@@ -720,7 +720,7 @@
                         </svg>
                     </a>
                 </div>
-                <span class="footer-url">nextechnology.com</span>
+                <a href="https://nextechnology.com" target="_blank" class="footer-url">nextechnology.com</a>
             </div>
         </div>
         <div class="footer-bottom">
@@ -883,20 +883,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             loadArticle();
-
-            // ── Theme toggle (independent & overrides script.js double listeners) ──
-            const themeToggleBtn = document.getElementById('themeToggleBtn');
-            const htmlEl = document.documentElement;
-            htmlEl.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
-            if (themeToggleBtn) {
-                const newBtn = themeToggleBtn.cloneNode(true);
-                themeToggleBtn.parentNode.replaceChild(newBtn, themeToggleBtn);
-                newBtn.addEventListener('click', () => {
-                    const next = htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                    htmlEl.setAttribute('data-theme', next);
-                    localStorage.setItem('theme', next);
-                });
-            }
 
             // ── Back to blog transition ─────────────────────────────────────────
             const backBtn = document.getElementById('backToBlogBtn');
