@@ -799,6 +799,20 @@
                             fc.querySelector('.author-name').textContent      = p.author    || 'NexTech Team';
                             fc.querySelector('.post-date').textContent        = p.date      || '';
                             fc.querySelector('.post-read-time').innerHTML     = `<i data-lucide="clock"></i> ${p.readTime || '5 min read'}`;
+                            
+                            const readMoreLink = fc.querySelector('.read-more-link');
+                            if (readMoreLink) {
+                                readMoreLink.setAttribute('href', `article.html?id=${p.id}`);
+                            }
+
+                            // Add transition and click handler on the card itself
+                            fc.style.cursor = 'pointer';
+                            fc.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                document.body.classList.add('page-leaving');
+                                setTimeout(() => { window.location.href = `article.html?id=${p.id}`; }, 350);
+                            });
+
                             // Reveal the featured section
                             featuredWrapper.style.display = '';
                         }
@@ -817,12 +831,19 @@
                                 <span class="post-category">${p.category}</span>
                                 <h3 class="blog-card-title">${p.title}</h3>
                                 <p class="blog-card-excerpt">${p.excerpt || ''}</p>
-                                <a href="#" class="read-more-link">Read More <i data-lucide="arrow-right"></i></a>
+                                <a href="article.html?id=${p.id}" class="read-more-link">Read More <i data-lucide="arrow-right"></i></a>
                                 <div class="blog-card-footer">
                                     <span class="card-date">${p.date || ''}</span>
                                     <span class="card-read-time"><i data-lucide="clock"></i> ${p.readTime || '5 min read'}</span>
                                 </div>
                             </div>`;
+                        
+                        card.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            document.body.classList.add('page-leaving');
+                            setTimeout(() => { window.location.href = `article.html?id=${p.id}`; }, 350);
+                        });
+
                         grid.appendChild(card);
                         setTimeout(() => {
                             card.style.opacity   = '1';
