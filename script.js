@@ -5,11 +5,83 @@ if ('scrollRestoration' in history) {
 window.scrollTo(0, 0);
 
 // ── SHARED ADMIN SETTINGS APPLICATOR ──
-// Applies nt_site_settings to footer and social links on every page using script.js
-(function applySettings() {
+async function initSiteSettings() {
+    // 1. First, apply cached settings immediately if available to avoid FOUC
     try {
-        const s = JSON.parse(localStorage.getItem('nt_site_settings'));
-        if (!s) return;
+        const cached = localStorage.getItem('nt_site_settings');
+        if (cached) {
+            const data = JSON.parse(cached);
+            // Support both old flat structure and new timestamped structure
+            const settings = data.settings || data;
+            applySettingsDOM(settings);
+        }
+    } catch (e) {
+        console.warn("Failed to parse cached settings:", e);
+    }
+
+    // 2. Fetch latest from Supabase if cache is expired or missing
+    const CACHE_KEY = 'nt_site_settings';
+    const CACHE_TTL = 5 * 60 * 1000; // 5 minutes in ms
+    let shouldFetch = true;
+
+    try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+            const data = JSON.parse(cached);
+            if (data.timestamp && (Date.now() - data.timestamp < CACHE_TTL)) {
+                shouldFetch = false;
+            }
+        }
+    } catch (e) {}
+
+    if (shouldFetch) {
+        // Wait briefly for Supabase client to initialize if loaded asynchronously
+        if (typeof supabase === 'undefined') {
+            await new Promise(resolve => setTimeout(resolve, 300));
+        }
+
+        const supabaseClientInstance = window.supabaseClient || (typeof getSupabaseClient === 'function' ? getSupabaseClient() : null);
+        if (supabaseClientInstance) {
+            try {
+                const { data, error } = await supabaseClientInstance
+                    .from('site_settings')
+                    .select('*')
+                    .eq('id', 1)
+                    .single();
+
+                if (!error && data) {
+                    const settings = {
+                        badge: data.badge,
+                        subtitle: data.subtitle,
+                        footerDesc: data.footer_desc,
+                        copyright: data.copyright,
+                        facebook: data.facebook,
+                        twitter: data.twitter,
+                        instagram: data.instagram,
+                        tiktok: data.tiktok,
+                        footerUrl: data.footer_url,
+                        email: data.email
+                    };
+                    
+                    // Save to cache
+                    localStorage.setItem(CACHE_KEY, JSON.stringify({
+                        settings,
+                        timestamp: Date.now()
+                    }));
+
+                    // Apply to DOM
+                    applySettingsDOM(settings);
+                }
+            } catch (err) {
+                console.error("Failed to fetch settings from Supabase:", err);
+            }
+        }
+    }
+}
+
+function applySettingsDOM(s) {
+    if (!s) return;
+    try {
         // Footer tagline
         const footerDesc = document.querySelector('.footer-desc');
         if (footerDesc && s.footerDesc) footerDesc.textContent = s.footerDesc;
@@ -54,8 +126,12 @@ window.scrollTo(0, 0);
         // Hero subtitle (index.html only — no-op on other pages)
         const sub = document.querySelector('.hero-subtitle');
         if (sub && s.subtitle) sub.textContent = s.subtitle;
-    } catch(e) {}
-})();
+    } catch (e) {
+        console.error("Error applying site settings DOM:", e);
+    }
+}
+
+initSiteSettings();
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Initialize Lucide Icons

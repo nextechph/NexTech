@@ -15,6 +15,10 @@
         rel="stylesheet">
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase Config -->
+    <script src="supabase-config.js"></script>
     <!-- Shared Stylesheet -->
     <link rel="stylesheet" href="style.css">
     <style>
@@ -775,7 +779,7 @@
             return params.get(name);
         }
 
-        function loadArticle() {
+        async function loadArticle() {
             const id = getQueryParam('id');
             if (!id) {
                 window.location.href = 'blog.html';
@@ -783,10 +787,20 @@
             }
 
             try {
-                const posts = JSON.parse(localStorage.getItem('nt_blog_posts') || '[]');
-                const post = posts.find(p => p.id == id);
+                const supabase = getSupabaseClient();
+                if (!supabase) {
+                    console.error("Supabase client is not available.");
+                    return;
+                }
 
-                if (!post || post.status !== 'published') {
+                // Fetch the main article
+                const { data: post, error } = await supabase
+                    .from('blog_posts')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+
+                if (error || !post || post.status !== 'published') {
                     document.getElementById('articleContainer').innerHTML = `
                         <div style="text-align: center; padding: 120px 24px;">
                             <i data-lucide="alert-triangle" style="width: 48px; height: 48px; color: var(--text-tertiary); margin-bottom: 16px;"></i>
@@ -805,13 +819,14 @@
                 document.getElementById('postCategory').textContent = post.category;
                 document.getElementById('postTitle').textContent = post.title;
                 document.getElementById('postAuthor').textContent = post.author || 'NexTech Team';
-                document.getElementById('postDate').textContent = post.date || '';
-                document.getElementById('postReadTime').innerHTML = `<i data-lucide="clock"></i> ${post.readTime || '5 min read'}`;
+                document.getElementById('postDate').textContent = post.post_date || '';
+                document.getElementById('postReadTime').innerHTML = `<i data-lucide="clock"></i> ${post.read_time || '5 min read'}`;
 
                 // Cover Image
                 const coverWrapper = document.getElementById('postCover');
-                if (post.image) {
-                    coverWrapper.innerHTML = `<img src="${post.image}" alt="${post.title}">`;
+                const postImage = post.image_url || '';
+                if (postImage) {
+                    coverWrapper.innerHTML = `<img src="${postImage}" alt="${post.title}">`;
                 } else {
                     coverWrapper.innerHTML = `<span class="article-cover-placeholder">01</span>`;
                 }
@@ -821,7 +836,15 @@
                 bodyWrapper.innerHTML = formatContent(post.content);
 
                 // Load More Articles
-                loadRelatedPosts(id, posts);
+                const { data: allPosts, error: postsError } = await supabase
+                    .from('blog_posts')
+                    .select('id, title, category, excerpt, post_date, read_time, image_url, status')
+                    .eq('status', 'published')
+                    .neq('id', id);
+
+                if (!postsError && allPosts) {
+                    loadRelatedPosts(post, allPosts);
+                }
 
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             } catch (e) {
@@ -829,12 +852,9 @@
             }
         }
 
-        function loadRelatedPosts(currentId, allPosts) {
+        function loadRelatedPosts(currentPost, others) {
             const relatedGrid = document.getElementById('relatedGrid');
             if (!relatedGrid) return;
-
-            const currentPost = allPosts.find(p => p.id == currentId);
-            const others = allPosts.filter(p => p.id != currentId && p.status === 'published');
             
             // Priority: Same category
             let related = others.filter(p => p.category === currentPost.category);
@@ -851,9 +871,12 @@
                 return;
             }
 
+            relatedGrid.innerHTML = ''; // Clear it
+
             related.forEach((p, i) => {
-                const cardImg = p.image
-                    ? `<img src="${p.image}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;">`
+                const postImage = p.image_url || '';
+                const cardImg = postImage
+                    ? `<img src="${postImage}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;">`
                     : `<span class="blog-card-image-placeholder">${String(i + 1).padStart(2, '0')}</span>`;
 
                 const card = document.createElement('div');
@@ -866,8 +889,8 @@
                         <p class="blog-card-excerpt">${p.excerpt || ''}</p>
                         <a href="article.html?id=${p.id}" class="read-more-link">Read More <i data-lucide="arrow-right"></i></a>
                         <div class="blog-card-footer">
-                            <span class="card-date">${p.date || ''}</span>
-                            <span class="card-read-time"><i data-lucide="clock"></i> ${p.readTime || '5 min read'}</span>
+                            <span class="card-date">${p.post_date || ''}</span>
+                            <span class="card-read-time"><i data-lucide="clock"></i> ${p.read_time || '5 min read'}</span>
                         </div>
                     </div>`;
 
@@ -941,7 +964,19 @@
                         newsletterInput.classList.remove('error');
                         newsletterInput.value = '';
                         
-                        // Save email to localStorage
+                        // Save email to Supabase subscribers table
+                        const supabase = getSupabaseClient();
+                        if (supabase) {
+                            supabase.from('subscribers')
+                                .insert([{ email }])
+                                .then(({ error }) => {
+                                    if (error && error.code !== '23505') { // 23505 is unique violation in postgres (already subscribed)
+                                        console.error('Error saving subscriber to database:', error);
+                                    }
+                                });
+                        }
+
+                        // Also save email to localStorage as secondary backup/cache
                         try {
                             let subscribers = JSON.parse(localStorage.getItem('nt_subscribers') || '[]');
                             if (!subscribers.includes(email)) {
@@ -949,7 +984,7 @@
                                 localStorage.setItem('nt_subscribers', JSON.stringify(subscribers));
                             }
                         } catch (e) {
-                            console.error('Error saving subscriber:', e);
+                            console.error('Error saving subscriber locally:', e);
                         }
                         
                         setTimeout(() => {

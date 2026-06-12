@@ -15,6 +15,10 @@
         rel="stylesheet">
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase Config -->
+    <script src="supabase-config.js"></script>
     <!-- Shared Stylesheet -->
     <link rel="stylesheet" href="style.css">
     <style>
@@ -836,13 +840,39 @@
         }
 
         // ── ADMIN PLANNER CONFIG READER ──
-        // Named function, called inside DOMContentLoaded after DOM is ready
-        function applyPlannerConfig() {
-            let cfg;
-            try { cfg = JSON.parse(localStorage.getItem('nt_planner_config')); } catch (e) { return; }
-            if (!cfg) return;
+        async function applyPlannerConfig() {
+            if (typeof supabase === 'undefined') {
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
 
-            // Student base banner
+            const supabase = window.supabaseClient || (typeof getSupabaseClient === 'function' ? getSupabaseClient() : null);
+            if (!supabase) return;
+
+            try {
+                const { data: cfg, error } = await supabase
+                    .from('planner_config')
+                    .select('*')
+                    .eq('id', 1)
+                    .single();
+
+                if (error || !cfg) {
+                    console.warn("Failed to load planner config from database, using cached/defaults.");
+                    const localCfg = JSON.parse(localStorage.getItem('nt_planner_config'));
+                    if (localCfg) {
+                        renderPlannerConfig(localCfg);
+                    }
+                    return;
+                }
+
+                localStorage.setItem('nt_planner_config', JSON.stringify(cfg));
+                renderPlannerConfig(cfg);
+
+            } catch (e) {
+                console.error("Error loading planner config:", e);
+            }
+        }
+
+        function renderPlannerConfig(cfg) {
             if (cfg.student) {
                 const titleEl = document.querySelector('.student-base-title');
                 const descEl = document.querySelector('.student-base-desc');
@@ -853,7 +883,6 @@
                 window._adminStudentBase = cfg.student.base;
             }
 
-            // Student add-on grid
             if (cfg.addons && cfg.addons.length) {
                 const grid = document.getElementById('addonGrid');
                 if (grid) {
@@ -870,12 +899,11 @@
                     if (billBaseRow) billBaseRow.innerHTML = `<span>Base Plan</span><span>&#8369;${Number(basePriceVal).toLocaleString()}</span>`;
                     const billTotalEl = document.getElementById('billTotal');
                     if (billTotalEl) billTotalEl.textContent = '₱' + Number(basePriceVal).toLocaleString();
-                    // Re-bind add-on listeners after dynamic render
+                    
                     grid.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener('change', updateBill));
                 }
             }
 
-            // Pro budget tiers
             if (cfg.tiers && cfg.tiers.length) {
                 const budgetContainer = document.getElementById('budgetOptions');
                 if (budgetContainer) {
@@ -889,7 +917,6 @@
                 }
             }
 
-            // Pro timeline options
             if (cfg.timeline && cfg.timeline.length) {
                 const tlContainer = document.getElementById('timelineOptions');
                 if (tlContainer) {
@@ -902,49 +929,74 @@
             }
         }
 
-        function applyServicesConfigToPlanner() {
+        async function applyServicesConfigToPlanner() {
+            if (typeof supabase === 'undefined') {
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
+
+            const supabase = window.supabaseClient || (typeof getSupabaseClient === 'function' ? getSupabaseClient() : null);
+            if (!supabase) return;
+
             try {
-                const defaultServices = [
-                    { num: '01', icon: 'code-2', title: 'Website Development', desc: 'Tailored web applications built with clean, semantic code, optimized for speed, scalability, and security.', bullets: ['Custom Framework Architectures', 'Blazing Fast Load Speed', 'SEO Optimized Build'] },
-                    { num: '02', icon: 'layers', title: 'Landing Pages', desc: 'High-converting single-page layouts designed to present your product clearly and drive user action.', bullets: ['Copywriting-optimized Layout', 'Conversion Rate Focus', 'Integrated A/B Analytics'] },
-                    { num: '03', icon: 'user', title: 'Portfolio Websites', desc: 'Sophisticated digital showcases for artists, designers, and agencies to display their work with premium flair.', bullets: ['Smooth Motion Design', 'Responsive Image Galleries', 'Premium Visual Layouts'] },
-                    { num: '04', icon: 'building-2', title: 'Business Websites', desc: 'Professional corporate web platforms that project credibility, match branding, and capture leads.', bullets: ['CMS Integration (WordPress/Headless)', 'Customer Portal Setups', 'Lead Capture Pipelines'] },
-                    { num: '05', icon: 'palette', title: 'UI/UX Design', desc: 'Figma-crafted user flows, interactive prototypes, and wireframes designed with absolute visual precision.', bullets: ['User Journey Mapping', 'Interactive High-Fi Prototypes', 'Clean Component-Based Design'] }
-                ];
-                let services = JSON.parse(localStorage.getItem('nt_services'));
-                if (!services || !services.length) {
-                    services = defaultServices;
+                const { data: services, error } = await supabase
+                    .from('services')
+                    .select('*')
+                    .order('sort_order', { ascending: true });
+
+                if (error || !services || !services.length) {
+                    console.warn("Failed to load services from database, using cached/defaults.");
+                    const localSvc = JSON.parse(localStorage.getItem('nt_services')) || [];
+                    if (localSvc.length) {
+                        renderPlannerServices(localSvc);
+                    }
+                    return;
                 }
-                const container = document.getElementById('serviceOptions');
-                if (container) {
-                    container.innerHTML = services.map(s => {
-                        let weight = 2;
-                        if (s.title.toLowerCase().includes('development') || s.title.toLowerCase().includes('business')) {
-                            weight = 3;
-                        } else if (s.title.toLowerCase().includes('landing') || s.title.toLowerCase().includes('page')) {
-                            weight = 1;
-                        }
-                        return `
-                        <div class="planner-opt-card" data-val="${s.title}" data-weight="${weight}">
-                            <i data-lucide="${s.icon || 'globe'}"></i>
-                            <span>${s.title}</span>
-                        </div>`;
-                    }).join('');
-                }
-            } catch (e) {
-                console.error('Error rendering dynamic planner services:', e);
+
+                const mapped = services.map(s => ({
+                    num: s.num,
+                    icon: s.icon,
+                    title: s.title,
+                    desc: s.desc_text,
+                    bullets: s.bullets || []
+                }));
+                localStorage.setItem('nt_services', JSON.stringify(mapped));
+                
+                renderPlannerServices(mapped);
+
+            } catch (err) {
+                console.error("Error loading services for planner:", err);
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // Render dynamic services for the planner step 01
-            applyServicesConfigToPlanner();
+        function renderPlannerServices(services) {
+            const container = document.getElementById('serviceOptions');
+            if (container) {
+                container.innerHTML = services.map(s => {
+                    let weight = 2;
+                    if (s.title.toLowerCase().includes('development') || s.title.toLowerCase().includes('business')) {
+                        weight = 3;
+                    } else if (s.title.toLowerCase().includes('landing') || s.title.toLowerCase().includes('page')) {
+                        weight = 1;
+                    }
+                    return `
+                    <div class="planner-opt-card" data-val="${s.title}" data-weight="${weight}">
+                        <i data-lucide="${s.icon || 'globe'}"></i>
+                        <span>${s.title}</span>
+                    </div>`;
+                }).join('');
+                
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+        }
 
-            // Apply admin config first (prices, add-ons, tiers, timeline)
-            applyPlannerConfig();
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Render dynamic options first
+            await applyServicesConfigToPlanner();
+            await applyPlannerConfig();
 
-            // Student add-on listeners for hard-coded cards (admin cards bind themselves)
+            // Student add-on listeners
             document.querySelectorAll('#addonGrid input[type="checkbox"]').forEach(cb => {
+                cb.removeEventListener('change', updateBill);
                 cb.addEventListener('change', updateBill);
             });
 
@@ -964,12 +1016,14 @@
                     window.location.href = 'contact.html';
                 });
             }
+
             if (typeof lucide !== 'undefined') lucide.createIcons();
 
             // Planner Logic
-            const serviceOptions = document.querySelectorAll('#serviceOptions .planner-opt-card');
-            const budgetOptions = document.querySelectorAll('#budgetOptions .planner-opt-card');
-            const timelineOptions = document.querySelectorAll('#timelineOptions .planner-opt-card');
+            const getServiceOptions = () => document.querySelectorAll('#serviceOptions .planner-opt-card');
+            const getBudgetOptions = () => document.querySelectorAll('#budgetOptions .planner-opt-card');
+            const getTimelineOptions = () => document.querySelectorAll('#timelineOptions .planner-opt-card');
+
             const sumServices = document.getElementById('sumServices');
             const sumBudget = document.getElementById('sumBudget');
             const sumTimeline = document.getElementById('sumTimeline');
@@ -979,7 +1033,7 @@
             function updateBlueprint() {
                 const selectedServices = [];
                 let totalWeight = 0;
-                serviceOptions.forEach(opt => {
+                getServiceOptions().forEach(opt => {
                     if (opt.classList.contains('active')) {
                         selectedServices.push(opt.getAttribute('data-val'));
                         totalWeight += parseInt(opt.getAttribute('data-weight') || '0', 10);
@@ -991,7 +1045,7 @@
 
                 let activeBudget = 'Growth (₱25k - ₱60k)';
                 let budgetMultiplier = 1.5;
-                budgetOptions.forEach(opt => {
+                getBudgetOptions().forEach(opt => {
                     if (opt.classList.contains('active')) {
                         activeBudget = opt.getAttribute('data-val');
                         budgetMultiplier = parseFloat(opt.getAttribute('data-mult') || '1.0');
@@ -1000,7 +1054,7 @@
                 sumBudget.textContent = activeBudget;
 
                 let activeTimeline = 'Standard (1–2 months)';
-                timelineOptions.forEach(opt => {
+                getTimelineOptions().forEach(opt => {
                     if (opt.classList.contains('active')) activeTimeline = opt.getAttribute('data-val');
                 });
                 sumTimeline.textContent = activeTimeline;
@@ -1013,15 +1067,50 @@
                             : 'High Intensity (Enterprise Blueprint)';
             }
 
-            serviceOptions.forEach(opt => opt.addEventListener('click', () => { opt.classList.toggle('active'); updateBlueprint(); }));
-            budgetOptions.forEach(opt => opt.addEventListener('click', () => { budgetOptions.forEach(o => o.classList.remove('active')); opt.classList.add('active'); updateBlueprint(); }));
-            timelineOptions.forEach(opt => opt.addEventListener('click', () => { timelineOptions.forEach(o => o.classList.remove('active')); opt.classList.add('active'); updateBlueprint(); }));
+            // Click interactions using event delegation
+            const bindOptionEvents = () => {
+                const serviceContainer = document.getElementById('serviceOptions');
+                if (serviceContainer) {
+                    serviceContainer.addEventListener('click', (e) => {
+                        const card = e.target.closest('.planner-opt-card');
+                        if (card) {
+                            card.classList.toggle('active');
+                            updateBlueprint();
+                        }
+                    });
+                }
 
-            // Apply → redirect to contact page with blueprint in sessionStorage
+                const budgetContainer = document.getElementById('budgetOptions');
+                if (budgetContainer) {
+                    budgetContainer.addEventListener('click', (e) => {
+                        const card = e.target.closest('.planner-opt-card');
+                        if (card) {
+                            getBudgetOptions().forEach(o => o.classList.remove('active'));
+                            card.classList.add('active');
+                            updateBlueprint();
+                        }
+                    });
+                }
+
+                const timelineContainer = document.getElementById('timelineOptions');
+                if (timelineContainer) {
+                    timelineContainer.addEventListener('click', (e) => {
+                        const card = e.target.closest('.planner-opt-card');
+                        if (card) {
+                            getTimelineOptions().forEach(o => o.classList.remove('active'));
+                            card.classList.add('active');
+                            updateBlueprint();
+                        }
+                    });
+                }
+            };
+
+            bindOptionEvents();
+
             if (applyBlueprintBtn) {
                 applyBlueprintBtn.addEventListener('click', () => {
                     const selectedServices = [];
-                    serviceOptions.forEach(opt => { if (opt.classList.contains('active')) selectedServices.push(opt.getAttribute('data-val')); });
+                    getServiceOptions().forEach(opt => { if (opt.classList.contains('active')) selectedServices.push(opt.getAttribute('data-val')); });
 
                     if (selectedServices.length === 0) {
                         alert('Please select at least one service from the blueprint configuration.');
@@ -1029,8 +1118,8 @@
                     }
 
                     let activeBudget = '', activeTimeline = '';
-                    budgetOptions.forEach(opt => { if (opt.classList.contains('active')) activeBudget = opt.getAttribute('data-val'); });
-                    timelineOptions.forEach(opt => { if (opt.classList.contains('active')) activeTimeline = opt.getAttribute('data-val'); });
+                    getBudgetOptions().forEach(opt => { if (opt.classList.contains('active')) activeBudget = opt.getAttribute('data-val'); });
+                    getTimelineOptions().forEach(opt => { if (opt.classList.contains('active')) activeTimeline = opt.getAttribute('data-val'); });
 
                     const formattedDesc =
                         `Hello NexTech team, I have built a custom project blueprint:\n` +
@@ -1040,7 +1129,6 @@
                         `- Estimator: ${sumEstimate.textContent}\n` +
                         `Please let me know how we can proceed.`;
 
-                    // Store blueprint and redirect to contact
                     sessionStorage.setItem('nextech_blueprint', formattedDesc);
                     window.location.href = 'contact.html';
                 });
@@ -1048,7 +1136,6 @@
 
             updateBlueprint();
 
-            // Fade-in animations
             document.querySelectorAll('.fade-in').forEach((el, i) => {
                 el.style.animationDelay = `${0.2 + i * 0.15}s`;
             });

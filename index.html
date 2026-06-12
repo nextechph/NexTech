@@ -15,6 +15,10 @@
         rel="stylesheet">
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase Config -->
+    <script src="supabase-config.js"></script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
@@ -266,29 +270,54 @@
 
     <!-- Admin Config Reader — applies site settings & services from admin panel -->
     <script>
-        (function applyAdminConfig() {
-            // ── SERVICES ──
+        (async function applyAdminConfig() {
+            // Wait briefly for Supabase CDN to load
+            if (typeof supabase === 'undefined') {
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
+
+            const supabase = window.supabaseClient || (typeof getSupabaseClient === 'function' ? getSupabaseClient() : null);
+            if (!supabase) return;
+
             try {
-                const defaultServices = [
-                    { num: '01', icon: 'code-2', title: 'Website Development', desc: 'Tailored web applications built with clean, semantic code, optimized for speed, scalability, and security.', bullets: ['Custom Framework Architectures', 'Blazing Fast Load Speed', 'SEO Optimized Build'] },
-                    { num: '02', icon: 'layers', title: 'Landing Pages', desc: 'High-converting single-page layouts designed to present your product clearly and drive user action.', bullets: ['Copywriting-optimized Layout', 'Conversion Rate Focus', 'Integrated A/B Analytics'] },
-                    { num: '03', icon: 'user', title: 'Portfolio Websites', desc: 'Sophisticated digital showcases for artists, designers, and agencies to display their work with premium flair.', bullets: ['Smooth Motion Design', 'Responsive Image Galleries', 'Premium Visual Layouts'] },
-                    { num: '04', icon: 'building-2', title: 'Business Websites', desc: 'Professional corporate web platforms that project credibility, match branding, and capture leads.', bullets: ['CMS Integration (WordPress/Headless)', 'Customer Portal Setups', 'Lead Capture Pipelines'] },
-                    { num: '05', icon: 'palette', title: 'UI/UX Design', desc: 'Figma-crafted user flows, interactive prototypes, and wireframes designed with absolute visual precision.', bullets: ['User Journey Mapping', 'Interactive High-Fi Prototypes', 'Clean Component-Based Design'] }
-                ];
-                
-                let services = JSON.parse(localStorage.getItem('nt_services'));
-                if (!services || !services.length) {
-                    services = defaultServices;
+                const { data: services, error } = await supabase
+                    .from('services')
+                    .select('*')
+                    .order('sort_order', { ascending: true });
+
+                if (error || !services || !services.length) {
+                    console.warn("Failed to load services from database, using cached/defaults.");
+                    const localSvc = JSON.parse(localStorage.getItem('nt_services')) || [];
+                    if (localSvc.length) {
+                        renderServices(localSvc);
+                    }
+                    return;
                 }
-                
+
+                const mappedServices = services.map(s => ({
+                    num: s.num,
+                    icon: s.icon,
+                    title: s.title,
+                    desc: s.desc_text,
+                    bullets: s.bullets || []
+                }));
+
+                // Cache it locally
+                localStorage.setItem('nt_services', JSON.stringify(mappedServices));
+
+                renderServices(mappedServices);
+
+            } catch (e) {
+                console.error('Error rendering dynamic services:', e);
+            }
+            
+            function renderServices(servicesList) {
                 const grid = document.querySelector('.services-grid');
                 if (grid) {
-                    grid.innerHTML = services.map((svc, idx) => {
+                    grid.innerHTML = servicesList.map((svc, idx) => {
                         const num = svc.num || String(idx + 1).padStart(2, '0');
                         const dataSvc = svc.title ? svc.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'service';
                         
-                        // Render bullets list
                         const bulletsArray = svc.bullets || [];
                         const bulletListHtml = bulletsArray
                             .filter(b => b && b.trim() !== '')
@@ -314,8 +343,6 @@
                         lucide.createIcons();
                     }
                 }
-            } catch (e) {
-                console.error('Error rendering dynamic services:', e);
             }
         })();
     </script>

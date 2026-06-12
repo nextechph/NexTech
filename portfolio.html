@@ -15,6 +15,10 @@
         rel="stylesheet">
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase Config -->
+    <script src="supabase-config.js"></script>
     <!-- Shared Stylesheet -->
     <link rel="stylesheet" href="style.css">
     <style>
@@ -666,75 +670,100 @@
 
     <script>
         // ── RENDER ALL PROJECTS FROM ADMIN PANEL ──
-        function loadAdminProjects() {
+        async function loadAdminProjects() {
             const grid = document.getElementById('projectsGrid');
-            let projects = [];
-            try { projects = JSON.parse(localStorage.getItem('nt_portfolio_projects') || '[]'); } catch (e) { }
+            grid.innerHTML = `<div style="grid-column: span 2; text-align:center; padding: 40px; color: var(--text-tertiary);">Loading projects...</div>`;
 
-            // Update the stat counter dynamically (only count published/live projects)
-            const liveProjects = projects.filter(p => p.status === 'live');
-            const statEl = document.getElementById('statProjectsShipped');
-            if (statEl) statEl.textContent = liveProjects.length;
-
-            if (!projects.length) {
-                // Empty state
-                grid.style.display = 'block';
-                grid.innerHTML = `
-                    <div class="empty-portfolio-state" style="
-                        border: 1px dashed var(--border);
-                        padding: 80px 40px;
-                        text-align: center;
-                        color: var(--text-tertiary);
-                        font-family: var(--font-heading);
-                    ">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 20px; display:block; opacity:0.3">
-                            <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
-                        </svg>
-                        <div style="font-size:1.1rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px;">No Projects Yet</div>
-                        <div style="font-size:0.85rem;font-weight:300;opacity:0.6;">Add projects via the Admin Panel to display them here.</div>
-                    </div>`;
-                return;
+            // Wait briefly for Supabase CDN to load
+            if (typeof supabase === 'undefined') {
+                await new Promise(resolve => setTimeout(resolve, 300));
             }
 
-            const total = projects.length;
-            projects.forEach((p, i) => {
-                const num = String(i + 1).padStart(2, '0');
-                const totalStr = String(total).padStart(2, '0');
-                const isComingSoon = p.status === 'coming-soon';
-                const tagLabel = (p.tag || '').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+            const supabase = window.supabaseClient || (typeof getSupabaseClient === 'function' ? getSupabaseClient() : null);
+            if (!supabase) return;
 
-                const card = document.createElement('div');
-                card.className = `project-card reveal${isComingSoon ? ' coming-soon' : ''}`;
-                card.setAttribute('data-tags', p.tag || 'other');
-                card.innerHTML = `
-                    <div class="project-screenshot">
-                        ${p.image
-                        ? `<img src="${p.image}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">`
-                        : `<div class="screenshot-placeholder"><i data-lucide="image"></i><span>No Screenshot</span></div>`
-                    }
-                        <div class="live-badge">
-                            <span class="live-dot"></span>
-                            ${isComingSoon ? 'Soon' : 'Live'}
-                        </div>
-                    </div>
-                    <div class="project-info">
-                        <div class="project-number">${num} / ${totalStr}</div>
-                        <h2 class="project-name">${p.name}</h2>
-                        <p class="project-desc">${p.desc || 'No description provided.'}</p>
-                        <div class="project-footer">
-                            <div class="project-tags">
-                                <span class="project-tag">${tagLabel}</span>
+            try {
+                const { data: projects, error } = await supabase
+                    .from('portfolio_projects')
+                    .select('*')
+                    .order('sort_order', { ascending: true })
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                grid.innerHTML = ''; // Clear loader
+
+                const liveProjects = projects ? projects.filter(p => p.status === 'live') : [];
+                const statEl = document.getElementById('statProjectsShipped');
+                if (statEl) statEl.textContent = liveProjects.length;
+
+                if (!projects || !projects.length) {
+                    // Empty state
+                    grid.style.display = 'block';
+                    grid.innerHTML = `
+                        <div class="empty-portfolio-state" style="
+                            border: 1px dashed var(--border);
+                            padding: 80px 40px;
+                            text-align: center;
+                            color: var(--text-tertiary);
+                            font-family: var(--font-heading);
+                        ">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 20px; display:block; opacity:0.3">
+                                <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+                            </svg>
+                            <div style="font-size:1.1rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px;">No Projects Yet</div>
+                            <div style="font-size:0.85rem;font-weight:300;opacity:0.6;">Add projects via the Admin Panel to display them here.</div>
+                        </div>`;
+                    return;
+                }
+
+                const total = projects.length;
+                projects.forEach((p, i) => {
+                    const num = String(i + 1).padStart(2, '0');
+                    const totalStr = String(total).padStart(2, '0');
+                    const isComingSoon = p.status === 'coming-soon';
+                    const tagLabel = (p.tag || '').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+                    const card = document.createElement('div');
+                    card.className = `project-card reveal${isComingSoon ? ' coming-soon' : ''}`;
+                    card.setAttribute('data-tags', p.tag || 'other');
+                    card.innerHTML = `
+                        <div class="project-screenshot">
+                            ${p.image_url
+                            ? `<img src="${p.image_url}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">`
+                            : `<div class="screenshot-placeholder"><i data-lucide="image"></i><span>No Screenshot</span></div>`
+                        }
+                            <div class="live-badge">
+                                <span class="live-dot"></span>
+                                ${isComingSoon ? 'Soon' : 'Live'}
                             </div>
-                            ${p.url ? `<a href="${p.url}" target="_blank" rel="noopener" class="project-link">Visit Site <i data-lucide="arrow-up-right"></i></a>` : ''}
                         </div>
-                    </div>`;
-                grid.appendChild(card);
-            });
+                        <div class="project-info">
+                            <div class="project-number">${num} / ${totalStr}</div>
+                            <h2 class="project-name">${p.name}</h2>
+                            <p class="project-desc">${p.desc_text || 'No description provided.'}</p>
+                            <div class="project-footer">
+                                <div class="project-tags">
+                                    <span class="project-tag">${tagLabel}</span>
+                                </div>
+                                ${p.url ? `<a href="${p.url}" target="_blank" rel="noopener" class="project-link">Visit Site <i data-lucide="arrow-up-right"></i></a>` : ''}
+                            </div>
+                        </div>`;
+                    grid.appendChild(card);
+                });
 
-            if (typeof lucide !== 'undefined') lucide.createIcons();
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+
+                // Wire up interactions after projects render
+                initInteractions();
+
+            } catch (err) {
+                console.error('Error rendering dynamic portfolio:', err);
+                grid.innerHTML = `<div style="grid-column: span 2; text-align:center; padding: 40px; color: var(--text-tertiary);">Error loading portfolio.</div>`;
+            }
         }
 
-        // ── FILTER & SCROLL REVEAL — runs AFTER cards are rendered ──
+        // ── FILTER & SCROLL REVEAL ──
         function initInteractions() {
             const filterBtns = document.querySelectorAll('.filter-btn');
             const allCards = () => document.querySelectorAll('#projectsGrid .project-card');
@@ -777,13 +806,8 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof lucide !== 'undefined') lucide.createIcons();
-
-            // Render projects first, then wire up interactions
             loadAdminProjects();
-            initInteractions();
         });
-
-
     </script>
 
     <style>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexTech Admin - Sign In</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --bg2: #111111;
+            --bg3: #181818;
+            --border: #2a2a2a;
+            --border2: #3a3a3a;
+            --text: #f0f0f0;
+            --text2: #888;
+            --text3: #555;
+            --accent: #f0f0f0;
+            --accent-bg: #1a1a1a;
+            --danger: #ff4444;
+            --success: #44cc88;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .login-box {
+            width: 380px;
+            border: 1px solid var(--border);
+            background: var(--bg2);
+            padding: 48px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, var(--border2), var(--text));
+            box-shadow: 0 0 10px var(--text);
+            transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .login-logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--text3);
+            margin-bottom: 32px;
+        }
+
+        .login-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .login-sub {
+            font-size: 0.82rem;
+            color: var(--text2);
+            margin-bottom: 36px;
+        }
+
+        .login-field {
+            margin-bottom: 16px;
+        }
+
+        .login-field label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text2);
+            margin-bottom: 8px;
+        }
+
+        .login-field input {
+            width: 100%;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .login-field input:focus {
+            border-color: var(--border2);
+        }
+
+        .login-field input:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: var(--text);
+            color: var(--bg);
+            border: none;
+            padding: 14px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: opacity 0.2s, background-color 0.2s, color 0.2s;
+        }
+
+        .login-btn:hover:not(:disabled) {
+            opacity: 0.85;
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            background: var(--border2);
+            color: var(--text2);
+            cursor: not-allowed;
+        }
+
+        .login-btn-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-spinner {
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(10, 10, 10, 0.2);
+            border-top-color: #0a0a0a;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .login-error {
+            font-size: 0.78rem;
+            color: var(--danger);
+            margin-top: 12px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-box">
+        <div class="login-progress" id="loginProgress"></div>
+        <div class="login-logo">NexTech · Admin Portal</div>
+        <div class="login-title">Sign In</div>
+        <div class="login-sub">Restricted access. Authorized personnel only.</div>
+        
+        <div class="login-field">
+            <label>Email Address</label>
+            <input type="email" id="loginEmail" placeholder="admin@nextechnology.com" autocomplete="email">
+        </div>
+        <div class="login-field">
+            <label>Password</label>
+            <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button class="login-btn" id="loginBtn" onclick="doLogin()">Access Admin Panel</button>
+        <div class="login-error" id="loginError">Invalid credentials. Try again.</div>
+    </div>
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase Config -->
+    <script src="supabase-config.js"></script>
+    <script>
+        let isLoggingIn = false;
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            const supabase = getSupabaseClient();
+            if (!supabase) return;
+
+            // Check if user is already logged in
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                window.location.href = 'admin.html';
+            }
+        });
+
+        async function doLogin() {
+            if (isLoggingIn) return;
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPass').value;
+            const loginError = document.getElementById('loginError');
+            
+            if (!email || !pass) {
+                loginError.textContent = 'Please enter both email and password.';
+                loginError.style.display = 'block';
+                return;
+            }
+
+            const supabase = getSupabaseClient();
+            if (!supabase) {
+                loginError.textContent = 'Configuration error. Supabase is not available.';
+                loginError.style.display = 'block';
+                return;
+            }
+
+            isLoggingIn = true;
+            loginError.style.display = 'none';
+
+            const loginProgress = document.getElementById('loginProgress');
+            const loginBtn = document.getElementById('loginBtn');
+            const loginEmail = document.getElementById('loginEmail');
+            const loginPass = document.getElementById('loginPass');
+
+            loginEmail.disabled = true;
+            loginPass.disabled = true;
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = `<div class="login-btn-content"><div class="btn-spinner"></div>Authenticating...</div>`;
+            loginProgress.style.width = '100%';
+
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: pass
+                });
+
+                if (error) {
+                    throw error;
+                }
+
+                // Successful login
+                setTimeout(() => {
+                    window.location.href = 'admin.html';
+                }, 1000);
+
+            } catch (err) {
+                console.error(err);
+                loginError.textContent = err.message || 'Invalid credentials. Try again.';
+                loginError.style.display = 'block';
+                
+                // Reset form state
+                loginProgress.style.width = '0%';
+                loginEmail.disabled = false;
+                loginPass.disabled = false;
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Access Admin Panel';
+                isLoggingIn = false;
+            }
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Enter') doLogin();
+        });
+    </script>
+</body>
+
+</html>

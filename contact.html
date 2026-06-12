@@ -12,6 +12,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase Config -->
+    <script src="supabase-config.js"></script>
     <!-- Shared Stylesheet -->
     <link rel="stylesheet" href="style.css">
     <style>
@@ -242,7 +246,7 @@
             const contactForm = document.getElementById('contactForm');
             const formStatus = document.getElementById('formStatus');
             if (contactForm && formStatus) {
-                contactForm.addEventListener('submit', (e) => {
+                contactForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     const submitBtn = contactForm.querySelector('.btn-submit');
                     const submitBtnText = submitBtn.querySelector('span');
@@ -253,14 +257,41 @@
                     formStatus.className = 'form-status';
                     formStatus.textContent = '';
 
-                    setTimeout(() => {
+                    const name = document.getElementById('clientName').value.trim();
+                    const email = document.getElementById('clientEmail').value.trim();
+                    const details = document.getElementById('projectDetails').value.trim();
+
+                    const supabase = getSupabaseClient();
+                    if (!supabase) {
+                        formStatus.className = 'form-status error';
+                        formStatus.textContent = 'Submission failed: database not connected.';
                         submitBtn.style.pointerEvents = 'all';
                         submitBtnText.textContent = originalText;
+                        return;
+                    }
+
+                    const { error } = await supabase
+                        .from('contact_submissions')
+                        .insert([{
+                            name: name,
+                            email: email,
+                            subject: 'Inquiry from NexTech Website',
+                            message: details,
+                            blueprint: details
+                        }]);
+
+                    submitBtn.style.pointerEvents = 'all';
+                    submitBtnText.textContent = originalText;
+
+                    if (error) {
+                        formStatus.className = 'form-status error';
+                        formStatus.innerHTML = `<i data-lucide="alert-circle" style="width:14px;height:14px;vertical-align:middle;margin-right:6px;"></i>Failed to transmit. Please try again.`;
+                    } else {
                         formStatus.className = 'form-status success';
                         formStatus.innerHTML = '<i data-lucide="check-circle" style="width:14px;height:14px;vertical-align:middle;margin-right:6px;"></i>Inquiry received successfully. Our engineering team will follow up shortly.';
-                        if (typeof lucide !== 'undefined') lucide.createIcons();
                         contactForm.reset();
-                    }, 1500);
+                    }
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
                 });
             }
 

@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NexTech Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase Config -->
+    <script src="supabase-config.js"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Inter:wght@300;400;500&display=swap"
         rel="stylesheet">
@@ -877,23 +881,11 @@
 
 <body>
 
-    <!-- ── LOGIN SCREEN ── -->
-    <div id="loginScreen">
-        <div class="login-box">
-            <div class="login-progress" id="loginProgress"></div>
-            <div class="login-logo">NexTech · Admin Portal</div>
-            <div class="login-title">Sign In</div>
-            <div class="login-sub">Restricted access. Authorized personnel only.</div>
-            <div class="login-field">
-                <label>Username</label>
-                <input type="text" id="loginUser" placeholder="admin" autocomplete="username">
-            </div>
-            <div class="login-field">
-                <label>Password</label>
-                <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
-            </div>
-            <button class="login-btn" id="loginBtn" onclick="doLogin()">Access Admin Panel</button>
-            <div class="login-error" id="loginError">Invalid credentials. Try again.</div>
+    <!-- ── LOADING SCREEN ── -->
+    <div id="loadingScreen" style="position: fixed; inset: 0; background: #0a0a0a; display: flex; align-items: center; justify-content: center; z-index: 1000;">
+        <div style="font-family: 'Outfit', sans-serif; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: #555; display: flex; align-items: center; gap: 12px;">
+            <div class="btn-spinner" style="border: 2px solid rgba(255,255,255,0.1); border-top-color: #fff; width: 16px; height: 16px;"></div>
+            Verifying Session...
         </div>
     </div>
 
@@ -1423,102 +1415,51 @@
         </main>
     </div>
 
-    <!-- Toast -->
-    <div class="toast" id="toast">
-        <div class="toast-dot"></div>
-        <span id="toastMsg"></span>
-    </div>
-
     <script>
-        // ── CREDENTIALS (change these) ──
-        const USERS = [
-            { username: 'admin', password: 'nextech2026', role: 'Admin' },
-            { username: 'team', password: 'nextech123', role: 'Editor' }
-        ];
-
         let currentUser = null;
-        let isLoggingIn = false;
+        let selectedBlogImgFile = null;
+        let selectedProjectImgFile = null;
 
-        // ── AUTH ──
-        function doLogin() {
-            if (isLoggingIn) return;
-            const u = document.getElementById('loginUser').value.trim();
-            const p = document.getElementById('loginPass').value;
-            const match = USERS.find(x => x.username === u && x.password === p);
-            if (match) {
-                isLoggingIn = true;
-                currentUser = match;
-
-                const loginProgress = document.getElementById('loginProgress');
-                const loginBtn = document.getElementById('loginBtn');
-                const loginUser = document.getElementById('loginUser');
-                const loginPass = document.getElementById('loginPass');
-                const loginError = document.getElementById('loginError');
-
-                loginError.style.display = 'none';
-                loginUser.disabled = true;
-                loginPass.disabled = true;
-                loginBtn.disabled = true;
-                loginBtn.innerHTML = `<div class="login-btn-content"><div class="btn-spinner"></div>Authenticating...</div>`;
-
-                // Start progress bar animation
-                loginProgress.style.width = '100%';
-
-                setTimeout(() => {
-                    // Start screen transitions
-                    const loginScreen = document.getElementById('loginScreen');
-                    loginScreen.classList.add('fade-out');
-
-                    const appShell = document.getElementById('appShell');
-                    appShell.style.display = 'block';
-                    document.getElementById('headerUser').textContent = `${match.role} · ${match.username}`;
-                    refreshAll();
-
-                    // Trigger reflow
-                    appShell.offsetHeight;
-                    appShell.classList.add('fade-in');
-
-                    setTimeout(() => {
-                        loginScreen.style.display = 'none';
-                        loginScreen.classList.remove('fade-out');
-
-                        // Reset fields for future entries
-                        loginProgress.style.width = '0%';
-                        loginUser.disabled = false;
-                        loginPass.disabled = false;
-                        loginBtn.disabled = false;
-                        loginBtn.textContent = 'Access Admin Panel';
-                        isLoggingIn = false;
-                    }, 600);
-                }, 1200);
-            } else {
-                document.getElementById('loginError').style.display = 'block';
+        // ── SESSION GUARD ──
+        window.addEventListener('DOMContentLoaded', async () => {
+            const supabase = getSupabaseClient();
+            if (!supabase) {
+                showToast("Supabase client is not initialized.");
+                return;
             }
-        }
 
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') doLogin();
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'admin-auth.html';
+                return;
+            }
+
+            currentUser = session.user;
+            const appShell = document.getElementById('appShell');
+            appShell.style.display = 'block';
+            document.getElementById('headerUser').textContent = currentUser.email;
+
+            // Trigger reflow & fade in
+            appShell.offsetHeight;
+            appShell.classList.add('fade-in');
+
+            // Hide loading screen
+            const loader = document.getElementById('loadingScreen');
+            if (loader) loader.style.display = 'none';
+
+            // Load counts/data
+            refreshAll();
         });
 
-        function doLogout() {
-            currentUser = null;
-            const loginScreen = document.getElementById('loginScreen');
-            const appShell = document.getElementById('appShell');
-
-            appShell.classList.remove('fade-in');
-
-            setTimeout(() => {
-                appShell.style.display = 'none';
-                loginScreen.style.display = 'flex';
-                loginScreen.offsetHeight; // trigger reflow
-
-                document.getElementById('loginUser').value = '';
-                document.getElementById('loginPass').value = '';
-                document.getElementById('loginError').style.display = 'none';
-            }, 600);
+        async function doLogout() {
+            const supabase = getSupabaseClient();
+            if (supabase) {
+                await supabase.auth.signOut();
+            }
+            window.location.href = 'admin-auth.html';
         }
 
-        // ── NAVIGATION (updated) ──
+        // ── NAVIGATION ──
         function switchView(view, isEdit) {
             document.querySelectorAll('.admin-view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1545,73 +1486,106 @@
             window.scrollTo(0, 0);
         }
 
-        // ── STORAGE ──
-        function getPosts() { try { return JSON.parse(localStorage.getItem('nt_blog_posts') || '[]'); } catch { return []; } }
-        function setPosts(d) { localStorage.setItem('nt_blog_posts', JSON.stringify(d)); }
-        function getProjects() { try { return JSON.parse(localStorage.getItem('nt_portfolio_projects') || '[]'); } catch { return []; } }
-        function setProjects(d) { localStorage.setItem('nt_portfolio_projects', JSON.stringify(d)); }
-
         // ── IMAGE PREVIEW ──
         function previewImage(inputId, previewId, areaId, dataId) {
             const file = document.getElementById(inputId).files[0];
             if (!file) return;
-            const reader = new FileReader();
-            reader.onload = e => {
-                const img = document.getElementById(previewId);
-                const area = document.getElementById(areaId);
-                const placeholder = area.querySelector('.upload-placeholder');
-                img.src = e.target.result;
-                img.classList.add('visible');
-                if (placeholder) placeholder.style.display = 'none';
-                area.classList.add('has-img');
-                document.getElementById(dataId).value = e.target.result;
-            };
-            reader.readAsDataURL(file);
+
+            if (inputId === 'blogImgInput') {
+                selectedBlogImgFile = file;
+            } else if (inputId === 'projectImgInput') {
+                selectedProjectImgFile = file;
+            }
+
+            const img = document.getElementById(previewId);
+            const area = document.getElementById(areaId);
+            const placeholder = area.querySelector('.upload-placeholder');
+            img.src = URL.createObjectURL(file);
+            img.classList.add('visible');
+            if (placeholder) placeholder.style.display = 'none';
+            area.classList.add('has-img');
+            document.getElementById(dataId).value = "new-file-selected";
         }
 
         // ── BLOG ──
-        function saveBlogPost(forceDraft) {
+        async function saveBlogPost(forceDraft) {
             const title = document.getElementById('blogTitle').value.trim();
             if (!title) { showToast('Please enter a post title.'); return; }
 
             const editId = document.getElementById('editBlogId').value;
-            const posts = getPosts();
             const status = forceDraft === 'draft' ? 'draft' : document.getElementById('blogStatus').value;
 
-            const post = {
-                id: editId || Date.now().toString(),
+            const supabase = getSupabaseClient();
+            if (!supabase) return;
+
+            showToast('Saving post...');
+
+            let imageUrl = document.getElementById('blogImgData').value;
+            if (imageUrl === "new-file-selected" && selectedBlogImgFile) {
+                try {
+                    const file = selectedBlogImgFile;
+                    const fileExt = file.name.split('.').pop();
+                    const fileName = `${Date.now()}.${fileExt}`;
+                    const filePath = `blog/${fileName}`;
+
+                    const { error: uploadError } = await supabase.storage
+                        .from('images')
+                        .upload(filePath, file);
+
+                    if (uploadError) throw uploadError;
+
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('images')
+                        .getPublicUrl(filePath);
+
+                    imageUrl = publicUrl;
+                } catch (uploadErr) {
+                    console.error("Image upload failed:", uploadErr);
+                    showToast("Image upload failed, saving text only...");
+                    imageUrl = "";
+                }
+            }
+
+            const postData = {
                 title,
                 category: document.getElementById('blogCategory').value,
                 excerpt: document.getElementById('blogExcerpt').value.trim(),
                 content: document.getElementById('blogContent').value.trim(),
-                readTime: document.getElementById('blogReadTime').value.trim() || '5 min',
+                read_time: document.getElementById('blogReadTime').value.trim() || '5 min',
                 author: document.getElementById('blogAuthor').value.trim() || 'NexTech Team',
                 status,
-                image: document.getElementById('blogImgData').value,
-                date: editId ? (posts.find(p => p.id == editId)?.date || new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })) : new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-                updatedAt: Date.now()
+                image_url: imageUrl,
+                post_date: editId ? undefined : new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
             };
 
+            let error;
             if (editId) {
-                const idx = posts.findIndex(p => p.id == editId);
-                if (idx > -1) posts[idx] = post; else posts.unshift(post);
+                const { error: err } = await supabase
+                    .from('blog_posts')
+                    .update(postData)
+                    .eq('id', editId);
+                error = err;
             } else {
-                posts.unshift(post);
+                const { error: err } = await supabase
+                    .from('blog_posts')
+                    .insert([postData]);
+                error = err;
             }
 
-            setPosts(posts);
-            refreshAll();
-            showToast(status === 'draft' ? 'Draft saved.' : 'Post published!');
+            if (error) {
+                console.error(error);
+                showToast('Error saving post: ' + error.message);
+            } else {
+                showToast(status === 'draft' ? 'Draft saved.' : 'Post published!');
+                const s = document.getElementById('blogSaveStatus');
+                s.style.display = 'inline';
+                setTimeout(() => s.style.display = 'none', 2500);
 
-            const s = document.getElementById('blogSaveStatus');
-            s.style.display = 'inline';
-            setTimeout(() => s.style.display = 'none', 2500);
-
-            // Redirect back to blog list view
-            setTimeout(() => {
-                switchView('blog-list');
-                resetBlogForm();
-            }, 1000);
+                setTimeout(() => {
+                    switchView('blog-list');
+                    resetBlogForm();
+                }, 1000);
+            }
         }
 
         function resetBlogForm() {
@@ -1620,6 +1594,7 @@
             document.getElementById('blogStatus').value = 'published';
             document.getElementById('blogImgData').value = '';
             document.getElementById('editBlogId').value = '';
+            selectedBlogImgFile = null;
             const img = document.getElementById('blogImgPreview');
             img.src = ''; img.classList.remove('visible');
             const area = document.getElementById('blogImgArea');
@@ -1629,56 +1604,93 @@
             document.getElementById('blogFormTitle').textContent = 'New Blog Post';
         }
 
-        function editPost(id) {
-            const post = getPosts().find(p => p.id == id);
-            if (!post) return;
-            // Switch view first (isEdit=true skips the form reset inside switchView)
+        async function editPost(id) {
+            const supabase = getSupabaseClient();
+            if (!supabase) return;
+
+            const { data: post, error } = await supabase
+                .from('blog_posts')
+                .select('*')
+                .eq('id', id)
+                .single();
+
+            if (error || !post) {
+                showToast("Error retrieving post details.");
+                return;
+            }
+
             switchView('blog-new', true);
             document.getElementById('editBlogId').value = post.id;
             document.getElementById('blogTitle').value = post.title;
             document.getElementById('blogCategory').value = post.category;
             document.getElementById('blogExcerpt').value = post.excerpt || '';
             document.getElementById('blogContent').value = post.content || '';
-            document.getElementById('blogReadTime').value = post.readTime || '';
+            document.getElementById('blogReadTime').value = post.read_time || '';
             document.getElementById('blogAuthor').value = post.author || '';
             document.getElementById('blogStatus').value = post.status;
-            document.getElementById('blogImgData').value = post.image || '';
-            // Reset image area first, then re-populate if image exists
+            document.getElementById('blogImgData').value = post.image_url || '';
+
             const imgEl = document.getElementById('blogImgPreview');
             imgEl.src = ''; imgEl.classList.remove('visible');
             const areaEl = document.getElementById('blogImgArea');
             areaEl.classList.remove('has-img');
             const phEl = areaEl.querySelector('.upload-placeholder');
             if (phEl) phEl.style.display = '';
-            if (post.image) {
-                imgEl.src = post.image; imgEl.classList.add('visible');
+
+            if (post.image_url) {
+                imgEl.src = post.image_url; imgEl.classList.add('visible');
                 areaEl.classList.add('has-img');
                 if (phEl) phEl.style.display = 'none';
             }
             document.getElementById('blogFormTitle').textContent = 'Edit Post';
         }
 
-        function deletePost(id) {
+        async function deletePost(id) {
             if (!confirm('Delete this post?')) return;
-            setPosts(getPosts().filter(p => p.id != id));
-            refreshAll();
-            renderBlogList();
-            showToast('Post deleted.');
+            const supabase = getSupabaseClient();
+            if (!supabase) return;
+
+            const { error } = await supabase
+                .from('blog_posts')
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                showToast('Error deleting post: ' + error.message);
+            } else {
+                refreshAll();
+                renderBlogList();
+                showToast('Post deleted.');
+            }
         }
 
-        function renderBlogList() {
-            const posts = getPosts();
+        async function renderBlogList() {
+            const supabase = getSupabaseClient();
+            if (!supabase) return;
+
             const container = document.getElementById('blogListContainer');
+            container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text2);">Loading posts...</div>`;
+
+            const { data: posts, error } = await supabase
+                .from('blog_posts')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                container.innerHTML = `<div class="empty-state">Error loading posts: ${error.message}</div>`;
+                return;
+            }
+
             if (!posts.length) {
                 container.innerHTML = `<div class="empty-state"><svg class="empty-state-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 10h16M4 14h10"/></svg><div class="empty-state-title">No posts yet</div><div class="empty-state-sub">Create your first blog post to get started.</div></div>`;
                 return;
             }
             container.innerHTML = `<div class="content-list">${posts.map(p => `
             <div class="content-item">
-                <div class="content-item-thumb">${p.image ? `<img src="${p.image}" alt="">` : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18"/></svg>'}</div>
+                <div class="content-item-thumb">${p.image_url ? `<img src="${p.image_url}" alt="">` : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18"/></svg>'}</div>
                 <div class="content-item-info">
                     <div class="content-item-title">${p.title}</div>
-                    <div class="content-item-meta">${p.category} · ${p.date} · ${p.readTime}</div>
+                    <div class="content-item-meta">${p.category} · ${p.post_date} · ${p.read_time}</div>
                 </div>
                 <span class="status-tag ${p.status === 'published' ? 'status-published' : 'status-draft'}">${p.status}</span>
                 <div class="content-item-actions">
@@ -1689,43 +1701,79 @@
         }
 
         // ── PROJECTS ──
-        function saveProject() {
+        async function saveProject() {
             const name = document.getElementById('projectName').value.trim();
             if (!name) { showToast('Please enter a project name.'); return; }
 
             const editId = document.getElementById('editProjectId').value;
-            const projects = getProjects();
+            const supabase = getSupabaseClient();
+            if (!supabase) return;
 
-            const project = {
-                id: editId || Date.now().toString(),
-                name,
-                url: document.getElementById('projectUrl').value.trim(),
-                desc: document.getElementById('projectDesc').value.trim(),
-                tag: document.getElementById('projectTag').value,
-                status: document.getElementById('projectStatus').value,
-                image: document.getElementById('projectImgData').value,
-                date: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
-            };
+            showToast('Saving project...');
 
-            if (editId) {
-                const idx = projects.findIndex(p => p.id == editId);
-                if (idx > -1) projects[idx] = project; else projects.unshift(project);
-            } else {
-                projects.unshift(project);
+            let imageUrl = document.getElementById('projectImgData').value;
+            if (imageUrl === "new-file-selected" && selectedProjectImgFile) {
+                try {
+                    const file = selectedProjectImgFile;
+                    const fileExt = file.name.split('.').pop();
+                    const fileName = `${Date.now()}.${fileExt}`;
+                    const filePath = `portfolio/${fileName}`;
+
+                    const { error: uploadError } = await supabase.storage
+                        .from('images')
+                        .upload(filePath, file);
+
+                    if (uploadError) throw uploadError;
+
+                    const { data: { publicUrl } } = supabase.storage
+                        .from('images')
+                        .getPublicUrl(filePath);
+
+                    imageUrl = publicUrl;
+                } catch (uploadErr) {
+                    console.error("Image upload failed:", uploadErr);
+                    showToast("Image upload failed...");
+                    imageUrl = "";
+                }
             }
 
-            setProjects(projects);
-            refreshAll();
-            showToast('Project saved!');
-            const s = document.getElementById('projectSaveStatus');
-            s.style.display = 'inline';
-            setTimeout(() => s.style.display = 'none', 2500);
+            const projectData = {
+                name,
+                url: document.getElementById('projectUrl').value.trim(),
+                desc_text: document.getElementById('projectDesc').value.trim(),
+                tag: document.getElementById('projectTag').value,
+                status: document.getElementById('projectStatus').value,
+                image_url: imageUrl
+            };
 
-            // Redirect back to project list view
-            setTimeout(() => {
-                switchView('project-list');
-                resetProjectForm();
-            }, 1000);
+            let error;
+            if (editId) {
+                const { error: err } = await supabase
+                    .from('portfolio_projects')
+                    .update(projectData)
+                    .eq('id', editId);
+                error = err;
+            } else {
+                const { error: err } = await supabase
+                    .from('portfolio_projects')
+                    .insert([projectData]);
+                error = err;
+            }
+
+            if (error) {
+                console.error(error);
+                showToast('Error saving project: ' + error.message);
+            } else {
+                showToast('Project saved!');
+                const s = document.getElementById('projectSaveStatus');
+                s.style.display = 'inline';
+                setTimeout(() => s.style.display = 'none', 2500);
+
+                setTimeout(() => {
+                    switchView('project-list');
+                    resetProjectForm();
+                }, 1000);
+            }
         }
 
         function resetProjectForm() {
@@ -1734,6 +1782,7 @@
             document.getElementById('projectStatus').value = 'live';
             document.getElementById('projectImgData').value = '';
             document.getElementById('editProjectId').value = '';
+            selectedProjectImgFile = null;
             const img = document.getElementById('projectImgPreview');
             img.src = ''; img.classList.remove('visible');
             const area = document.getElementById('projectImgArea');
@@ -1743,54 +1792,92 @@
             document.getElementById('projectFormTitle').textContent = 'Add Project';
         }
 
-        function editProject(id) {
-            const p = getProjects().find(p => p.id == id);
-            if (!p) return;
-            // Switch view first (isEdit=true skips the form reset inside switchView)
+        async function editProject(id) {
+            const supabase = getSupabaseClient();
+            if (!supabase) return;
+
+            const { data: p, error } = await supabase
+                .from('portfolio_projects')
+                .select('*')
+                .eq('id', id)
+                .single();
+
+            if (error || !p) {
+                showToast("Error retrieving project details.");
+                return;
+            }
+
             switchView('project-new', true);
             document.getElementById('editProjectId').value = p.id;
             document.getElementById('projectName').value = p.name;
             document.getElementById('projectUrl').value = p.url || '';
-            document.getElementById('projectDesc').value = p.desc || '';
+            document.getElementById('projectDesc').value = p.desc_text || '';
             document.getElementById('projectTag').value = p.tag;
             document.getElementById('projectStatus').value = p.status;
-            document.getElementById('projectImgData').value = p.image || '';
-            // Reset image area first, then re-populate if image exists
+            document.getElementById('projectImgData').value = p.image_url || '';
+
             const imgEl = document.getElementById('projectImgPreview');
             imgEl.src = ''; imgEl.classList.remove('visible');
             const areaEl = document.getElementById('projectImgArea');
             areaEl.classList.remove('has-img');
             const phEl = areaEl.querySelector('.upload-placeholder');
             if (phEl) phEl.style.display = '';
-            if (p.image) {
-                imgEl.src = p.image; imgEl.classList.add('visible');
+
+            if (p.image_url) {
+                imgEl.src = p.image_url; imgEl.classList.add('visible');
                 areaEl.classList.add('has-img');
                 if (phEl) phEl.style.display = 'none';
             }
             document.getElementById('projectFormTitle').textContent = 'Edit Project';
         }
 
-        function deleteProject(id) {
+        async function deleteProject(id) {
             if (!confirm('Delete this project?')) return;
-            setProjects(getProjects().filter(p => p.id != id));
-            refreshAll();
-            renderProjectList();
-            showToast('Project deleted.');
+            const supabase = getSupabaseClient();
+            if (!supabase) return;
+
+            const { error } = await supabase
+                .from('portfolio_projects')
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                showToast('Error deleting project: ' + error.message);
+            } else {
+                refreshAll();
+                renderProjectList();
+                showToast('Project deleted.');
+            }
         }
 
-        function renderProjectList() {
-            const projects = getProjects();
+        async function renderProjectList() {
+            const supabase = getSupabaseClient();
+            if (!supabase) return;
+
             const container = document.getElementById('projectListContainer');
+            container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text2);">Loading projects...</div>`;
+
+            const { data: projects, error } = await supabase
+                .from('portfolio_projects')
+                .select('*')
+                .order('sort_order', { ascending: true })
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                container.innerHTML = `<div class="empty-state">Error loading projects: ${error.message}</div>`;
+                return;
+            }
+
             if (!projects.length) {
                 container.innerHTML = `<div class="empty-state"><svg class="empty-state-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><div class="empty-state-title">No projects yet</div><div class="empty-state-sub">Add your first portfolio project.</div></div>`;
                 return;
             }
             container.innerHTML = `<div class="content-list">${projects.map(p => `
             <div class="content-item">
-                <div class="content-item-thumb">${p.image ? `<img src="${p.image}" alt="">` : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18"/></svg>'}</div>
+                <div class="content-item-thumb">${p.image_url ? `<img src="${p.image_url}" alt="">` : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18"/></svg>'}</div>
                 <div class="content-item-info">
                     <div class="content-item-title">${p.name}</div>
-                    <div class="content-item-meta">${p.tag} · ${p.url || 'No URL'} · ${p.date}</div>
+                    <div class="content-item-meta">${p.tag} · ${p.url || 'No URL'}</div>
                 </div>
                 <span class="status-tag ${p.status === 'live' ? 'status-published' : 'status-draft'}">${p.status}</span>
                 <div class="content-item-actions">
@@ -1801,19 +1888,42 @@
         }
 
         // ── DASHBOARD ──
-        function refreshDashboard() {
-            const posts = getPosts();
-            const projects = getProjects();
-            document.getElementById('statPosts').textContent = posts.length;
-            document.getElementById('statPublished').textContent = posts.filter(p => p.status === 'published').length;
-            document.getElementById('statProjects').textContent = projects.length;
+        async function refreshDashboard() {
+            const supabase = getSupabaseClient();
+            if (!supabase) return;
+
+            const { count: postsCount, error: err1 } = await supabase
+                .from('blog_posts')
+                .select('*', { count: 'exact', head: true });
+
+            const { count: pubCount, error: err2 } = await supabase
+                .from('blog_posts')
+                .select('*', { count: 'exact', head: true })
+                .eq('status', 'published');
+
+            const { count: projCount, error: err3 } = await supabase
+                .from('portfolio_projects')
+                .select('*', { count: 'exact', head: true });
+
+            if (!err1) document.getElementById('statPosts').textContent = postsCount || 0;
+            if (!err2) document.getElementById('statPublished').textContent = pubCount || 0;
+            if (!err3) document.getElementById('statProjects').textContent = projCount || 0;
         }
 
-        function refreshAll() {
-            const posts = getPosts();
-            const projects = getProjects();
-            document.getElementById('blogBadge').textContent = posts.length;
-            document.getElementById('projectBadge').textContent = projects.length;
+        async function refreshAll() {
+            const supabase = getSupabaseClient();
+            if (!supabase) return;
+
+            const { count: postsCount } = await supabase
+                .from('blog_posts')
+                .select('*', { count: 'exact', head: true });
+
+            const { count: projCount } = await supabase
+                .from('portfolio_projects')
+                .select('*', { count: 'exact', head: true });
+
+            document.getElementById('blogBadge').textContent = postsCount || 0;
+            document.getElementById('projectBadge').textContent = projCount || 0;
             refreshDashboard();
         }
 
@@ -1859,22 +1969,31 @@
             ]
         };
 
-        function getPlannerConfig() {
-            try { return JSON.parse(localStorage.getItem('nt_planner_config')) || null; } catch { return null; }
-        }
-        function setPlannerConfig(d) { localStorage.setItem('nt_planner_config', JSON.stringify(d)); }
+        async function loadPlannerEditor() {
+            const supabase = getSupabaseClient();
+            if (!supabase) return;
 
-        function loadPlannerEditor() {
-            const cfg = getPlannerConfig() || PLANNER_DEFAULTS;
-            // Student base
+            const { data, error } = await supabase
+                .from('planner_config')
+                .select('*')
+                .eq('id', 1)
+                .single();
+
+            if (error || !data) {
+                console.error("Error loading planner config:", error);
+                applyPlannerConfigUIData(PLANNER_DEFAULTS);
+                return;
+            }
+
+            applyPlannerConfigUIData(data);
+        }
+
+        function applyPlannerConfigUIData(cfg) {
             document.getElementById('pe-student-title').value = cfg.student.title;
             document.getElementById('pe-student-base').value = cfg.student.base;
             document.getElementById('pe-student-desc').value = cfg.student.desc;
-            // Add-ons
             renderAddonRows(cfg.addons);
-            // Tiers
             renderTierRows(cfg.tiers);
-            // Timeline
             renderTimelineRows(cfg.timeline);
         }
 
@@ -1882,7 +2001,7 @@
             const list = document.getElementById('pe-addon-list');
             list.innerHTML = addons.map((a, i) => `
             <div class="pe-row" data-i="${i}" style="display:grid;grid-template-columns:1fr 120px 160px 40px;gap:8px;align-items:center;">
-                <input type="text" value="${a.label}" placeholder="Add-on name" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:Inter,sans-serif;font-size:0.85rem;outline:none;" oninput="">
+                <input type="text" value="${a.label}" placeholder="Add-on name" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:Inter,sans-serif;font-size:0.85rem;outline:none;">
                 <input type="number" value="${a.price}" placeholder="Price" min="0" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:Inter,sans-serif;font-size:0.85rem;outline:none;">
                 <input type="text" value="${a.note}" placeholder="Note (e.g. per page)" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;font-family:Inter,sans-serif;font-size:0.85rem;outline:none;">
                 <button class="btn-danger" onclick="removeAddonRow(${i})" style="padding:8px;">✕</button>
@@ -1949,7 +2068,6 @@
         }
 
         function getCurrentPlannerDraft() {
-            // Read current DOM state into a config object
             const addonRows = document.querySelectorAll('#pe-addon-list .pe-row');
             const addons = Array.from(addonRows).map(r => {
                 const inputs = r.querySelectorAll('input');
@@ -1975,19 +2093,53 @@
             };
         }
 
-        function savePlannerConfig() {
+        async function savePlannerConfig() {
             const cfg = getCurrentPlannerDraft();
-            setPlannerConfig(cfg);
-            showToast('Planner config saved!');
-            const s = document.getElementById('plannerSaveStatus');
-            s.style.display = 'inline'; setTimeout(() => s.style.display = 'none', 2500);
+            const supabase = getSupabaseClient();
+            if (!supabase) return;
+
+            const { error } = await supabase
+                .from('planner_config')
+                .upsert({
+                    id: 1,
+                    student: cfg.student,
+                    addons: cfg.addons,
+                    tiers: cfg.tiers,
+                    timeline: cfg.timeline,
+                    updated_at: new Date().toISOString()
+                });
+
+            if (error) {
+                showToast('Error saving planner config: ' + error.message);
+            } else {
+                showToast('Planner config saved!');
+                const s = document.getElementById('plannerSaveStatus');
+                s.style.display = 'inline'; setTimeout(() => s.style.display = 'none', 2500);
+            }
         }
 
-        function resetPlannerConfig() {
-            if (!confirm('Reset planner to defaults? This cannot be undone.')) return;
-            localStorage.removeItem('nt_planner_config');
-            loadPlannerEditor();
-            showToast('Planner reset to defaults.');
+        async function resetPlannerConfig() {
+            if (!confirm('Reset planner to defaults? This will overwrite the database.')) return;
+            const supabase = getSupabaseClient();
+            if (!supabase) return;
+
+            const { error } = await supabase
+                .from('planner_config')
+                .upsert({
+                    id: 1,
+                    student: PLANNER_DEFAULTS.student,
+                    addons: PLANNER_DEFAULTS.addons,
+                    tiers: PLANNER_DEFAULTS.tiers,
+                    timeline: PLANNER_DEFAULTS.timeline,
+                    updated_at: new Date().toISOString()
+                });
+
+            if (error) {
+                showToast('Error resetting planner: ' + error.message);
+            } else {
+                applyPlannerConfigUIData(PLANNER_DEFAULTS);
+                showToast('Planner reset to defaults.');
+            }
         }
 
         // ══════════════════════════════════════════
@@ -2002,10 +2154,30 @@
             { num: '05', icon: 'palette', title: 'UI/UX Design', desc: 'Figma-crafted user flows, interactive prototypes, and wireframes designed with absolute visual precision.', bullets: ['User Journey Mapping', 'Interactive High-Fi Prototypes', 'Clean Component-Based Design'] }
         ];
 
-        function getServicesConfig() {
-            try { return JSON.parse(localStorage.getItem('nt_services')) || null; } catch { return null; }
+        async function loadServicesEditor() {
+            const supabase = getSupabaseClient();
+            if (!supabase) return;
+
+            const { data: services, error } = await supabase
+                .from('services')
+                .select('*')
+                .order('sort_order', { ascending: true });
+
+            if (error || !services || !services.length) {
+                console.error("Error loading services:", error);
+                renderServicesEditorWithData(SERVICES_DEFAULTS);
+                return;
+            }
+
+            const servicesData = services.map(s => ({
+                num: s.num,
+                icon: s.icon,
+                title: s.title,
+                desc: s.desc_text,
+                bullets: s.bullets || []
+            }));
+            renderServicesEditorWithData(servicesData);
         }
-        function setServicesConfig(d) { localStorage.setItem('nt_services', JSON.stringify(d)); }
 
         function getCurrentServicesDraft() {
             const sections = document.querySelectorAll('#se-cards-container .form-section');
@@ -2073,11 +2245,6 @@
             </div>`).join('');
         }
 
-        function loadServicesEditor() {
-            const services = getServicesConfig() || SERVICES_DEFAULTS;
-            renderServicesEditorWithData(services);
-        }
-
         function addServiceRow() {
             const draft = getCurrentServicesDraft();
             draft.push({
@@ -2094,26 +2261,75 @@
             if (!confirm('Are you sure you want to delete this service?')) return;
             const draft = getCurrentServicesDraft();
             draft.splice(i, 1);
-            // Re-assign numbers
             draft.forEach((s, idx) => {
                 s.num = String(idx + 1).padStart(2, '0');
             });
             renderServicesEditorWithData(draft);
         }
 
-        function saveServicesConfig() {
+        async function saveServicesConfig() {
             const services = getCurrentServicesDraft();
-            setServicesConfig(services);
-            showToast('Services saved!');
-            const s = document.getElementById('servicesSaveStatus');
-            s.style.display = 'inline'; setTimeout(() => s.style.display = 'none', 2500);
+            const supabase = getSupabaseClient();
+            if (!supabase) return;
+
+            showToast('Saving services...');
+
+            // Delete current records and re-insert
+            const { error: deleteError } = await supabase
+                .from('services')
+                .delete()
+                .neq('num', '00');
+
+            if (deleteError) {
+                showToast('Error updating services: ' + deleteError.message);
+                return;
+            }
+
+            const dbServices = services.map((s, idx) => ({
+                num: s.num,
+                icon: s.icon,
+                title: s.title,
+                desc_text: s.desc,
+                bullets: s.bullets,
+                sort_order: idx
+            }));
+
+            const { error: insertError } = await supabase
+                .from('services')
+                .insert(dbServices);
+
+            if (insertError) {
+                showToast('Error saving services: ' + insertError.message);
+            } else {
+                showToast('Services saved!');
+                const s = document.getElementById('servicesSaveStatus');
+                s.style.display = 'inline'; setTimeout(() => s.style.display = 'none', 2500);
+            }
         }
 
-        function resetServicesConfig() {
-            if (!confirm('Reset services to defaults? This cannot be undone.')) return;
-            localStorage.removeItem('nt_services');
-            loadServicesEditor();
-            showToast('Services reset to defaults.');
+        async function resetServicesConfig() {
+            if (!confirm('Reset services to defaults? This will overwrite the database.')) return;
+            const supabase = getSupabaseClient();
+            if (!supabase) return;
+
+            await supabase.from('services').delete().neq('num', '00');
+
+            const dbServices = SERVICES_DEFAULTS.map((s, idx) => ({
+                num: s.num,
+                icon: s.icon,
+                title: s.title,
+                desc_text: s.desc,
+                bullets: s.bullets,
+                sort_order: idx
+            }));
+
+            const { error } = await supabase.from('services').insert(dbServices);
+            if (error) {
+                showToast('Error resetting: ' + error.message);
+            } else {
+                renderServicesEditorWithData(SERVICES_DEFAULTS);
+                showToast('Services reset to defaults.');
+            }
         }
 
         // ══════════════════════════════════════════
@@ -2130,16 +2346,41 @@
             instagram: 'https://instagram.com',
             tiktok: 'https://tiktok.com',
             footerUrl: 'nextechnology.com',
-            email: ''
+            email: 'hello@nextechnology.com'
         };
 
-        function getSiteSettings() {
-            try { return JSON.parse(localStorage.getItem('nt_site_settings')) || null; } catch { return null; }
-        }
-        function setSiteSettings(d) { localStorage.setItem('nt_site_settings', JSON.stringify(d)); }
+        async function loadSiteSettings() {
+            const supabase = getSupabaseClient();
+            if (!supabase) return;
 
-        function loadSiteSettings() {
-            const s = getSiteSettings() || SITE_DEFAULTS;
+            const { data: s, error } = await supabase
+                .from('site_settings')
+                .select('*')
+                .eq('id', 1)
+                .single();
+
+            if (error || !s) {
+                console.error("Error loading site settings:", error);
+                applySiteSettingsUIData(SITE_DEFAULTS);
+                return;
+            }
+
+            const settingsData = {
+                badge: s.badge,
+                subtitle: s.subtitle,
+                footerDesc: s.footer_desc,
+                copyright: s.copyright,
+                facebook: s.facebook,
+                twitter: s.twitter,
+                instagram: s.instagram,
+                tiktok: s.tiktok,
+                footerUrl: s.footer_url,
+                email: s.email || ''
+            };
+            applySiteSettingsUIData(settingsData);
+        }
+
+        function applySiteSettingsUIData(s) {
             document.getElementById('ss-badge').value = s.badge;
             document.getElementById('ss-subtitle').value = s.subtitle;
             document.getElementById('ss-footer-desc').value = s.footerDesc;
@@ -2152,30 +2393,69 @@
             document.getElementById('ss-email').value = s.email || '';
         }
 
-        function saveSiteSettings() {
+        async function saveSiteSettings() {
             const settings = {
+                id: 1,
                 badge: document.getElementById('ss-badge').value || SITE_DEFAULTS.badge,
                 subtitle: document.getElementById('ss-subtitle').value || SITE_DEFAULTS.subtitle,
-                footerDesc: document.getElementById('ss-footer-desc').value || SITE_DEFAULTS.footerDesc,
+                footer_desc: document.getElementById('ss-footer-desc').value || SITE_DEFAULTS.footerDesc,
                 copyright: document.getElementById('ss-copyright').value || SITE_DEFAULTS.copyright,
                 facebook: document.getElementById('ss-facebook').value || SITE_DEFAULTS.facebook,
                 twitter: document.getElementById('ss-twitter').value || SITE_DEFAULTS.twitter,
                 instagram: document.getElementById('ss-instagram').value || SITE_DEFAULTS.instagram,
                 tiktok: document.getElementById('ss-tiktok').value || SITE_DEFAULTS.tiktok,
-                footerUrl: document.getElementById('ss-footer-url').value || SITE_DEFAULTS.footerUrl,
-                email: document.getElementById('ss-email').value
+                footer_url: document.getElementById('ss-footer-url').value || SITE_DEFAULTS.footerUrl,
+                email: document.getElementById('ss-email').value || SITE_DEFAULTS.email,
+                updated_at: new Date().toISOString()
             };
-            setSiteSettings(settings);
-            showToast('Site settings saved!');
-            const s = document.getElementById('settingsSaveStatus');
-            s.style.display = 'inline'; setTimeout(() => s.style.display = 'none', 2500);
+
+            const supabase = getSupabaseClient();
+            if (!supabase) return;
+
+            const { error } = await supabase
+                .from('site_settings')
+                .upsert(settings);
+
+            if (error) {
+                showToast('Error saving settings: ' + error.message);
+            } else {
+                showToast('Site settings saved!');
+                const s = document.getElementById('settingsSaveStatus');
+                if (s) {
+                    s.style.display = 'inline'; 
+                    setTimeout(() => s.style.display = 'none', 2500);
+                }
+            }
         }
 
-        function resetSiteSettings() {
-            if (!confirm('Reset all site settings to defaults?')) return;
-            localStorage.removeItem('nt_site_settings');
-            loadSiteSettings();
-            showToast('Settings reset to defaults.');
+        async function resetSiteSettings() {
+            if (!confirm('Reset all site settings to defaults? This will overwrite the database.')) return;
+            const supabase = getSupabaseClient();
+            if (!supabase) return;
+
+            const { error } = await supabase
+                .from('site_settings')
+                .upsert({
+                    id: 1,
+                    badge: SITE_DEFAULTS.badge,
+                    subtitle: SITE_DEFAULTS.subtitle,
+                    footer_desc: SITE_DEFAULTS.footerDesc,
+                    copyright: SITE_DEFAULTS.copyright,
+                    facebook: SITE_DEFAULTS.facebook,
+                    twitter: SITE_DEFAULTS.twitter,
+                    instagram: SITE_DEFAULTS.instagram,
+                    tiktok: SITE_DEFAULTS.tiktok,
+                    footer_url: SITE_DEFAULTS.footerUrl,
+                    email: SITE_DEFAULTS.email,
+                    updated_at: new Date().toISOString()
+                });
+
+            if (error) {
+                showToast('Error resetting settings: ' + error.message);
+            } else {
+                applySiteSettingsUIData(SITE_DEFAULTS);
+                showToast('Settings reset to defaults.');
+            }
         }
     </script>
 </body>

@@ -15,6 +15,10 @@
         rel="stylesheet">
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase Config -->
+    <script src="supabase-config.js"></script>
     <!-- Shared Stylesheet -->
     <link rel="stylesheet" href="style.css">
     <style>
@@ -760,15 +764,31 @@
             return cat.toLowerCase().replace(/\s*&\s*/g, '-').replace(/\s+/g, '-');
         }
 
-        // ── Load published posts from localStorage ────────────────────────────
-        function loadAdminPosts() {
+        // ── Load published posts from Supabase ────────────────────────────
+        async function loadAdminPosts() {
             try {
-                const posts = JSON.parse(localStorage.getItem('nt_blog_posts') || '[]')
-                    .filter(p => p.status === 'published');
+                const supabase = getSupabaseClient();
+                if (!supabase) {
+                    console.error("Supabase client is not available.");
+                    return;
+                }
+                const { data: posts, error } = await supabase
+                    .from('blog_posts')
+                    .select('*')
+                    .eq('status', 'published')
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error("Error loading blog posts:", error);
+                    return;
+                }
 
                 const grid            = document.getElementById('blogGrid');
                 const emptyState      = document.getElementById('blogEmptyState');
                 const featuredWrapper = document.querySelector('.blog-featured');
+
+                // Clear existing grid posts
+                if (grid) grid.innerHTML = '';
 
                 // Always update stats first (even when 0 posts)
                 const uniqueCats = new Set(posts.map(p => p.category)).size;
@@ -778,16 +798,20 @@
                 if (statCategoriesEl) statCategoriesEl.textContent = uniqueCats || 0;
 
                 // Show empty state when no published posts
-                if (!posts.length) {
+                if (!posts || !posts.length) {
                     if (emptyState) emptyState.style.display = 'block';
+                    if (featuredWrapper) featuredWrapper.style.display = 'none';
                     return;
                 }
                 if (emptyState) emptyState.style.display = 'none';
 
                 posts.forEach((p, i) => {
                     const catSlug = slugCategory(p.category);
-                    const imgHtml = p.image
-                        ? `<img src="${p.image}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;">`
+                    const postDate = p.post_date || '';
+                    const postReadTime = p.read_time || '5 min read';
+                    const postImage = p.image_url || '';
+                    const imgHtml = postImage
+                        ? `<img src="${postImage}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;">`
                         : `<span class="featured-image-placeholder">${String(i + 1).padStart(2, '0')}</span>`;
 
                     if (i === 0 && featuredWrapper) {
@@ -800,8 +824,8 @@
                             fc.querySelector('.featured-title').textContent   = p.title;
                             fc.querySelector('.featured-excerpt').textContent = p.excerpt   || '';
                             fc.querySelector('.author-name').textContent      = p.author    || 'NexTech Team';
-                            fc.querySelector('.post-date').textContent        = p.date      || '';
-                            fc.querySelector('.post-read-time').innerHTML     = `<i data-lucide="clock"></i> ${p.readTime || '5 min read'}`;
+                            fc.querySelector('.post-date').textContent        = postDate;
+                            fc.querySelector('.post-read-time').innerHTML     = `<i data-lucide="clock"></i> ${postReadTime}`;
                             
                             const readMoreLink = fc.querySelector('.read-more-link');
                             if (readMoreLink) {
@@ -810,7 +834,10 @@
 
                             // Add transition and click handler on the card itself
                             fc.style.cursor = 'pointer';
-                            fc.addEventListener('click', (e) => {
+                            // Remove any old listeners by cloning
+                            const newFc = fc.cloneNode(true);
+                            fc.parentNode.replaceChild(newFc, fc);
+                            newFc.addEventListener('click', (e) => {
                                 e.preventDefault();
                                 document.body.classList.add('page-leaving');
                                 setTimeout(() => { window.location.href = `article.html?id=${p.id}`; }, 350);
@@ -821,8 +848,8 @@
                         }
                     } else {
                         // ── Remaining posts → grid cards ──────────────────────
-                        const cardImg = p.image
-                            ? `<img src="${p.image}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;">`
+                        const cardImg = postImage
+                            ? `<img src="${postImage}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;">`
                             : `<span class="blog-card-image-placeholder">${String(i + 1).padStart(2, '0')}</span>`;
                         const card = document.createElement('div');
                         card.className = 'blog-card';
@@ -836,8 +863,8 @@
                                 <p class="blog-card-excerpt">${p.excerpt || ''}</p>
                                 <a href="article.html?id=${p.id}" class="read-more-link">Read More <i data-lucide="arrow-right"></i></a>
                                 <div class="blog-card-footer">
-                                    <span class="card-date">${p.date || ''}</span>
-                                    <span class="card-read-time"><i data-lucide="clock"></i> ${p.readTime || '5 min read'}</span>
+                                    <span class="card-date">${postDate}</span>
+                                    <span class="card-read-time"><i data-lucide="clock"></i> ${postReadTime}</span>
                                 </div>
                             </div>`;
                         
@@ -917,7 +944,19 @@
                         newsletterInput.classList.remove('error');
                         newsletterInput.value = '';
                         
-                        // Save email to localStorage
+                        // Save email to Supabase subscribers table
+                        const supabase = getSupabaseClient();
+                        if (supabase) {
+                            supabase.from('subscribers')
+                                .insert([{ email }])
+                                .then(({ error }) => {
+                                    if (error && error.code !== '23505') { // 23505 is unique violation in postgres (already subscribed)
+                                        console.error('Error saving subscriber to database:', error);
+                                    }
+                                });
+                        }
+
+                        // Also save email to localStorage as secondary backup/cache
                         try {
                             let subscribers = JSON.parse(localStorage.getItem('nt_subscribers') || '[]');
                             if (!subscribers.includes(email)) {
@@ -925,7 +964,7 @@
                                 localStorage.setItem('nt_subscribers', JSON.stringify(subscribers));
                             }
                         } catch (e) {
-                            console.error('Error saving subscriber:', e);
+                            console.error('Error saving subscriber locally:', e);
                         }
                         
                         setTimeout(() => {
