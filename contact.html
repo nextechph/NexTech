@@ -16,6 +16,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Supabase Config -->
     <script src="supabase-config.js"></script>
+    <!-- EmailJS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <!-- Shared Stylesheet -->
     <link rel="stylesheet" href="style.css">
     <style>
@@ -229,8 +231,25 @@
     <script src="script.js"></script>
 
     <script>
+        // ─────────────────────────────────────────────────────────────────
+        // EmailJS Configuration
+        // Replace these three values with your own from emailjs.com:
+        //   1. Sign up free at https://www.emailjs.com
+        //   2. Add Email Service → connect your Gmail → copy Service ID
+        //   3. Create Email Template → copy Template ID
+        //   4. Go to Account → copy your Public Key
+        // ─────────────────────────────────────────────────────────────────
+        const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';   // e.g. 'service_abc123'
+        const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';  // e.g. 'template_xyz456'
+        const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';   // e.g. 'AbCdEfGhIjKlMnOp'
+
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            // Initialise EmailJS
+            if (typeof emailjs !== 'undefined') {
+                emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+            }
 
             // Pre-fill from Planner blueprint via sessionStorage
             const blueprintData = sessionStorage.getItem('nextech_blueprint');
@@ -244,23 +263,24 @@
 
             // Form submission
             const contactForm = document.getElementById('contactForm');
-            const formStatus = document.getElementById('formStatus');
+            const formStatus  = document.getElementById('formStatus');
             if (contactForm && formStatus) {
                 contactForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
-                    const submitBtn = contactForm.querySelector('.btn-submit');
+                    const submitBtn     = contactForm.querySelector('.btn-submit');
                     const submitBtnText = submitBtn.querySelector('span');
-                    const originalText = submitBtnText.textContent;
+                    const originalText  = submitBtnText.textContent;
 
                     submitBtn.style.pointerEvents = 'none';
                     submitBtnText.textContent = 'Transmitting...';
                     formStatus.className = 'form-status';
                     formStatus.textContent = '';
 
-                    const name = document.getElementById('clientName').value.trim();
-                    const email = document.getElementById('clientEmail').value.trim();
+                    const name    = document.getElementById('clientName').value.trim();
+                    const email   = document.getElementById('clientEmail').value.trim();
                     const details = document.getElementById('projectDetails').value.trim();
 
+                    // ── 1. Save to Supabase ──────────────────────────────────
                     const supabase = getSupabaseClient();
                     if (!supabase) {
                         formStatus.className = 'form-status error';
@@ -270,27 +290,48 @@
                         return;
                     }
 
-                    const { error } = await supabase
+                    const { error: dbError } = await supabase
                         .from('contact_submissions')
                         .insert([{
-                            name: name,
-                            email: email,
-                            subject: 'Inquiry from NexTech Website',
-                            message: details,
+                            name:     name,
+                            email:    email,
+                            subject:  'Inquiry from NexTech Website',
+                            message:  details,
                             blueprint: details
                         }]);
 
                     submitBtn.style.pointerEvents = 'all';
                     submitBtnText.textContent = originalText;
 
-                    if (error) {
+                    if (dbError) {
                         formStatus.className = 'form-status error';
                         formStatus.innerHTML = `<i data-lucide="alert-circle" style="width:14px;height:14px;vertical-align:middle;margin-right:6px;"></i>Failed to transmit. Please try again.`;
-                    } else {
-                        formStatus.className = 'form-status success';
-                        formStatus.innerHTML = '<i data-lucide="check-circle" style="width:14px;height:14px;vertical-align:middle;margin-right:6px;"></i>Inquiry received successfully. Our engineering team will follow up shortly.';
-                        contactForm.reset();
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                        return;
                     }
+
+                    // ── 2. Send email notification via EmailJS ───────────────
+                    if (typeof emailjs !== 'undefined' &&
+                        EMAILJS_SERVICE_ID  !== 'YOUR_SERVICE_ID' &&
+                        EMAILJS_TEMPLATE_ID !== 'YOUR_TEMPLATE_ID') {
+                        try {
+                            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                                from_name:  name,
+                                from_email: email,
+                                message:    details || '(No project details provided)',
+                                reply_to:   email
+                            });
+                        } catch (emailErr) {
+                            // Email notification failed — inquiry is still saved in Supabase.
+                            // Don't block the user with an error; just log it silently.
+                            console.warn('EmailJS notification failed:', emailErr);
+                        }
+                    }
+
+                    // ── 3. Show success ──────────────────────────────────────
+                    formStatus.className = 'form-status success';
+                    formStatus.innerHTML = '<i data-lucide="check-circle" style="width:14px;height:14px;vertical-align:middle;margin-right:6px;"></i>Inquiry received successfully. Our engineering team will follow up shortly.';
+                    contactForm.reset();
                     if (typeof lucide !== 'undefined') lucide.createIcons();
                 });
             }
