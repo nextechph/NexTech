@@ -1,5 +1,29 @@
 -- NexTech Website Supabase Database Setup Schema
 -- Run this script in the Supabase SQL Editor
+-- This script is fully idempotent — safe to run multiple times.
+
+-- --------------------------------------------------
+-- 0. Drop ALL existing RLS policies (idempotency guard)
+-- --------------------------------------------------
+
+DO $$
+DECLARE
+    r RECORD;
+BEGIN
+    FOR r IN
+        SELECT policyname, tablename
+        FROM pg_policies
+        WHERE schemaname = 'public'
+    LOOP
+        EXECUTE format('DROP POLICY IF EXISTS %I ON public.%I', r.policyname, r.tablename);
+    END LOOP;
+END $$;
+
+-- Drop storage.objects policies for our bucket
+DROP POLICY IF EXISTS "Allow public read of images" ON storage.objects;
+DROP POLICY IF EXISTS "Allow authenticated users to insert images" ON storage.objects;
+DROP POLICY IF EXISTS "Allow authenticated users to update images" ON storage.objects;
+DROP POLICY IF EXISTS "Allow authenticated users to delete images" ON storage.objects;
 
 -- --------------------------------------------------
 -- 1. Create Tables
@@ -160,51 +184,58 @@ ALTER TABLE public.contact_submissions ENABLE ROW LEVEL SECURITY;
 -- --------------------------------------------------
 
 -- Site Settings Policies
+DROP POLICY IF EXISTS "Allow public read access to site_settings" ON public.site_settings;
+DROP POLICY IF EXISTS "Allow admin to modify site_settings" ON public.site_settings;
 CREATE POLICY "Allow public read access to site_settings" ON public.site_settings
     FOR SELECT USING (true);
-
 CREATE POLICY "Allow admin to modify site_settings" ON public.site_settings
     FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
 -- Services Policies
+DROP POLICY IF EXISTS "Allow public read access to services" ON public.services;
+DROP POLICY IF EXISTS "Allow admin to modify services" ON public.services;
 CREATE POLICY "Allow public read access to services" ON public.services
     FOR SELECT USING (true);
-
 CREATE POLICY "Allow admin to modify services" ON public.services
     FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
 -- Portfolio Projects Policies
+DROP POLICY IF EXISTS "Allow public read access to portfolio_projects" ON public.portfolio_projects;
+DROP POLICY IF EXISTS "Allow admin to modify portfolio_projects" ON public.portfolio_projects;
 CREATE POLICY "Allow public read access to portfolio_projects" ON public.portfolio_projects
     FOR SELECT USING (true);
-
 CREATE POLICY "Allow admin to modify portfolio_projects" ON public.portfolio_projects
     FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
 -- Blog Posts Policies
+DROP POLICY IF EXISTS "Allow public read access to blog_posts" ON public.blog_posts;
+DROP POLICY IF EXISTS "Allow admin to modify blog_posts" ON public.blog_posts;
 CREATE POLICY "Allow public read access to blog_posts" ON public.blog_posts
     FOR SELECT USING (true);
-
 CREATE POLICY "Allow admin to modify blog_posts" ON public.blog_posts
     FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
 -- Planner Config Policies
+DROP POLICY IF EXISTS "Allow public read access to planner_config" ON public.planner_config;
+DROP POLICY IF EXISTS "Allow admin to modify planner_config" ON public.planner_config;
 CREATE POLICY "Allow public read access to planner_config" ON public.planner_config
     FOR SELECT USING (true);
-
 CREATE POLICY "Allow admin to modify planner_config" ON public.planner_config
     FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
 -- Subscribers Policies
+DROP POLICY IF EXISTS "Allow public to insert subscribers" ON public.subscribers;
+DROP POLICY IF EXISTS "Allow admin to manage subscribers" ON public.subscribers;
 CREATE POLICY "Allow public to insert subscribers" ON public.subscribers
     FOR INSERT WITH CHECK (true);
-
 CREATE POLICY "Allow admin to manage subscribers" ON public.subscribers
     FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
 -- Contact Submissions Policies
+DROP POLICY IF EXISTS "Allow public to insert contact_submissions" ON public.contact_submissions;
+DROP POLICY IF EXISTS "Allow admin to manage contact_submissions" ON public.contact_submissions;
 CREATE POLICY "Allow public to insert contact_submissions" ON public.contact_submissions
     FOR INSERT WITH CHECK (true);
-
 CREATE POLICY "Allow admin to manage contact_submissions" ON public.contact_submissions
     FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
@@ -218,6 +249,11 @@ VALUES ('images', 'images', true)
 ON CONFLICT (id) DO NOTHING;
 
 -- RLS policies for storage.objects in the 'images' bucket
+DROP POLICY IF EXISTS "Allow public read of images" ON storage.objects;
+DROP POLICY IF EXISTS "Allow authenticated users to insert images" ON storage.objects;
+DROP POLICY IF EXISTS "Allow authenticated users to update images" ON storage.objects;
+DROP POLICY IF EXISTS "Allow authenticated users to delete images" ON storage.objects;
+
 CREATE POLICY "Allow public read of images" ON storage.objects
     FOR SELECT USING (bucket_id = 'images');
 
