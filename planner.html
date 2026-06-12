@@ -1007,12 +1007,14 @@
                     const checkboxes = document.querySelectorAll('#addonGrid input[type="checkbox"]:checked');
                     const addons = Array.from(checkboxes).map(cb => cb.dataset.label).join(', ') || 'None';
                     const total = document.getElementById('billTotal').textContent;
-                    sessionStorage.setItem('plannerData', JSON.stringify({
-                        services: 'Student Plan — Base Package',
-                        budget: `${total} (Student Pricing)`,
-                        timeline: 'TBD',
-                        addons: addons
-                    }));
+                    const formattedDesc =
+                        `Hello NexTech team, I have built a Student Project blueprint:\n` +
+                        `- Plan: Student Starter Package\n` +
+                        `- Add-ons: ${addons}\n` +
+                        `- Total Estimate: ${total} (Student Pricing)\n` +
+                        `- Timeline: TBD\n` +
+                        `Please let me know how we can proceed.`;
+                    sessionStorage.setItem('nextech_blueprint', formattedDesc);
                     window.location.href = 'contact.html';
                 });
             }
