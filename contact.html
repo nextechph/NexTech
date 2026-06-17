@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" theme="dark">
 
 <head>
     <meta charset="UTF-8">
@@ -73,7 +73,8 @@
             transition: var(--transition-smooth);
             border-radius: 0;
             cursor: pointer;
-            appearance: none; /* remove default arrow */
+            appearance: none;
+            /* remove default arrow */
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23909090'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 16px center;
@@ -378,7 +379,7 @@
             // Try localStorage first (fastest — set by planner.html)
             const cached = localStorage.getItem('nt_contact_methods');
             if (cached) {
-                try { methods = JSON.parse(cached); } catch(e) {}
+                try { methods = JSON.parse(cached); } catch (e) { }
             } else {
                 // Fallback: load from Supabase directly
                 try {
@@ -394,7 +395,7 @@
                             localStorage.setItem('nt_contact_methods', JSON.stringify(methods));
                         }
                     }
-                } catch(e) {}
+                } catch (e) { }
             }
 
             // Append options (keep the placeholder)
@@ -424,7 +425,7 @@
 
                     // ── Autofill contact fields from professional wizard ──
                     if (raw.type === 'professional') {
-                        if (raw.name)  document.getElementById('clientName').value  = raw.name;
+                        if (raw.name) document.getElementById('clientName').value = raw.name;
                         if (raw.email) document.getElementById('clientEmail').value = raw.email;
                         if (raw.phone) document.getElementById('clientPhone').value = raw.phone;
 
@@ -437,10 +438,10 @@
 
                         // Compose project description textarea from wizard data
                         const descParts = [];
-                        if (raw.project_name)        descParts.push(`Project: ${raw.project_name}`);
+                        if (raw.project_name) descParts.push(`Project: ${raw.project_name}`);
                         if (raw.project_description) descParts.push(`\n${raw.project_description}`);
-                        if (raw.project_goals)       descParts.push(`\nGoals: ${raw.project_goals}`);
-                        if (raw.availability)        descParts.push(`\nBest time to reach me: ${raw.availability}`);
+                        if (raw.project_goals) descParts.push(`\nGoals: ${raw.project_goals}`);
+                        if (raw.availability) descParts.push(`\nBest time to reach me: ${raw.availability}`);
                         if (descParts.length) {
                             document.getElementById('projectDesc').value = descParts.join('\n').trim();
                         }
@@ -541,13 +542,13 @@
                     }
 
                     // Format message field for database
-                    const messageContent = 
+                    const messageContent =
                         `Phone/WhatsApp: ${phone}\n` +
                         `Preferred Contact: ${method}\n\n` +
                         `Project Description:\n${desc}`;
-                        
+
                     // Format blueprint column for database
-                    const blueprintContent = blueprintText 
+                    const blueprintContent = blueprintText
                         ? `${blueprintText}\n\nPhone: ${phone}\nMethod: ${method}`
                         : `None (Direct Inquiry)\n\nPhone: ${phone}\nMethod: ${method}`;
 
