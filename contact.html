@@ -512,16 +512,16 @@
 
             // Store parsed raw data on the form element for use during submission
             // (sessionStorage is cleared here so we read it before that)
+            const contactForm = document.getElementById('contactForm');
             if (rawDataStr) {
                 try {
-                    contactForm._blueprintRaw = JSON.parse(rawDataStr);
+                    if (contactForm) contactForm._blueprintRaw = JSON.parse(rawDataStr);
                 } catch(e) {}
                 sessionStorage.removeItem('nextech_blueprint');
                 sessionStorage.removeItem('nextech_blueprint_raw');
             }
 
             // Form submission
-            const contactForm = document.getElementById('contactForm');
             const formStatus = document.getElementById('formStatus');
             if (contactForm && formStatus) {
                 contactForm.addEventListener('submit', async (e) => {
