@@ -2439,9 +2439,9 @@
             const list = document.getElementById('pe-contact-method-list');
             if (!list) return;
             list.innerHTML = methods.map((m, i) => `
-            <div class="pe-row pe-cm-row" data-i="${i}">
-                <input type="text" class="pe-row-input" value="${m || ''}" placeholder="e.g. WhatsApp, Telegram">
-                <button class="btn-danger" onclick="removeContactMethodRow(${i})" style="padding:8px;">✕</button>
+            <div class="pe-row pe-cm-row" data-i="${i}" style="display:flex;align-items:center;gap:8px;">
+                <input type="text" class="pe-row-input" value="${m || ''}" placeholder="e.g. WhatsApp, Telegram" style="flex:1;">
+                <button class="btn-danger" onclick="removeContactMethodRow(${i})" style="padding:8px;flex-shrink:0;">✕</button>
             </div>`).join('');
         }
 
