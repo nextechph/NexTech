@@ -114,11 +114,29 @@ CREATE TABLE IF NOT EXISTS public.contact_submissions (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     name text,
     email text,
+    phone text,
+    contact_method text,
     subject text,
     message text,
-    blueprint text, -- pre-filled planner summary or selected tier info
+    description text,
+    blueprint text,
+    features_needed text,
+    budget_range text,
+    timeline text,
+    project_name text,
+    inquiry_type text DEFAULT 'Direct Inquiry',
     submitted_at timestamptz DEFAULT now()
 );
+
+-- Migrations: add individual columns to existing contact_submissions tables
+ALTER TABLE public.contact_submissions ADD COLUMN IF NOT EXISTS phone text;
+ALTER TABLE public.contact_submissions ADD COLUMN IF NOT EXISTS contact_method text;
+ALTER TABLE public.contact_submissions ADD COLUMN IF NOT EXISTS description text;
+ALTER TABLE public.contact_submissions ADD COLUMN IF NOT EXISTS features_needed text;
+ALTER TABLE public.contact_submissions ADD COLUMN IF NOT EXISTS budget_range text;
+ALTER TABLE public.contact_submissions ADD COLUMN IF NOT EXISTS timeline text;
+ALTER TABLE public.contact_submissions ADD COLUMN IF NOT EXISTS project_name text;
+ALTER TABLE public.contact_submissions ADD COLUMN IF NOT EXISTS inquiry_type text DEFAULT 'Direct Inquiry';
 
 -- --------------------------------------------------
 -- 2. Populate Default Data

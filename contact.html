@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" theme="dark">
+<html lang="en">
 
 <head>
+    <!-- Anti-FOUC: apply saved theme before any CSS renders -->
+    <script>(function(){var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);})()</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact | Next Technology</title>
@@ -506,6 +508,14 @@
             if (blueprintData) {
                 const projectDetailsField = document.getElementById('projectDetails');
                 if (projectDetailsField) projectDetailsField.value = blueprintData;
+            }
+
+            // Store parsed raw data on the form element for use during submission
+            // (sessionStorage is cleared here so we read it before that)
+            if (rawDataStr) {
+                try {
+                    contactForm._blueprintRaw = JSON.parse(rawDataStr);
+                } catch(e) {}
                 sessionStorage.removeItem('nextech_blueprint');
                 sessionStorage.removeItem('nextech_blueprint_raw');
             }
@@ -532,6 +542,9 @@
                     const desc = document.getElementById('projectDesc').value.trim();
                     const blueprintText = document.getElementById('projectDetails').value.trim();
 
+                    // Retrieve blueprint raw data saved before sessionStorage was cleared
+                    const raw = contactForm._blueprintRaw || null;
+
                     const supabase = getSupabaseClient();
                     if (!supabase) {
                         formStatus.className = 'form-status error';
@@ -541,26 +554,37 @@
                         return;
                     }
 
-                    // Format message field for database
+                    // Build the full message string (kept for backwards compat / readability)
                     const messageContent =
                         `Phone/WhatsApp: ${phone}\n` +
                         `Preferred Contact: ${method}\n\n` +
                         `Project Description:\n${desc}`;
 
-                    // Format blueprint column for database
                     const blueprintContent = blueprintText
                         ? `${blueprintText}\n\nPhone: ${phone}\nMethod: ${method}`
                         : `None (Direct Inquiry)\n\nPhone: ${phone}\nMethod: ${method}`;
 
+                    // Individual columns — these are what Pipedream reads directly
+                    const insertPayload = {
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        contact_method: method,
+                        subject: 'Project Planner Submission',
+                        message: messageContent,
+                        blueprint: blueprintContent,
+                        description: desc,
+                        // Planner-specific fields (populated when coming from the wizard)
+                        features_needed: raw ? raw.services || null : null,
+                        budget_range:    raw ? raw.budget   || null : null,
+                        timeline:        raw ? raw.timeline || null : null,
+                        project_name:    raw ? raw.project_name || null : null,
+                        inquiry_type:    raw ? (raw.type === 'student' ? 'Student Package' : 'Professional Project') : 'Direct Inquiry'
+                    };
+
                     const { error } = await supabase
                         .from('contact_submissions')
-                        .insert([{
-                            name: name,
-                            email: email,
-                            subject: 'Project Planner Submission',
-                            message: messageContent,
-                            blueprint: blueprintContent
-                        }]);
+                        .insert([insertPayload]);
 
                     submitBtn.style.pointerEvents = 'all';
                     submitBtnText.textContent = originalText;
