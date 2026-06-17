@@ -93,9 +93,14 @@ CREATE TABLE IF NOT EXISTS public.planner_config (
     addons jsonb DEFAULT '[]'::jsonb,
     tiers jsonb DEFAULT '[]'::jsonb,
     timeline jsonb DEFAULT '[]'::jsonb,
+    contact_methods jsonb DEFAULT '["Email","WhatsApp","Phone Call","Zoom / Video Call","Facebook Messenger"]'::jsonb,
     updated_at timestamptz DEFAULT now(),
     CONSTRAINT one_row CHECK (id = 1)
 );
+
+-- Migration: add contact_methods to existing planner_config tables
+ALTER TABLE public.planner_config
+    ADD COLUMN IF NOT EXISTS contact_methods jsonb DEFAULT '["Email","WhatsApp","Phone Call","Zoom / Video Call","Facebook Messenger"]'::jsonb;
 
 -- Subscribers Table
 CREATE TABLE IF NOT EXISTS public.subscribers (
@@ -138,10 +143,10 @@ VALUES (
 ON CONFLICT (id) DO NOTHING;
 
 -- Default Planner Config
-INSERT INTO public.planner_config (id, student, addons, tiers, timeline)
+INSERT INTO public.planner_config (id, student, addons, tiers, timeline, contact_methods)
 VALUES (
     1,
-    '{"title": "Student Starter Package", "base": 5000, "desc": "1-page website · Mobile responsive · 1 revision · Basic deployment"}'::jsonb,
+    '{"title": "Student Starter Package", "base": 5000, "desc": "1-page website \u00b7 Mobile responsive \u00b7 1 revision \u00b7 Basic deployment"}'::jsonb,
     '[
         {"label": "Additional Page", "price": 1500, "note": "per page"},
         {"label": "Contact Form", "price": 1000, "note": ""},
@@ -155,15 +160,16 @@ VALUES (
         {"label": "Rush Delivery (under 2 weeks)", "price": 2000, "note": ""}
     ]'::jsonb,
     '[
-        {"name": "Starter", "range": "₱10k – ₱25k", "ideal": "Small sites & simple builds", "badge": "", "mult": 1},
-        {"name": "Growth", "range": "₱25k – ₱60k", "ideal": "Custom design & full-featured sites", "badge": "MOST POPULAR", "mult": 1.5},
-        {"name": "Enterprise", "range": "₱60k+", "ideal": "Complex projects & large-scale builds", "badge": "", "mult": 2.2}
+        {"name": "Starter", "range": "\u20b110k \u2013 \u20b125k", "ideal": "Small sites & simple builds", "badge": "", "mult": 1},
+        {"name": "Growth", "range": "\u20b125k \u2013 \u20b160k", "ideal": "Custom design & full-featured sites", "badge": "MOST POPULAR", "mult": 1.5},
+        {"name": "Enterprise", "range": "\u20b160k+", "ideal": "Complex projects & large-scale builds", "badge": "", "mult": 2.2}
     ]'::jsonb,
     '[
-        {"label": "Rush", "note": "2–4 weeks"},
-        {"label": "Standard", "note": "1–2 months · most common"},
-        {"label": "Relaxed", "note": "3+ months · no hard deadline"}
-    ]'::jsonb
+        {"label": "Rush", "note": "2\u20134 weeks"},
+        {"label": "Standard", "note": "1\u20132 months \u00b7 most common"},
+        {"label": "Relaxed", "note": "3+ months \u00b7 no hard deadline"}
+    ]'::jsonb,
+    '["Email","WhatsApp","Phone Call","Zoom / Video Call","Facebook Messenger"]'::jsonb
 )
 ON CONFLICT (id) DO NOTHING;
 

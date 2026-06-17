@@ -1541,8 +1541,7 @@
                 <div class="view-header">
                     <div>
                         <div class="view-title">Planner Editor</div>
-                        <div class="view-sub">Edit pricing, add-ons, budget tiers, and timeline options shown on
-                            planner.html.</div>
+                        <div class="view-sub">Edit pricing, add-ons, budget tiers, and timeline options. Changes directly synchronize with the interactive cards on planner.html.</div>
                     </div>
                     <button class="btn-primary" onclick="savePlannerConfig()">Save All Changes</button>
                 </div>
@@ -1600,6 +1599,18 @@
                     <div id="pe-timeline-list" style="display:flex;flex-direction:column;gap:8px;"></div>
                 </div>
 
+                <!-- CONTACT METHODS -->
+                <div class="form-section">
+                    <div class="form-section-title"
+                        style="display:flex;justify-content:space-between;align-items:center;">
+                        <span>Contact Method Options</span>
+                        <button class="btn-secondary" onclick="addContactMethodRow()"
+                            style="padding:6px 14px;font-size:0.65rem;">+ Add Method</button>
+                    </div>
+                    <p style="font-size:0.75rem;color:var(--text2);margin-bottom:16px;">These options populate the "Preferred Contact Method" dropdown on both the Professional Planner wizard and the Contact page.</p>
+                    <div id="pe-contact-method-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+                </div>
+
                 <div class="btn-row">
                     <button class="btn-primary" onclick="savePlannerConfig()">Save Planner Config</button>
                     <button class="btn-secondary" onclick="resetPlannerConfig()">Reset to Defaults</button>
@@ -1612,7 +1623,7 @@
                 <div class="view-header">
                     <div>
                         <div class="view-title">Services Editor</div>
-                        <div class="view-sub">Edit the services displayed on the homepage.</div>
+                        <div class="view-sub">Edit the services displayed on the homepage and the selection cards in the project planner.</div>
                     </div>
                     <div style="display:flex;gap:8px;">
                         <button class="btn-secondary" onclick="addServiceRow()">+ Add Service</button>
@@ -2298,6 +2309,13 @@
                 { label: 'Rush', note: '2–4 weeks' },
                 { label: 'Standard', note: '1–2 months · most common' },
                 { label: 'Relaxed', note: '3+ months · no hard deadline' }
+            ],
+            contact_methods: [
+                'Email',
+                'WhatsApp',
+                'Phone Call',
+                'Zoom / Video Call',
+                'Facebook Messenger'
             ]
         };
 
@@ -2333,6 +2351,7 @@
             renderAddonRows(cfg.addons);
             renderTierRows(cfg.tiers);
             renderTimelineRows(cfg.timeline);
+            renderContactMethodRows(cfg.contact_methods || PLANNER_DEFAULTS.contact_methods);
         }
 
         function renderAddonRows(addons) {
@@ -2405,6 +2424,28 @@
             renderTimelineRows(cfg.timeline);
         }
 
+        function renderContactMethodRows(methods) {
+            const list = document.getElementById('pe-contact-method-list');
+            if (!list) return;
+            list.innerHTML = methods.map((m, i) => `
+            <div class="pe-row pe-cm-row" data-i="${i}">
+                <input type="text" class="pe-row-input" value="${m || ''}" placeholder="e.g. WhatsApp, Telegram">
+                <button class="btn-danger" onclick="removeContactMethodRow(${i})" style="padding:8px;">✕</button>
+            </div>`).join('');
+        }
+
+        function addContactMethodRow() {
+            const cfg = getCurrentPlannerDraft();
+            cfg.contact_methods.push('');
+            renderContactMethodRows(cfg.contact_methods);
+        }
+
+        function removeContactMethodRow(i) {
+            const cfg = getCurrentPlannerDraft();
+            cfg.contact_methods.splice(i, 1);
+            renderContactMethodRows(cfg.contact_methods);
+        }
+
         function getCurrentPlannerDraft() {
             const addonRows = document.querySelectorAll('#pe-addon-list .pe-row');
             const addons = Array.from(addonRows).map(r => {
@@ -2421,18 +2462,46 @@
                 const inputs = r.querySelectorAll('input');
                 return { label: inputs[0].value, note: inputs[1].value };
             });
+            const cmRows = document.querySelectorAll('#pe-contact-method-list .pe-cm-row');
+            const contact_methods = Array.from(cmRows).map(r => r.querySelector('input').value.trim()).filter(v => v);
             return {
                 student: {
                     title: document.getElementById('pe-student-title').value || PLANNER_DEFAULTS.student.title,
                     base: parseInt(document.getElementById('pe-student-base').value) || PLANNER_DEFAULTS.student.base,
                     desc: document.getElementById('pe-student-desc').value || PLANNER_DEFAULTS.student.desc
                 },
-                addons, tiers, timeline
+                addons, tiers, timeline, contact_methods
             };
         }
 
         async function savePlannerConfig() {
             const cfg = getCurrentPlannerDraft();
+            
+            // ── VALIDATION ──
+            if (!cfg.student.title.trim()) { showToast('Student starter plan title cannot be empty.'); return; }
+            if (isNaN(cfg.student.base) || cfg.student.base < 0) { showToast('Student starter base price must be 0 or positive.'); return; }
+            if (!cfg.student.desc.trim()) { showToast('Student starter description cannot be empty.'); return; }
+            
+            for (let i = 0; i < cfg.addons.length; i++) {
+                const a = cfg.addons[i];
+                if (!a.label.trim()) { showToast(`Student Add-on #${i+1} label cannot be empty.`); return; }
+                if (isNaN(a.price) || a.price < 0) { showToast(`Student Add-on #${i+1} price must be 0 or positive.`); return; }
+            }
+            
+            for (let i = 0; i < cfg.tiers.length; i++) {
+                const t = cfg.tiers[i];
+                if (!t.name.trim()) { showToast(`Pro Budget Tier #${i+1} name cannot be empty.`); return; }
+                if (!t.range.trim()) { showToast(`Pro Budget Tier #${i+1} range cannot be empty.`); return; }
+                if (!t.ideal.trim()) { showToast(`Pro Budget Tier #${i+1} ideal description cannot be empty.`); return; }
+                if (isNaN(t.mult) || t.mult <= 0) { showToast(`Pro Budget Tier #${i+1} multiplier must be a valid number greater than 0.`); return; }
+            }
+            
+            for (let i = 0; i < cfg.timeline.length; i++) {
+                const tl = cfg.timeline[i];
+                if (!tl.label.trim()) { showToast(`Pro Timeline Option #${i+1} label cannot be empty.`); return; }
+                if (!tl.note.trim()) { showToast(`Pro Timeline Option #${i+1} note/duration cannot be empty.`); return; }
+            }
+
             const supabase = getSupabaseClient();
             if (!supabase) return;
 
@@ -2444,6 +2513,7 @@
                     addons: cfg.addons,
                     tiers: cfg.tiers,
                     timeline: cfg.timeline,
+                    contact_methods: cfg.contact_methods,
                     updated_at: new Date().toISOString()
                 });
 
@@ -2470,6 +2540,7 @@
                     addons: PLANNER_DEFAULTS.addons,
                     tiers: PLANNER_DEFAULTS.tiers,
                     timeline: PLANNER_DEFAULTS.timeline,
+                    contact_methods: PLANNER_DEFAULTS.contact_methods,
                     updated_at: new Date().toISOString()
                 });
 
@@ -2615,6 +2686,24 @@
 
         async function saveServicesConfig() {
             const services = getCurrentServicesDraft();
+            
+            // ── VALIDATION ──
+            if (services.length === 0) {
+                showToast('You must have at least one service card configured.');
+                return;
+            }
+            
+            for (let i = 0; i < services.length; i++) {
+                const s = services[i];
+                if (!s.title.trim()) { showToast(`Service #${i+1} title cannot be empty.`); return; }
+                if (!s.desc.trim()) { showToast(`Service #${i+1} description cannot be empty.`); return; }
+                if (!s.icon.trim()) { showToast(`Service #${i+1} icon cannot be empty.`); return; }
+                if (s.bullets.some(b => !b.trim())) {
+                    showToast(`Service #${i+1} bullet points cannot be empty.`);
+                    return;
+                }
+            }
+
             const supabase = getSupabaseClient();
             if (!supabase) return;
 

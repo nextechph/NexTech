@@ -78,6 +78,7 @@
             gap: 0;
             position: relative;
             z-index: 5;
+            overflow-x: auto;
         }
 
         .progress-step {
@@ -86,6 +87,7 @@
             gap: 10px;
             flex: 1;
             position: relative;
+            transition: opacity 0.3s;
         }
 
         .progress-step:not(:last-child)::after {
@@ -94,35 +96,61 @@
             right: 0;
             top: 50%;
             transform: translateY(-50%);
-            width: calc(100% - 120px);
+            width: calc(100% - 130px);
             height: 1px;
             background: var(--border);
-            left: 120px;
+            left: 130px;
+            transition: background 0.3s;
+        }
+
+        .progress-step.completed:not(:last-child)::after {
+            background: var(--accent);
         }
 
         .progress-num {
             font-family: var(--font-heading);
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 700;
-            letter-spacing: 0.2em;
+            letter-spacing: 0.15em;
             color: var(--text-tertiary);
             border: 1px solid var(--border);
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .progress-step.active .progress-num {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .progress-step.completed .progress-num {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--btn-primary-text);
         }
 
         .progress-label {
             font-family: var(--font-heading);
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
             color: var(--text-tertiary);
             white-space: nowrap;
+            transition: color 0.3s;
+        }
+
+        .progress-step.active .progress-label {
+            color: var(--text-primary);
+        }
+
+        .progress-step.completed .progress-label {
+            color: var(--text-secondary);
         }
 
         /* Contact redirect note */
@@ -433,19 +461,168 @@
             }
         }
 
+        /* Wizard Steps */
+        .planner-wizard-step {
+            animation: wizFadeIn 0.35s ease;
+        }
+
+        @keyframes wizFadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Wizard Navigation Buttons */
+        .wizard-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            gap: 12px;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 12px 24px;
+            font-family: var(--font-heading);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+            background: var(--card-hover);
+        }
+
+        /* Wizard Form Fields */
+        .wiz-field {
+            margin-bottom: 20px;
+        }
+
+        .wiz-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .wiz-label {
+            display: block;
+            font-family: var(--font-heading);
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .wiz-required {
+            color: var(--accent);
+        }
+
+        .wiz-input,
+        .wiz-textarea,
+        .wiz-select {
+            width: 100%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 14px 16px;
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+            border-radius: 0;
+            appearance: none;
+        }
+
+        .wiz-textarea {
+            resize: vertical;
+            min-height: 100px;
+            line-height: 1.6;
+        }
+
+        .wiz-input:focus,
+        .wiz-textarea:focus,
+        .wiz-select:focus {
+            border-color: var(--accent);
+        }
+
+        .wiz-input::placeholder,
+        .wiz-textarea::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        /* Review Card */
+        .wiz-review-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+        }
+
+        .wiz-review-title {
+            font-family: var(--font-heading);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            color: var(--text-tertiary);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wiz-review-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            font-size: 0.82rem;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .wiz-review-row:last-child {
+            border-bottom: none;
+        }
+
+        .wiz-review-row span:first-child {
+            color: var(--text-tertiary);
+            white-space: nowrap;
+        }
+
+        .wiz-review-row span:last-child {
+            color: var(--text-primary);
+            font-weight: 500;
+            text-align: right;
+        }
+
+
         /* Footer spacing */
         .planner-section {
             margin-bottom: 0;
         }
 
-
-        .planner-section {
-            margin-bottom: 0;
-        }
-
         @media (max-width: 600px) {
-            .planner-progress {
-                display: none;
+            .proProgressBar {
+                gap: 4px;
+            }
+
+            .wiz-row {
+                grid-template-columns: 1fr;
             }
 
             .student-base-banner {
@@ -543,18 +720,26 @@
         </div>
 
         <!-- Step Progress Bar -->
-        <div class="planner-progress fade-in">
-            <div class="progress-step">
+        <div class="planner-progress fade-in" id="proProgressBar">
+            <div class="progress-step active" data-step="1">
                 <span class="progress-num">01</span>
-                <span class="progress-label">Services</span>
+                <span class="progress-label">Features</span>
             </div>
-            <div class="progress-step">
+            <div class="progress-step" data-step="2">
                 <span class="progress-num">02</span>
                 <span class="progress-label">Budget</span>
             </div>
-            <div class="progress-step">
+            <div class="progress-step" data-step="3">
                 <span class="progress-num">03</span>
                 <span class="progress-label">Timeline</span>
+            </div>
+            <div class="progress-step" data-step="4">
+                <span class="progress-num">04</span>
+                <span class="progress-label">Description</span>
+            </div>
+            <div class="progress-step" data-step="5">
+                <span class="progress-num">05</span>
+                <span class="progress-label">Contact</span>
             </div>
         </div>
 
@@ -663,14 +848,18 @@
                             <span id="billTotal">&#8369;5,000</span>
                         </div>
                         <button class="btn-primary-large" id="applyStudentBlueprintBtn"
-                            style="width:100%; margin-top:20px;">Send This Quote to Inquiry</button>
+                            style="width:100%; margin-top:20px;">Send Inquiry</button>
                     </div>
                 </div>
 
                 <div class="planner-card" id="proPlannerCard">
-                    <!-- Step 1: Select Services -->
-                    <div class="planner-step">
-                        <div class="step-label">01 / Choose Services (Select multiple)</div>
+
+                    <!-- ═══ WIZARD STEP 1: Features ═══ -->
+                    <div class="planner-wizard-step" id="wizStep1">
+                        <div class="step-label">01 / Features Needed
+                            <span style="font-weight:400; color:var(--text-tertiary); font-family:var(--font-body); letter-spacing:0; text-transform:none; font-size:0.75rem;"> — Select all that apply</span>
+                        </div>
+                        <p style="font-size:0.8rem; color:var(--text-tertiary); margin-bottom:20px;">Choose the services you need. You can select multiple.</p>
                         <div class="planner-options" id="serviceOptions">
                             <div class="planner-opt-card" data-val="Website Development" data-weight="3">
                                 <i data-lucide="code-2"></i>
@@ -692,21 +881,44 @@
                                 <i data-lucide="palette"></i>
                                 <span>UI/UX Design</span>
                             </div>
+                            <div class="planner-opt-card" data-val="E-Commerce" data-weight="3">
+                                <i data-lucide="shopping-cart"></i>
+                                <span>E-Commerce</span>
+                            </div>
+                            <div class="planner-opt-card" data-val="Mobile App" data-weight="3">
+                                <i data-lucide="smartphone"></i>
+                                <span>Mobile App</span>
+                            </div>
+                            <div class="planner-opt-card" data-val="SEO & Performance" data-weight="2">
+                                <i data-lucide="trending-up"></i>
+                                <span>SEO &amp; Performance</span>
+                            </div>
+                            <div class="planner-opt-card" data-val="Logo & Branding" data-weight="2">
+                                <i data-lucide="pen-tool"></i>
+                                <span>Logo &amp; Branding</span>
+                            </div>
+                            <div class="planner-opt-card" data-val="Maintenance & Support" data-weight="1">
+                                <i data-lucide="wrench"></i>
+                                <span>Maintenance &amp; Support</span>
+                            </div>
+                        </div>
+                        <div class="wizard-nav">
+                            <div></div>
+                            <button class="btn-primary" onclick="wizNext(1)">Next <i data-lucide="arrow-right" style="width:14px;height:14px;"></i></button>
                         </div>
                     </div>
 
-                    <!-- Step 2: Budget Select -->
-                    <div class="planner-step">
+                    <!-- ═══ WIZARD STEP 2: Budget ═══ -->
+                    <div class="planner-wizard-step" id="wizStep2" style="display:none;">
                         <div class="step-label">02 / Project Budget Range</div>
+                        <p style="font-size:0.8rem; color:var(--text-tertiary); margin-bottom:20px;">Select the budget range that best fits your project. This helps us plan realistically.</p>
                         <div class="planner-options pro-budget-options" id="budgetOptions">
-                            <div class="planner-opt-card pro-budget-card" data-val="Starter (₱10k - ₱25k)"
-                                data-mult="1">
+                            <div class="planner-opt-card pro-budget-card" data-val="Starter (₱10k - ₱25k)" data-mult="1">
                                 <div class="pro-budget-tier">STARTER</div>
                                 <div class="pro-budget-price">₱10k – ₱25k</div>
                                 <div class="pro-budget-ideal">Small sites &amp; simple builds</div>
                             </div>
-                            <div class="planner-opt-card pro-budget-card active" data-val="Growth (₱25k - ₱60k)"
-                                data-mult="1.5">
+                            <div class="planner-opt-card pro-budget-card active" data-val="Growth (₱25k - ₱60k)" data-mult="1.5">
                                 <div class="pro-budget-badge">MOST POPULAR</div>
                                 <div class="pro-budget-tier">GROWTH</div>
                                 <div class="pro-budget-price">₱25k – ₱60k</div>
@@ -718,15 +930,20 @@
                                 <div class="pro-budget-ideal">Complex projects &amp; large-scale builds</div>
                             </div>
                         </div>
+                        <div class="wizard-nav">
+                            <button class="btn-secondary" onclick="wizBack(2)"><i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Back</button>
+                            <button class="btn-primary" onclick="wizNext(2)">Next <i data-lucide="arrow-right" style="width:14px;height:14px;"></i></button>
+                        </div>
                     </div>
 
-                    <!-- Step 3: Timeline Select -->
-                    <div class="planner-step">
+                    <!-- ═══ WIZARD STEP 3: Timeline ═══ -->
+                    <div class="planner-wizard-step" id="wizStep3" style="display:none;">
                         <div class="step-label">03 / Target Timeline</div>
+                        <p style="font-size:0.8rem; color:var(--text-tertiary); margin-bottom:20px;">How soon do you need this completed? Be realistic — we'll work with your schedule.</p>
                         <div class="planner-options" id="timelineOptions">
                             <div class="planner-opt-card" data-val="Rush (2–4 weeks)">
                                 <span>Rush</span>
-                                <small class="timeline-note">2–4 weeks</small>
+                                <small class="timeline-note">2–4 weeks · priority build</small>
                             </div>
                             <div class="planner-opt-card active" data-val="Standard (1–2 months)">
                                 <span>Standard</span>
@@ -737,31 +954,84 @@
                                 <small class="timeline-note">3+ months · no hard deadline</small>
                             </div>
                         </div>
+                        <div class="wizard-nav">
+                            <button class="btn-secondary" onclick="wizBack(3)"><i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Back</button>
+                            <button class="btn-primary" onclick="wizNext(3)">Next <i data-lucide="arrow-right" style="width:14px;height:14px;"></i></button>
+                        </div>
                     </div>
 
-                    <!-- Summary & Action -->
-                    <div class="planner-summary">
-                        <div class="summary-details">
-                            <h4>Your Project Brief</h4>
-                            <div class="summary-item">
-                                <span class="summary-key">Services:</span>
-                                <span class="summary-val" id="sumServices">None selected</span>
+                    <!-- ═══ WIZARD STEP 4: Project Description ═══ -->
+                    <div class="planner-wizard-step" id="wizStep4" style="display:none;">
+                        <div class="step-label">04 / Project Description</div>
+                        <p style="font-size:0.8rem; color:var(--text-tertiary); margin-bottom:20px;">Tell us about your project in your own words. The more detail, the better we can prepare for our call.</p>
+                        <div class="wiz-field">
+                            <label class="wiz-label" for="wizProjectName">Project / Business Name</label>
+                            <input type="text" id="wizProjectName" class="wiz-input" placeholder="e.g. Bloom Bakery, TechStartup PH">
+                        </div>
+                        <div class="wiz-field">
+                            <label class="wiz-label" for="wizProjectDesc">Project Description <span class="wiz-required">*</span></label>
+                            <textarea id="wizProjectDesc" class="wiz-textarea" rows="6" placeholder="Describe your project: What is it? Who is it for? What do you want users to do? Any inspirations or references?"></textarea>
+                        </div>
+                        <div class="wiz-field">
+                            <label class="wiz-label" for="wizProjectGoals">Key Goals / Deliverables</label>
+                            <textarea id="wizProjectGoals" class="wiz-textarea" rows="3" placeholder="e.g. Increase online sales, build brand presence, showcase portfolio work..."></textarea>
+                        </div>
+                        <div class="wizard-nav">
+                            <button class="btn-secondary" onclick="wizBack(4)"><i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Back</button>
+                            <button class="btn-primary" onclick="wizNext(4)">Next <i data-lucide="arrow-right" style="width:14px;height:14px;"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- ═══ WIZARD STEP 5: Contact Information ═══ -->
+                    <div class="planner-wizard-step" id="wizStep5" style="display:none;">
+                        <div class="step-label">05 / Contact Information</div>
+                        <p style="font-size:0.8rem; color:var(--text-tertiary); margin-bottom:20px;">How should we reach you? We'll set up a free discovery call to discuss your project in detail.</p>
+                        <div class="wiz-row">
+                            <div class="wiz-field">
+                                <label class="wiz-label" for="wizName">Full Name <span class="wiz-required">*</span></label>
+                                <input type="text" id="wizName" class="wiz-input" placeholder="Your full name">
                             </div>
-                            <div class="summary-item">
-                                <span class="summary-key">Budget Tier:</span>
-                                <span class="summary-val" id="sumBudget">Growth (₱25k - ₱60k)</span>
-                            </div>
-                            <div class="summary-item">
-                                <span class="summary-key">Timeline:</span>
-                                <span class="summary-val" id="sumTimeline">Standard (1–2 months)</span>
-                            </div>
-                            <div class="summary-item total">
-                                <span class="summary-key">Estimated Blueprint Score:</span>
-                                <span class="summary-val" id="sumEstimate">Medium Intensity</span>
+                            <div class="wiz-field">
+                                <label class="wiz-label" for="wizEmail">Email Address <span class="wiz-required">*</span></label>
+                                <input type="email" id="wizEmail" class="wiz-input" placeholder="you@example.com">
                             </div>
                         </div>
-                        <button class="btn-primary-large" id="applyBlueprintBtn">Start the Conversation</button>
+                        <div class="wiz-row">
+                            <div class="wiz-field">
+                                <label class="wiz-label" for="wizPhone">Phone / WhatsApp</label>
+                                <input type="tel" id="wizPhone" class="wiz-input" placeholder="+63 9XX XXX XXXX">
+                            </div>
+                            <div class="wiz-field">
+                                <label class="wiz-label" for="wizContact">Preferred Contact Method</label>
+                                <select id="wizContact" class="wiz-select">
+                                    <option value="Email">Email</option>
+                                    <option value="WhatsApp">WhatsApp</option>
+                                    <option value="Phone Call">Phone Call</option>
+                                    <option value="Zoom / Video Call">Zoom / Video Call</option>
+                                    <option value="Facebook Messenger">Facebook Messenger</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="wiz-field">
+                            <label class="wiz-label" for="wizAvailability">Best Time to Reach You</label>
+                            <input type="text" id="wizAvailability" class="wiz-input" placeholder="e.g. Weekdays after 5PM, Saturday mornings">
+                        </div>
+
+                        <!-- Review Summary -->
+                        <div class="wiz-review-card">
+                            <div class="wiz-review-title"><i data-lucide="clipboard-check" style="width:14px;height:14px;"></i> Your Project Blueprint</div>
+                            <div class="wiz-review-row"><span>Features:</span><span id="rFeatures">—</span></div>
+                            <div class="wiz-review-row"><span>Budget:</span><span id="rBudget">—</span></div>
+                            <div class="wiz-review-row"><span>Timeline:</span><span id="rTimeline">—</span></div>
+                            <div class="wiz-review-row"><span>Project:</span><span id="rProject">—</span></div>
+                        </div>
+
+                        <div class="wizard-nav">
+                            <button class="btn-secondary" onclick="wizBack(5)"><i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Back</button>
+                            <button class="btn-primary-large" id="applyBlueprintBtn" style="flex:1; max-width:220px;">Send Inquiry <i data-lucide="send" style="width:14px;height:14px;"></i></button>
+                        </div>
                     </div>
+
                 </div>
             </div><!-- /proPlannerCard -->
             </div>
@@ -968,6 +1238,18 @@
                         </div>`).join('');
                 }
             }
+
+            // Populate contact method dropdown from config
+            const methods = cfg.contact_methods && cfg.contact_methods.length
+                ? cfg.contact_methods
+                : ['Email', 'WhatsApp', 'Phone Call', 'Zoom / Video Call', 'Facebook Messenger'];
+            localStorage.setItem('nt_contact_methods', JSON.stringify(methods));
+            const wizContactSel = document.getElementById('wizContact');
+            if (wizContactSel) {
+                wizContactSel.innerHTML = methods.map(m =>
+                    `<option value="${m}">${m}</option>`
+                ).join('');
+            }
         }
 
         async function applyServicesConfigToPlanner() {
@@ -1055,6 +1337,17 @@
                         `- Total Estimate: ${total} (Student Pricing)\n` +
                         `- Timeline: TBD\n` +
                         `Please let me know how we can proceed.`;
+                    
+                    const rawData = {
+                        type: 'student',
+                        services: 'Student Starter Package',
+                        addons: addons,
+                        budget: total,
+                        timeline: 'TBD',
+                        estimate: 'Student Pricing'
+                    };
+
+                    sessionStorage.setItem('nextech_blueprint_raw', JSON.stringify(rawData));
                     sessionStorage.setItem('nextech_blueprint', formattedDesc);
                     window.location.href = 'contact.html';
                 });
@@ -1062,52 +1355,114 @@
 
             if (typeof lucide !== 'undefined') lucide.createIcons();
 
-            // Planner Logic
+            // ── WIZARD STATE ──
+            let currentWizStep = 1;
+            const TOTAL_STEPS = 5;
+
             const getServiceOptions = () => document.querySelectorAll('#serviceOptions .planner-opt-card');
-            const getBudgetOptions = () => document.querySelectorAll('#budgetOptions .planner-opt-card');
+            const getBudgetOptions  = () => document.querySelectorAll('#budgetOptions .planner-opt-card');
             const getTimelineOptions = () => document.querySelectorAll('#timelineOptions .planner-opt-card');
 
-            const sumServices = document.getElementById('sumServices');
-            const sumBudget = document.getElementById('sumBudget');
-            const sumTimeline = document.getElementById('sumTimeline');
-            const sumEstimate = document.getElementById('sumEstimate');
-            const applyBlueprintBtn = document.getElementById('applyBlueprintBtn');
+            // Update progress bar visuals
+            function updateProgressBar(step) {
+                document.querySelectorAll('#proProgressBar .progress-step').forEach(el => {
+                    const s = parseInt(el.getAttribute('data-step'));
+                    el.classList.remove('active', 'completed');
+                    if (s < step) el.classList.add('completed');
+                    else if (s === step) el.classList.add('active');
+                });
+            }
 
-            function updateBlueprint() {
-                const selectedServices = [];
-                let totalWeight = 0;
-                getServiceOptions().forEach(opt => {
-                    if (opt.classList.contains('active')) {
-                        selectedServices.push(opt.getAttribute('data-val'));
-                        totalWeight += parseInt(opt.getAttribute('data-weight') || '0', 10);
+            // Show/hide wizard steps
+            function showWizStep(step) {
+                document.querySelectorAll('.planner-wizard-step').forEach(el => el.style.display = 'none');
+                const target = document.getElementById('wizStep' + step);
+                if (target) {
+                    target.style.display = 'block';
+                    target.style.animation = 'none';
+                    void target.offsetHeight; // reflow
+                    target.style.animation = '';
+                }
+                currentWizStep = step;
+                updateProgressBar(step);
+                // Re-render icons for dynamically shown steps
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                // Update review summary if on step 5
+                if (step === 5) populateReview();
+            }
+
+            // Step validation
+            window.wizNext = function(fromStep) {
+                if (fromStep === 1) {
+                    const selected = Array.from(getServiceOptions()).filter(o => o.classList.contains('active'));
+                    if (selected.length === 0) {
+                        shakeStep('wizStep1');
+                        showToast('Please select at least one feature to continue.');
+                        return;
                     }
-                });
-                sumServices.textContent = selectedServices.length > 0
-                    ? selectedServices.join(', ')
-                    : 'None selected (Please choose at least one)';
-
-                let activeBudget = 'Growth (₱25k - ₱60k)';
-                let budgetMultiplier = 1.5;
-                getBudgetOptions().forEach(opt => {
-                    if (opt.classList.contains('active')) {
-                        activeBudget = opt.getAttribute('data-val');
-                        budgetMultiplier = parseFloat(opt.getAttribute('data-mult') || '1.0');
+                }
+                if (fromStep === 4) {
+                    const desc = document.getElementById('wizProjectDesc').value.trim();
+                    if (!desc) {
+                        document.getElementById('wizProjectDesc').focus();
+                        showToast('Please describe your project before continuing.');
+                        return;
                     }
-                });
-                sumBudget.textContent = activeBudget;
+                }
+                showWizStep(fromStep + 1);
+            };
 
-                let activeTimeline = 'Standard (1–2 months)';
-                getTimelineOptions().forEach(opt => {
-                    if (opt.classList.contains('active')) activeTimeline = opt.getAttribute('data-val');
-                });
-                sumTimeline.textContent = activeTimeline;
+            window.wizBack = function(fromStep) {
+                showWizStep(fromStep - 1);
+            };
 
-                const score = totalWeight * budgetMultiplier;
-                sumEstimate.textContent = score === 0
-                    ? 'Select Services Above'
-                    : score < 4 ? 'Light Intensity Blueprint'
-                        : score < 8 ? 'Medium Intensity Blueprint'
-                            : 'High Intensity (Enterprise Blueprint)';
+            // Populate the review card on step 5
+            function populateReview() {
+                const features = Array.from(getServiceOptions())
+                    .filter(o => o.classList.contains('active'))
+                    .map(o => o.getAttribute('data-val')).join(', ') || '—';
+                let budget = '—';
+                getBudgetOptions().forEach(o => { if (o.classList.contains('active')) budget = o.getAttribute('data-val'); });
+                let timeline = '—';
+                getTimelineOptions().forEach(o => { if (o.classList.contains('active')) timeline = o.getAttribute('data-val'); });
+                const project = (document.getElementById('wizProjectName').value.trim() ||
+                                 document.getElementById('wizProjectDesc').value.trim().slice(0, 60) + '…') || '—';
+
+                document.getElementById('rFeatures').textContent = features;
+                document.getElementById('rBudget').textContent = budget;
+                document.getElementById('rTimeline').textContent = timeline;
+                document.getElementById('rProject').textContent = project;
+            }
+
+            // Toast notification
+            function showToast(msg) {
+                let t = document.getElementById('wizToast');
+                if (!t) {
+                    t = document.createElement('div');
+                    t.id = 'wizToast';
+                    t.style.cssText = `
+                        position:fixed; bottom:32px; left:50%; transform:translateX(-50%);
+                        background:var(--bg-secondary); border:1px solid var(--accent);
+                        color:var(--text-primary); padding:14px 24px;
+                        font-size:0.85rem; z-index:9999;
+                        box-shadow:0 8px 32px rgba(0,0,0,0.4);
+                        transition: opacity 0.3s;
+                    `;
+                    document.body.appendChild(t);
+                }
+                t.textContent = msg;
+                t.style.opacity = '1';
+                clearTimeout(t._timeout);
+                t._timeout = setTimeout(() => { t.style.opacity = '0'; }, 3500);
+            }
+
+            // Shake animation for invalid steps
+            function shakeStep(stepId) {
+                const el = document.getElementById(stepId);
+                if (!el) return;
+                el.style.animation = 'none';
+                void el.offsetHeight;
+                el.style.animation = 'wizShake 0.4s ease';
             }
 
             // Click interactions using event delegation
@@ -1116,13 +1471,9 @@
                 if (serviceContainer) {
                     serviceContainer.addEventListener('click', (e) => {
                         const card = e.target.closest('.planner-opt-card');
-                        if (card) {
-                            card.classList.toggle('active');
-                            updateBlueprint();
-                        }
+                        if (card) card.classList.toggle('active');
                     });
                 }
-
                 const budgetContainer = document.getElementById('budgetOptions');
                 if (budgetContainer) {
                     budgetContainer.addEventListener('click', (e) => {
@@ -1130,11 +1481,9 @@
                         if (card) {
                             getBudgetOptions().forEach(o => o.classList.remove('active'));
                             card.classList.add('active');
-                            updateBlueprint();
                         }
                     });
                 }
-
                 const timelineContainer = document.getElementById('timelineOptions');
                 if (timelineContainer) {
                     timelineContainer.addEventListener('click', (e) => {
@@ -1142,7 +1491,6 @@
                         if (card) {
                             getTimelineOptions().forEach(o => o.classList.remove('active'));
                             card.classList.add('active');
-                            updateBlueprint();
                         }
                     });
                 }
@@ -1150,34 +1498,67 @@
 
             bindOptionEvents();
 
+            // Final Submit
+            const applyBlueprintBtn = document.getElementById('applyBlueprintBtn');
             if (applyBlueprintBtn) {
                 applyBlueprintBtn.addEventListener('click', () => {
-                    const selectedServices = [];
-                    getServiceOptions().forEach(opt => { if (opt.classList.contains('active')) selectedServices.push(opt.getAttribute('data-val')); });
+                    const name  = document.getElementById('wizName').value.trim();
+                    const email = document.getElementById('wizEmail').value.trim();
+                    if (!name)  { document.getElementById('wizName').focus();  showToast('Please enter your name.'); return; }
+                    if (!email) { document.getElementById('wizEmail').focus(); showToast('Please enter your email address.'); return; }
+                    if (!/^[^@]+@[^@]+\.[^@]+$/.test(email)) { document.getElementById('wizEmail').focus(); showToast('Please enter a valid email address.'); return; }
 
-                    if (selectedServices.length === 0) {
-                        alert('Please select at least one service from the blueprint configuration.');
-                        return;
-                    }
+                    const selectedServices = Array.from(getServiceOptions())
+                        .filter(o => o.classList.contains('active'))
+                        .map(o => o.getAttribute('data-val'));
 
                     let activeBudget = '', activeTimeline = '';
-                    getBudgetOptions().forEach(opt => { if (opt.classList.contains('active')) activeBudget = opt.getAttribute('data-val'); });
-                    getTimelineOptions().forEach(opt => { if (opt.classList.contains('active')) activeTimeline = opt.getAttribute('data-val'); });
+                    getBudgetOptions().forEach(o  => { if (o.classList.contains('active')) activeBudget  = o.getAttribute('data-val'); });
+                    getTimelineOptions().forEach(o => { if (o.classList.contains('active')) activeTimeline = o.getAttribute('data-val'); });
+
+                    const projectName  = document.getElementById('wizProjectName').value.trim();
+                    const projectDesc  = document.getElementById('wizProjectDesc').value.trim();
+                    const projectGoals = document.getElementById('wizProjectGoals').value.trim();
+                    const phone        = document.getElementById('wizPhone').value.trim();
+                    const contactPref  = document.getElementById('wizContact').value;
+                    const availability = document.getElementById('wizAvailability').value.trim();
+
+                    const rawData = {
+                        type: 'professional',
+                        name,
+                        email,
+                        phone,
+                        contact_preference: contactPref,
+                        availability,
+                        services: selectedServices.join(', '),
+                        budget: activeBudget,
+                        timeline: activeTimeline,
+                        project_name: projectName,
+                        project_description: projectDesc,
+                        project_goals: projectGoals
+                    };
 
                     const formattedDesc =
-                        `Hello NexTech team, I have built a custom project blueprint:\n` +
-                        `- Required Services: ${selectedServices.join(', ')}\n` +
-                        `- Budget Bracket: ${activeBudget}\n` +
-                        `- Target Timeline: ${activeTimeline}\n` +
-                        `- Estimator: ${sumEstimate.textContent}\n` +
-                        `Please let me know how we can proceed.`;
+                        `Professional Project Inquiry from ${name}:\n` +
+                        `— Features: ${selectedServices.join(', ')}\n` +
+                        `— Budget: ${activeBudget}\n` +
+                        `— Timeline: ${activeTimeline}\n` +
+                        (projectName  ? `— Project Name: ${projectName}\n` : '') +
+                        (projectDesc  ? `— Description: ${projectDesc}\n` : '') +
+                        (projectGoals ? `— Goals: ${projectGoals}\n` : '') +
+                        `— Preferred Contact: ${contactPref}` +
+                        (availability ? ` (${availability})` : '') + '\n' +
+                        (phone        ? `— Phone: ${phone}\n` : '') +
+                        `\nPlease schedule a discovery call with me.`;
 
+                    sessionStorage.setItem('nextech_blueprint_raw', JSON.stringify(rawData));
                     sessionStorage.setItem('nextech_blueprint', formattedDesc);
                     window.location.href = 'contact.html';
                 });
             }
 
-            updateBlueprint();
+            // Initialize first step
+            showWizStep(1);
 
             document.querySelectorAll('.fade-in').forEach((el, i) => {
                 el.style.animationDelay = `${0.2 + i * 0.15}s`;
@@ -1192,6 +1573,14 @@
 
         .nav-link-active::after {
             width: 100% !important;
+        }
+
+        @keyframes wizShake {
+            0%, 100% { transform: translateX(0); }
+            20%       { transform: translateX(-8px); }
+            40%       { transform: translateX(8px); }
+            60%       { transform: translateX(-5px); }
+            80%       { transform: translateX(5px); }
         }
     </style>
 </body>

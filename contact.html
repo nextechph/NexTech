@@ -60,6 +60,96 @@
         .contact-section .section-header {
             display: none;
         }
+
+        /* Form Custom Dropdown Styles */
+        .form-select {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 16px;
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            outline: none;
+            transition: var(--transition-smooth);
+            border-radius: 0;
+            cursor: pointer;
+            appearance: none; /* remove default arrow */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23909090'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 16px;
+            padding-right: 40px;
+            width: 100%;
+        }
+
+        .form-select:focus {
+            border-color: var(--accent);
+            background-color: var(--card-hover);
+        }
+
+        .form-select option {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        /* Blueprint Summary Card Styles */
+        .blueprint-summary-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 24px;
+            margin-bottom: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blueprint-summary-card h3 {
+            font-family: var(--font-heading);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        .blueprint-summary-card h3 svg {
+            color: var(--accent);
+            width: 16px;
+            height: 16px;
+        }
+
+        .blueprint-details-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .blueprint-detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .blueprint-detail-label {
+            font-family: var(--font-heading);
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-tertiary);
+        }
+
+        .blueprint-detail-value {
+            font-size: 0.88rem;
+            color: var(--text-primary);
+            font-weight: 500;
+            line-height: 1.5;
+        }
     </style>
 </head>
 
@@ -161,6 +251,14 @@
 
                     <!-- Contact Form -->
                     <form class="contact-form" id="contactForm">
+                        <!-- Blueprint Summary Card (Dynamic) -->
+                        <div id="blueprintSummary" class="blueprint-summary-card" style="display: none;">
+                            <h3><i data-lucide="sliders"></i> Your Configured Project Blueprint</h3>
+                            <div id="blueprintSummaryDetails" class="blueprint-details-content">
+                                <!-- JS populated -->
+                            </div>
+                        </div>
+
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="clientName">Your Name *</label>
@@ -171,11 +269,29 @@
                                 <input type="email" id="clientEmail" required placeholder="john@company.com">
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="projectDetails">Project Blueprint Description</label>
-                            <textarea id="projectDetails" rows="5"
-                                placeholder="Select options from the blueprint calculator or describe your goals here..."></textarea>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="clientPhone">Phone / WhatsApp Number *</label>
+                                <input type="tel" id="clientPhone" required placeholder="+63 917 123 4567">
+                            </div>
+                            <div class="form-group">
+                                <label for="contactMethod">Preferred Contact Method *</label>
+                                <select id="contactMethod" required class="form-select">
+                                    <option value="" disabled selected>Select method...</option>
+                                </select>
+                            </div>
                         </div>
+
+                        <div class="form-group">
+                            <label for="projectDesc">Project Description &amp; Goals *</label>
+                            <textarea id="projectDesc" required rows="5"
+                                placeholder="Describe your project, vision, goals, and what you'd like to discuss on our conference call..."></textarea>
+                        </div>
+
+                        <!-- Hidden field for serialized blueprint details passed from planner -->
+                        <textarea id="projectDetails" style="display: none;"></textarea>
+
                         <button type="submit" class="btn-submit">
                             <span>Submit Inquiry</span>
                             <i data-lucide="arrow-right"></i>
@@ -251,17 +367,146 @@
     <script src="script.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        // ── Load contact methods into dropdown from localStorage or Supabase ──
+        async function loadContactMethods() {
+            const sel = document.getElementById('contactMethod');
+            if (!sel) return;
+
+            const DEFAULTS = ['Email', 'WhatsApp', 'Phone Call', 'Zoom / Video Call', 'Facebook Messenger'];
+            let methods = DEFAULTS;
+
+            // Try localStorage first (fastest — set by planner.html)
+            const cached = localStorage.getItem('nt_contact_methods');
+            if (cached) {
+                try { methods = JSON.parse(cached); } catch(e) {}
+            } else {
+                // Fallback: load from Supabase directly
+                try {
+                    const supabase = getSupabaseClient();
+                    if (supabase) {
+                        const { data } = await supabase
+                            .from('planner_config')
+                            .select('contact_methods')
+                            .eq('id', 1)
+                            .single();
+                        if (data && data.contact_methods && data.contact_methods.length) {
+                            methods = data.contact_methods;
+                            localStorage.setItem('nt_contact_methods', JSON.stringify(methods));
+                        }
+                    }
+                } catch(e) {}
+            }
+
+            // Append options (keep the placeholder)
+            methods.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m;
+                opt.textContent = m;
+                sel.appendChild(opt);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
             if (typeof lucide !== 'undefined') lucide.createIcons();
 
+            // Populate contact method dropdown before autofill runs
+            await loadContactMethods();
+
             // Pre-fill from Planner blueprint via sessionStorage
+            const rawDataStr = sessionStorage.getItem('nextech_blueprint_raw');
             const blueprintData = sessionStorage.getItem('nextech_blueprint');
+
+            if (rawDataStr) {
+                try {
+                    const raw = JSON.parse(rawDataStr);
+                    const summaryCard = document.getElementById('blueprintSummary');
+                    const detailsContainer = document.getElementById('blueprintSummaryDetails');
+
+                    // ── Autofill contact fields from professional wizard ──
+                    if (raw.type === 'professional') {
+                        if (raw.name)  document.getElementById('clientName').value  = raw.name;
+                        if (raw.email) document.getElementById('clientEmail').value = raw.email;
+                        if (raw.phone) document.getElementById('clientPhone').value = raw.phone;
+
+                        // Match contact preference option
+                        if (raw.contact_preference) {
+                            const sel = document.getElementById('contactMethod');
+                            const opt = Array.from(sel.options).find(o => o.value === raw.contact_preference);
+                            if (opt) sel.value = raw.contact_preference;
+                        }
+
+                        // Compose project description textarea from wizard data
+                        const descParts = [];
+                        if (raw.project_name)        descParts.push(`Project: ${raw.project_name}`);
+                        if (raw.project_description) descParts.push(`\n${raw.project_description}`);
+                        if (raw.project_goals)       descParts.push(`\nGoals: ${raw.project_goals}`);
+                        if (raw.availability)        descParts.push(`\nBest time to reach me: ${raw.availability}`);
+                        if (descParts.length) {
+                            document.getElementById('projectDesc').value = descParts.join('\n').trim();
+                        }
+                    }
+
+                    // ── Build blueprint summary card ──
+                    if (summaryCard && detailsContainer) {
+                        let html = '';
+                        if (raw.type === 'professional') {
+                            html = `
+                                <div class="blueprint-detail-item">
+                                    <span class="blueprint-detail-label">Features Needed</span>
+                                    <span class="blueprint-detail-value">${raw.services || '—'}</span>
+                                </div>
+                                <div class="blueprint-detail-item">
+                                    <span class="blueprint-detail-label">Budget Range</span>
+                                    <span class="blueprint-detail-value">${raw.budget || '—'}</span>
+                                </div>
+                                <div class="blueprint-detail-item">
+                                    <span class="blueprint-detail-label">Timeline</span>
+                                    <span class="blueprint-detail-value">${raw.timeline || '—'}</span>
+                                </div>
+                                ${raw.project_name ? `<div class="blueprint-detail-item">
+                                    <span class="blueprint-detail-label">Project Name</span>
+                                    <span class="blueprint-detail-value">${raw.project_name}</span>
+                                </div>` : ''}
+                                ${raw.contact_preference ? `<div class="blueprint-detail-item">
+                                    <span class="blueprint-detail-label">Preferred Contact</span>
+                                    <span class="blueprint-detail-value">${raw.contact_preference}${raw.availability ? ' · ' + raw.availability : ''}</span>
+                                </div>` : ''}
+                            `;
+                        } else {
+                            html = `
+                                <div class="blueprint-detail-item">
+                                    <span class="blueprint-detail-label">Base Plan</span>
+                                    <span class="blueprint-detail-value">${raw.services || '—'}</span>
+                                </div>
+                                <div class="blueprint-detail-item">
+                                    <span class="blueprint-detail-label">Selected Add-ons</span>
+                                    <span class="blueprint-detail-value">${raw.addons || 'None'}</span>
+                                </div>
+                                <div class="blueprint-detail-item">
+                                    <span class="blueprint-detail-label">Total Estimate</span>
+                                    <span class="blueprint-detail-value">${raw.budget || '—'}</span>
+                                </div>
+                                <div class="blueprint-detail-item">
+                                    <span class="blueprint-detail-label">Pricing Type</span>
+                                    <span class="blueprint-detail-value">Student Pricing</span>
+                                </div>
+                            `;
+                        }
+                        detailsContainer.innerHTML = html;
+                        summaryCard.style.display = 'block';
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                    }
+                } catch (e) {
+                    console.error("Failed to parse raw blueprint data:", e);
+                }
+            }
+
+            // Keep the text representation stored in our details field
             if (blueprintData) {
                 const projectDetailsField = document.getElementById('projectDetails');
-                if (projectDetailsField) {
-                    projectDetailsField.value = blueprintData;
-                    sessionStorage.removeItem('nextech_blueprint');
-                }
+                if (projectDetailsField) projectDetailsField.value = blueprintData;
+                sessionStorage.removeItem('nextech_blueprint');
+                sessionStorage.removeItem('nextech_blueprint_raw');
             }
 
             // Form submission
@@ -281,7 +526,10 @@
 
                     const name = document.getElementById('clientName').value.trim();
                     const email = document.getElementById('clientEmail').value.trim();
-                    const details = document.getElementById('projectDetails').value.trim();
+                    const phone = document.getElementById('clientPhone').value.trim();
+                    const method = document.getElementById('contactMethod').value;
+                    const desc = document.getElementById('projectDesc').value.trim();
+                    const blueprintText = document.getElementById('projectDetails').value.trim();
 
                     const supabase = getSupabaseClient();
                     if (!supabase) {
@@ -292,14 +540,25 @@
                         return;
                     }
 
+                    // Format message field for database
+                    const messageContent = 
+                        `Phone/WhatsApp: ${phone}\n` +
+                        `Preferred Contact: ${method}\n\n` +
+                        `Project Description:\n${desc}`;
+                        
+                    // Format blueprint column for database
+                    const blueprintContent = blueprintText 
+                        ? `${blueprintText}\n\nPhone: ${phone}\nMethod: ${method}`
+                        : `None (Direct Inquiry)\n\nPhone: ${phone}\nMethod: ${method}`;
+
                     const { error } = await supabase
                         .from('contact_submissions')
                         .insert([{
                             name: name,
                             email: email,
-                            subject: 'Inquiry from NexTech Website',
-                            message: details,
-                            blueprint: details
+                            subject: 'Project Planner Submission',
+                            message: messageContent,
+                            blueprint: blueprintContent
                         }]);
 
                     submitBtn.style.pointerEvents = 'all';
@@ -310,8 +569,11 @@
                         formStatus.innerHTML = `<i data-lucide="alert-circle" style="width:14px;height:14px;vertical-align:middle;margin-right:6px;"></i>Failed to transmit. Please try again.`;
                     } else {
                         formStatus.className = 'form-status success';
-                        formStatus.innerHTML = '<i data-lucide="check-circle" style="width:14px;height:14px;vertical-align:middle;margin-right:6px;"></i>Inquiry received successfully. Our engineering team will follow up shortly.';
+                        formStatus.innerHTML = '<i data-lucide="check-circle" style="width:14px;height:14px;vertical-align:middle;margin-right:6px;"></i>Inquiry received successfully. Our engineering team will follow up shortly to arrange the conference call.';
                         contactForm.reset();
+                        // Hide the blueprint summary card since form is reset
+                        const summaryCard = document.getElementById('blueprintSummary');
+                        if (summaryCard) summaryCard.style.display = 'none';
                     }
                     if (typeof lucide !== 'undefined') lucide.createIcons();
                 });
