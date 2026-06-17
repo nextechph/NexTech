@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -523,9 +523,21 @@
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-6px); }
-            40%, 80% { transform: translateX(6px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20%,
+            60% {
+                transform: translateX(-6px);
+            }
+
+            40%,
+            80% {
+                transform: translateX(6px);
+            }
         }
 
         .shake-form {
@@ -634,7 +646,7 @@
             <article class="article-header">
                 <span class="post-category" id="postCategory">Category</span>
                 <h1 class="article-title" id="postTitle">Loading Article...</h1>
-                
+
                 <div class="article-meta-info">
                     <div class="post-meta">
                         <div class="post-author">
@@ -668,14 +680,21 @@
                     <button class="share-btn" id="copyLinkBtn" title="Copy Link">
                         <i data-lucide="link"></i>
                     </button>
-                    <button class="share-btn" onclick="window.open('https://x.com/intent/tweet?url=' + encodeURIComponent(window.location.href), '_blank')" title="Share on X">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    <button class="share-btn"
+                        onclick="window.open('https://x.com/intent/tweet?url=' + encodeURIComponent(window.location.href), '_blank')"
+                        title="Share on X">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path
+                                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                         </svg>
                     </button>
-                    <button class="share-btn" onclick="window.open('https://facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href), '_blank')" title="Share on Facebook">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                    <button class="share-btn"
+                        onclick="window.open('https://facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href), '_blank')"
+                        title="Share on Facebook">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
                         </svg>
                     </button>
                 </div>
@@ -782,7 +801,7 @@
                 .map(paragraph => {
                     const trimmed = paragraph.trim();
                     if (!trimmed) return '';
-                    
+
                     // Simple inline formatting for bold (**bold**) and italics (*italics*)
                     let parsedText = trimmed
                         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -888,7 +907,7 @@
         function loadRelatedPosts(currentPost, others) {
             const relatedGrid = document.getElementById('relatedGrid');
             if (!relatedGrid) return;
-            
+
             // Priority: Same category
             let related = others.filter(p => p.category === currentPost.category);
             if (related.length < 2) {
@@ -980,15 +999,15 @@
             }
 
             // ── Newsletter subscription handler ──────────────────────────────────
-            const newsletterForm  = document.querySelector('.newsletter-form');
-            const newsletterBtn   = document.querySelector('.newsletter-btn');
+            const newsletterForm = document.querySelector('.newsletter-form');
+            const newsletterBtn = document.querySelector('.newsletter-btn');
             const newsletterInput = document.querySelector('.newsletter-input');
-            
+
             if (newsletterForm && newsletterBtn && newsletterInput) {
                 const handleSubscribe = () => {
                     const email = newsletterInput.value.trim();
                     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    
+
                     if (emailRegex.test(email)) {
                         // Success state
                         newsletterBtn.textContent = 'SUBSCRIBED! ✓';
@@ -996,7 +1015,7 @@
                         newsletterBtn.classList.add('success');
                         newsletterInput.classList.remove('error');
                         newsletterInput.value = '';
-                        
+
                         // Save email to Supabase subscribers table
                         const supabase = getSupabaseClient();
                         if (supabase) {
@@ -1019,7 +1038,7 @@
                         } catch (e) {
                             console.error('Error saving subscriber locally:', e);
                         }
-                        
+
                         setTimeout(() => {
                             newsletterBtn.textContent = 'Subscribe';
                             newsletterBtn.classList.remove('success');
@@ -1030,7 +1049,7 @@
                         newsletterBtn.classList.add('error');
                         newsletterBtn.textContent = 'INVALID EMAIL';
                         newsletterForm.classList.add('shake-form');
-                        
+
                         setTimeout(() => {
                             newsletterInput.classList.remove('error');
                             newsletterBtn.classList.remove('error');

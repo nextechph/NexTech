@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -519,9 +519,21 @@
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-6px); }
-            40%, 80% { transform: translateX(6px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20%,
+            60% {
+                transform: translateX(-6px);
+            }
+
+            40%,
+            80% {
+                transform: translateX(6px);
+            }
         }
 
         .shake-form {
@@ -707,10 +719,15 @@
         <div class="blog-grid-wrapper">
             <div class="blog-grid" id="blogGrid">
             </div>
-            <div id="blogEmptyState" style="text-align: center; padding: 80px 24px; border: 1px dashed var(--border); background: var(--card-bg); display: none;">
-                <i data-lucide="book-open" style="width: 48px; height: 48px; color: var(--text-tertiary); margin-bottom: 16px;"></i>
-                <h3 style="font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">No Articles Published</h3>
-                <p style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 300;">Please log into the admin dashboard to add and publish blog articles.</p>
+            <div id="blogEmptyState"
+                style="text-align: center; padding: 80px 24px; border: 1px dashed var(--border); background: var(--card-bg); display: none;">
+                <i data-lucide="book-open"
+                    style="width: 48px; height: 48px; color: var(--text-tertiary); margin-bottom: 16px;"></i>
+                <h3
+                    style="font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+                    No Articles Published</h3>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 300;">Please log into the admin
+                    dashboard to add and publish blog articles.</p>
             </div>
         </div>
 
@@ -817,8 +834,8 @@
                     return;
                 }
 
-                const grid            = document.getElementById('blogGrid');
-                const emptyState      = document.getElementById('blogEmptyState');
+                const grid = document.getElementById('blogGrid');
+                const emptyState = document.getElementById('blogEmptyState');
                 const featuredWrapper = document.querySelector('.blog-featured');
 
                 // Clear existing grid posts
@@ -826,9 +843,9 @@
 
                 // Always update stats first (even when 0 posts)
                 const uniqueCats = new Set(posts.map(p => p.category)).size;
-                const statArticlesEl   = document.getElementById('statArticles');
+                const statArticlesEl = document.getElementById('statArticles');
                 const statCategoriesEl = document.getElementById('statCategories');
-                if (statArticlesEl)   statArticlesEl.textContent   = posts.length;
+                if (statArticlesEl) statArticlesEl.textContent = posts.length;
                 if (statCategoriesEl) statCategoriesEl.textContent = uniqueCats || 0;
 
                 // Show empty state when no published posts
@@ -854,13 +871,13 @@
                         if (fc) {
                             fc.setAttribute('data-category', catSlug);
                             fc.querySelector('.featured-image').innerHTML = imgHtml + '<span class="featured-badge">Featured</span>';
-                            fc.querySelector('.post-category').textContent   = p.category;
-                            fc.querySelector('.featured-title').textContent   = p.title;
-                            fc.querySelector('.featured-excerpt').textContent = p.excerpt   || '';
-                            fc.querySelector('.author-name').textContent      = p.author    || 'NexTech Team';
-                            fc.querySelector('.post-date').textContent        = postDate;
-                            fc.querySelector('.post-read-time').innerHTML     = `<i data-lucide="clock"></i> ${postReadTime}`;
-                            
+                            fc.querySelector('.post-category').textContent = p.category;
+                            fc.querySelector('.featured-title').textContent = p.title;
+                            fc.querySelector('.featured-excerpt').textContent = p.excerpt || '';
+                            fc.querySelector('.author-name').textContent = p.author || 'NexTech Team';
+                            fc.querySelector('.post-date').textContent = postDate;
+                            fc.querySelector('.post-read-time').innerHTML = `<i data-lucide="clock"></i> ${postReadTime}`;
+
                             const readMoreLink = fc.querySelector('.read-more-link');
                             if (readMoreLink) {
                                 readMoreLink.setAttribute('href', `article.html?id=${p.id}`);
@@ -901,7 +918,7 @@
                                     <span class="card-read-time"><i data-lucide="clock"></i> ${postReadTime}</span>
                                 </div>
                             </div>`;
-                        
+
                         card.addEventListener('click', (e) => {
                             e.preventDefault();
                             document.body.classList.add('page-leaving');
@@ -910,7 +927,7 @@
 
                         grid.appendChild(card);
                         setTimeout(() => {
-                            card.style.opacity   = '1';
+                            card.style.opacity = '1';
                             card.style.transform = 'translateY(0)';
                         }, 80 * i);
                     }
@@ -932,27 +949,27 @@
                     const filter = btn.getAttribute('data-filter');
 
                     // Featured card
-                    const featuredCard    = document.querySelector('.featured-card');
+                    const featuredCard = document.querySelector('.featured-card');
                     const featuredWrapper = document.querySelector('.blog-featured');
                     if (featuredCard && featuredWrapper) {
-                        const cat  = featuredCard.getAttribute('data-category');
+                        const cat = featuredCard.getAttribute('data-category');
                         const show = filter === 'all' || filter === cat;
                         featuredWrapper.style.display = show ? '' : 'none';
                     }
 
                     // Grid cards — queried live so dynamic cards are included
                     document.querySelectorAll('#blogGrid .blog-card').forEach(card => {
-                        const cat  = card.getAttribute('data-category');
+                        const cat = card.getAttribute('data-category');
                         const show = filter === 'all' || filter === cat;
-                        card.style.opacity   = '0';
+                        card.style.opacity = '0';
                         card.style.transform = 'translateY(10px)';
                         setTimeout(() => {
                             card.style.display = show ? 'flex' : 'none';
                             if (show) {
                                 requestAnimationFrame(() => {
                                     card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-                                    card.style.opacity    = '1';
-                                    card.style.transform  = 'translateY(0)';
+                                    card.style.opacity = '1';
+                                    card.style.transform = 'translateY(0)';
                                 });
                             }
                         }, 150);
@@ -961,15 +978,15 @@
             });
 
             // ── Newsletter ────────────────────────────────────────────────────
-            const newsletterForm  = document.querySelector('.newsletter-form');
-            const newsletterBtn   = document.querySelector('.newsletter-btn');
+            const newsletterForm = document.querySelector('.newsletter-form');
+            const newsletterBtn = document.querySelector('.newsletter-btn');
             const newsletterInput = document.querySelector('.newsletter-input');
-            
+
             if (newsletterForm && newsletterBtn && newsletterInput) {
                 const handleSubscribe = () => {
                     const email = newsletterInput.value.trim();
                     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    
+
                     if (emailRegex.test(email)) {
                         // Success state
                         newsletterBtn.textContent = 'SUBSCRIBED! ✓';
@@ -977,7 +994,7 @@
                         newsletterBtn.classList.add('success');
                         newsletterInput.classList.remove('error');
                         newsletterInput.value = '';
-                        
+
                         // Save email to Supabase subscribers table
                         const supabase = getSupabaseClient();
                         if (supabase) {
@@ -1000,7 +1017,7 @@
                         } catch (e) {
                             console.error('Error saving subscriber locally:', e);
                         }
-                        
+
                         setTimeout(() => {
                             newsletterBtn.textContent = 'Subscribe';
                             newsletterBtn.classList.remove('success');
@@ -1011,7 +1028,7 @@
                         newsletterBtn.classList.add('error');
                         newsletterBtn.textContent = 'INVALID EMAIL';
                         newsletterForm.classList.add('shake-form');
-                        
+
                         setTimeout(() => {
                             newsletterInput.classList.remove('error');
                             newsletterBtn.classList.remove('error');
@@ -1036,15 +1053,15 @@
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
-                            entry.target.style.opacity   = '1';
+                            entry.target.style.opacity = '1';
                             entry.target.style.transform = 'translateY(0)';
                             observer.unobserve(entry.target);
                         }
                     });
                 }, { threshold: 0.08 });
                 revealCards.forEach(card => {
-                    card.style.opacity    = '0';
-                    card.style.transform  = 'translateY(24px)';
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(24px)';
                     card.style.transition = 'opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)';
                     observer.observe(card);
                 });

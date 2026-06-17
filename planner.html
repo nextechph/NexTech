@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -467,8 +467,15 @@
         }
 
         @keyframes wizFadeIn {
-            from { opacity: 0; transform: translateY(12px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Wizard Navigation Buttons */
@@ -857,9 +864,12 @@
                     <!-- ═══ WIZARD STEP 1: Features ═══ -->
                     <div class="planner-wizard-step" id="wizStep1">
                         <div class="step-label">01 / Features Needed
-                            <span style="font-weight:400; color:var(--text-tertiary); font-family:var(--font-body); letter-spacing:0; text-transform:none; font-size:0.75rem;"> — Select all that apply</span>
+                            <span
+                                style="font-weight:400; color:var(--text-tertiary); font-family:var(--font-body); letter-spacing:0; text-transform:none; font-size:0.75rem;">
+                                — Select all that apply</span>
                         </div>
-                        <p style="font-size:0.8rem; color:var(--text-tertiary); margin-bottom:20px;">Choose the services you need. You can select multiple.</p>
+                        <p style="font-size:0.8rem; color:var(--text-tertiary); margin-bottom:20px;">Choose the services
+                            you need. You can select multiple.</p>
                         <div class="planner-options" id="serviceOptions">
                             <div class="planner-opt-card" data-val="Website Development" data-weight="3">
                                 <i data-lucide="code-2"></i>
@@ -904,21 +914,25 @@
                         </div>
                         <div class="wizard-nav">
                             <div></div>
-                            <button class="btn-primary" onclick="wizNext(1)">Next <i data-lucide="arrow-right" style="width:14px;height:14px;"></i></button>
+                            <button class="btn-primary" onclick="wizNext(1)">Next <i data-lucide="arrow-right"
+                                    style="width:14px;height:14px;"></i></button>
                         </div>
                     </div>
 
                     <!-- ═══ WIZARD STEP 2: Budget ═══ -->
                     <div class="planner-wizard-step" id="wizStep2" style="display:none;">
                         <div class="step-label">02 / Project Budget Range</div>
-                        <p style="font-size:0.8rem; color:var(--text-tertiary); margin-bottom:20px;">Select the budget range that best fits your project. This helps us plan realistically.</p>
+                        <p style="font-size:0.8rem; color:var(--text-tertiary); margin-bottom:20px;">Select the budget
+                            range that best fits your project. This helps us plan realistically.</p>
                         <div class="planner-options pro-budget-options" id="budgetOptions">
-                            <div class="planner-opt-card pro-budget-card" data-val="Starter (₱10k - ₱25k)" data-mult="1">
+                            <div class="planner-opt-card pro-budget-card" data-val="Starter (₱10k - ₱25k)"
+                                data-mult="1">
                                 <div class="pro-budget-tier">STARTER</div>
                                 <div class="pro-budget-price">₱10k – ₱25k</div>
                                 <div class="pro-budget-ideal">Small sites &amp; simple builds</div>
                             </div>
-                            <div class="planner-opt-card pro-budget-card active" data-val="Growth (₱25k - ₱60k)" data-mult="1.5">
+                            <div class="planner-opt-card pro-budget-card active" data-val="Growth (₱25k - ₱60k)"
+                                data-mult="1.5">
                                 <div class="pro-budget-badge">MOST POPULAR</div>
                                 <div class="pro-budget-tier">GROWTH</div>
                                 <div class="pro-budget-price">₱25k – ₱60k</div>
@@ -931,15 +945,18 @@
                             </div>
                         </div>
                         <div class="wizard-nav">
-                            <button class="btn-secondary" onclick="wizBack(2)"><i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Back</button>
-                            <button class="btn-primary" onclick="wizNext(2)">Next <i data-lucide="arrow-right" style="width:14px;height:14px;"></i></button>
+                            <button class="btn-secondary" onclick="wizBack(2)"><i data-lucide="arrow-left"
+                                    style="width:14px;height:14px;"></i> Back</button>
+                            <button class="btn-primary" onclick="wizNext(2)">Next <i data-lucide="arrow-right"
+                                    style="width:14px;height:14px;"></i></button>
                         </div>
                     </div>
 
                     <!-- ═══ WIZARD STEP 3: Timeline ═══ -->
                     <div class="planner-wizard-step" id="wizStep3" style="display:none;">
                         <div class="step-label">03 / Target Timeline</div>
-                        <p style="font-size:0.8rem; color:var(--text-tertiary); margin-bottom:20px;">How soon do you need this completed? Be realistic — we'll work with your schedule.</p>
+                        <p style="font-size:0.8rem; color:var(--text-tertiary); margin-bottom:20px;">How soon do you
+                            need this completed? Be realistic — we'll work with your schedule.</p>
                         <div class="planner-options" id="timelineOptions">
                             <div class="planner-opt-card" data-val="Rush (2–4 weeks)">
                                 <span>Rush</span>
@@ -955,44 +972,56 @@
                             </div>
                         </div>
                         <div class="wizard-nav">
-                            <button class="btn-secondary" onclick="wizBack(3)"><i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Back</button>
-                            <button class="btn-primary" onclick="wizNext(3)">Next <i data-lucide="arrow-right" style="width:14px;height:14px;"></i></button>
+                            <button class="btn-secondary" onclick="wizBack(3)"><i data-lucide="arrow-left"
+                                    style="width:14px;height:14px;"></i> Back</button>
+                            <button class="btn-primary" onclick="wizNext(3)">Next <i data-lucide="arrow-right"
+                                    style="width:14px;height:14px;"></i></button>
                         </div>
                     </div>
 
                     <!-- ═══ WIZARD STEP 4: Project Description ═══ -->
                     <div class="planner-wizard-step" id="wizStep4" style="display:none;">
                         <div class="step-label">04 / Project Description</div>
-                        <p style="font-size:0.8rem; color:var(--text-tertiary); margin-bottom:20px;">Tell us about your project in your own words. The more detail, the better we can prepare for our call.</p>
+                        <p style="font-size:0.8rem; color:var(--text-tertiary); margin-bottom:20px;">Tell us about your
+                            project in your own words. The more detail, the better we can prepare for our call.</p>
                         <div class="wiz-field">
                             <label class="wiz-label" for="wizProjectName">Project / Business Name</label>
-                            <input type="text" id="wizProjectName" class="wiz-input" placeholder="e.g. Bloom Bakery, TechStartup PH">
+                            <input type="text" id="wizProjectName" class="wiz-input"
+                                placeholder="e.g. Bloom Bakery, TechStartup PH">
                         </div>
                         <div class="wiz-field">
-                            <label class="wiz-label" for="wizProjectDesc">Project Description <span class="wiz-required">*</span></label>
-                            <textarea id="wizProjectDesc" class="wiz-textarea" rows="6" placeholder="Describe your project: What is it? Who is it for? What do you want users to do? Any inspirations or references?"></textarea>
+                            <label class="wiz-label" for="wizProjectDesc">Project Description <span
+                                    class="wiz-required">*</span></label>
+                            <textarea id="wizProjectDesc" class="wiz-textarea" rows="6"
+                                placeholder="Describe your project: What is it? Who is it for? What do you want users to do? Any inspirations or references?"></textarea>
                         </div>
                         <div class="wiz-field">
                             <label class="wiz-label" for="wizProjectGoals">Key Goals / Deliverables</label>
-                            <textarea id="wizProjectGoals" class="wiz-textarea" rows="3" placeholder="e.g. Increase online sales, build brand presence, showcase portfolio work..."></textarea>
+                            <textarea id="wizProjectGoals" class="wiz-textarea" rows="3"
+                                placeholder="e.g. Increase online sales, build brand presence, showcase portfolio work..."></textarea>
                         </div>
                         <div class="wizard-nav">
-                            <button class="btn-secondary" onclick="wizBack(4)"><i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Back</button>
-                            <button class="btn-primary" onclick="wizNext(4)">Next <i data-lucide="arrow-right" style="width:14px;height:14px;"></i></button>
+                            <button class="btn-secondary" onclick="wizBack(4)"><i data-lucide="arrow-left"
+                                    style="width:14px;height:14px;"></i> Back</button>
+                            <button class="btn-primary" onclick="wizNext(4)">Next <i data-lucide="arrow-right"
+                                    style="width:14px;height:14px;"></i></button>
                         </div>
                     </div>
 
                     <!-- ═══ WIZARD STEP 5: Contact Information ═══ -->
                     <div class="planner-wizard-step" id="wizStep5" style="display:none;">
                         <div class="step-label">05 / Contact Information</div>
-                        <p style="font-size:0.8rem; color:var(--text-tertiary); margin-bottom:20px;">How should we reach you? We'll set up a free discovery call to discuss your project in detail.</p>
+                        <p style="font-size:0.8rem; color:var(--text-tertiary); margin-bottom:20px;">How should we reach
+                            you? We'll set up a free discovery call to discuss your project in detail.</p>
                         <div class="wiz-row">
                             <div class="wiz-field">
-                                <label class="wiz-label" for="wizName">Full Name <span class="wiz-required">*</span></label>
+                                <label class="wiz-label" for="wizName">Full Name <span
+                                        class="wiz-required">*</span></label>
                                 <input type="text" id="wizName" class="wiz-input" placeholder="Your full name">
                             </div>
                             <div class="wiz-field">
-                                <label class="wiz-label" for="wizEmail">Email Address <span class="wiz-required">*</span></label>
+                                <label class="wiz-label" for="wizEmail">Email Address <span
+                                        class="wiz-required">*</span></label>
                                 <input type="email" id="wizEmail" class="wiz-input" placeholder="you@example.com">
                             </div>
                         </div>
@@ -1014,12 +1043,14 @@
                         </div>
                         <div class="wiz-field">
                             <label class="wiz-label" for="wizAvailability">Best Time to Reach You</label>
-                            <input type="text" id="wizAvailability" class="wiz-input" placeholder="e.g. Weekdays after 5PM, Saturday mornings">
+                            <input type="text" id="wizAvailability" class="wiz-input"
+                                placeholder="e.g. Weekdays after 5PM, Saturday mornings">
                         </div>
 
                         <!-- Review Summary -->
                         <div class="wiz-review-card">
-                            <div class="wiz-review-title"><i data-lucide="clipboard-check" style="width:14px;height:14px;"></i> Your Project Blueprint</div>
+                            <div class="wiz-review-title"><i data-lucide="clipboard-check"
+                                    style="width:14px;height:14px;"></i> Your Project Blueprint</div>
                             <div class="wiz-review-row"><span>Features:</span><span id="rFeatures">—</span></div>
                             <div class="wiz-review-row"><span>Budget:</span><span id="rBudget">—</span></div>
                             <div class="wiz-review-row"><span>Timeline:</span><span id="rTimeline">—</span></div>
@@ -1027,8 +1058,11 @@
                         </div>
 
                         <div class="wizard-nav">
-                            <button class="btn-secondary" onclick="wizBack(5)"><i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Back</button>
-                            <button class="btn-primary-large" id="applyBlueprintBtn" style="flex:1; max-width:220px;">Send Inquiry <i data-lucide="send" style="width:14px;height:14px;"></i></button>
+                            <button class="btn-secondary" onclick="wizBack(5)"><i data-lucide="arrow-left"
+                                    style="width:14px;height:14px;"></i> Back</button>
+                            <button class="btn-primary-large" id="applyBlueprintBtn"
+                                style="flex:1; max-width:220px;">Send Inquiry <i data-lucide="send"
+                                    style="width:14px;height:14px;"></i></button>
                         </div>
                     </div>
 
@@ -1210,7 +1244,7 @@
                     if (billBaseRow) billBaseRow.innerHTML = `<span>Base Plan</span><span>&#8369;${Number(basePriceVal).toLocaleString()}</span>`;
                     const billTotalEl = document.getElementById('billTotal');
                     if (billTotalEl) billTotalEl.textContent = '₱' + Number(basePriceVal).toLocaleString();
-                    
+
                     grid.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.addEventListener('change', updateBill));
                 }
             }
@@ -1283,7 +1317,7 @@
                     bullets: s.bullets || []
                 }));
                 localStorage.setItem('nt_services', JSON.stringify(mapped));
-                
+
                 renderPlannerServices(mapped);
 
             } catch (err) {
@@ -1307,7 +1341,7 @@
                         <span>${s.title}</span>
                     </div>`;
                 }).join('');
-                
+
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             }
         }
@@ -1337,7 +1371,7 @@
                         `- Total Estimate: ${total} (Student Pricing)\n` +
                         `- Timeline: TBD\n` +
                         `Please let me know how we can proceed.`;
-                    
+
                     const rawData = {
                         type: 'student',
                         services: 'Student Starter Package',
@@ -1360,7 +1394,7 @@
             const TOTAL_STEPS = 5;
 
             const getServiceOptions = () => document.querySelectorAll('#serviceOptions .planner-opt-card');
-            const getBudgetOptions  = () => document.querySelectorAll('#budgetOptions .planner-opt-card');
+            const getBudgetOptions = () => document.querySelectorAll('#budgetOptions .planner-opt-card');
             const getTimelineOptions = () => document.querySelectorAll('#timelineOptions .planner-opt-card');
 
             // Update progress bar visuals
@@ -1392,7 +1426,7 @@
             }
 
             // Step validation
-            window.wizNext = function(fromStep) {
+            window.wizNext = function (fromStep) {
                 if (fromStep === 1) {
                     const selected = Array.from(getServiceOptions()).filter(o => o.classList.contains('active'));
                     if (selected.length === 0) {
@@ -1412,7 +1446,7 @@
                 showWizStep(fromStep + 1);
             };
 
-            window.wizBack = function(fromStep) {
+            window.wizBack = function (fromStep) {
                 showWizStep(fromStep - 1);
             };
 
@@ -1426,7 +1460,7 @@
                 let timeline = '—';
                 getTimelineOptions().forEach(o => { if (o.classList.contains('active')) timeline = o.getAttribute('data-val'); });
                 const project = (document.getElementById('wizProjectName').value.trim() ||
-                                 document.getElementById('wizProjectDesc').value.trim().slice(0, 60) + '…') || '—';
+                    document.getElementById('wizProjectDesc').value.trim().slice(0, 60) + '…') || '—';
 
                 document.getElementById('rFeatures').textContent = features;
                 document.getElementById('rBudget').textContent = budget;
@@ -1502,9 +1536,9 @@
             const applyBlueprintBtn = document.getElementById('applyBlueprintBtn');
             if (applyBlueprintBtn) {
                 applyBlueprintBtn.addEventListener('click', () => {
-                    const name  = document.getElementById('wizName').value.trim();
+                    const name = document.getElementById('wizName').value.trim();
                     const email = document.getElementById('wizEmail').value.trim();
-                    if (!name)  { document.getElementById('wizName').focus();  showToast('Please enter your name.'); return; }
+                    if (!name) { document.getElementById('wizName').focus(); showToast('Please enter your name.'); return; }
                     if (!email) { document.getElementById('wizEmail').focus(); showToast('Please enter your email address.'); return; }
                     if (!/^[^@]+@[^@]+\.[^@]+$/.test(email)) { document.getElementById('wizEmail').focus(); showToast('Please enter a valid email address.'); return; }
 
@@ -1513,14 +1547,14 @@
                         .map(o => o.getAttribute('data-val'));
 
                     let activeBudget = '', activeTimeline = '';
-                    getBudgetOptions().forEach(o  => { if (o.classList.contains('active')) activeBudget  = o.getAttribute('data-val'); });
+                    getBudgetOptions().forEach(o => { if (o.classList.contains('active')) activeBudget = o.getAttribute('data-val'); });
                     getTimelineOptions().forEach(o => { if (o.classList.contains('active')) activeTimeline = o.getAttribute('data-val'); });
 
-                    const projectName  = document.getElementById('wizProjectName').value.trim();
-                    const projectDesc  = document.getElementById('wizProjectDesc').value.trim();
+                    const projectName = document.getElementById('wizProjectName').value.trim();
+                    const projectDesc = document.getElementById('wizProjectDesc').value.trim();
                     const projectGoals = document.getElementById('wizProjectGoals').value.trim();
-                    const phone        = document.getElementById('wizPhone').value.trim();
-                    const contactPref  = document.getElementById('wizContact').value;
+                    const phone = document.getElementById('wizPhone').value.trim();
+                    const contactPref = document.getElementById('wizContact').value;
                     const availability = document.getElementById('wizAvailability').value.trim();
 
                     const rawData = {
@@ -1543,12 +1577,12 @@
                         `— Features: ${selectedServices.join(', ')}\n` +
                         `— Budget: ${activeBudget}\n` +
                         `— Timeline: ${activeTimeline}\n` +
-                        (projectName  ? `— Project Name: ${projectName}\n` : '') +
-                        (projectDesc  ? `— Description: ${projectDesc}\n` : '') +
+                        (projectName ? `— Project Name: ${projectName}\n` : '') +
+                        (projectDesc ? `— Description: ${projectDesc}\n` : '') +
                         (projectGoals ? `— Goals: ${projectGoals}\n` : '') +
                         `— Preferred Contact: ${contactPref}` +
                         (availability ? ` (${availability})` : '') + '\n' +
-                        (phone        ? `— Phone: ${phone}\n` : '') +
+                        (phone ? `— Phone: ${phone}\n` : '') +
                         `\nPlease schedule a discovery call with me.`;
 
                     sessionStorage.setItem('nextech_blueprint_raw', JSON.stringify(rawData));
@@ -1576,11 +1610,27 @@
         }
 
         @keyframes wizShake {
-            0%, 100% { transform: translateX(0); }
-            20%       { transform: translateX(-8px); }
-            40%       { transform: translateX(8px); }
-            60%       { transform: translateX(-5px); }
-            80%       { transform: translateX(5px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: translateX(-8px);
+            }
+
+            40% {
+                transform: translateX(8px);
+            }
+
+            60% {
+                transform: translateX(-5px);
+            }
+
+            80% {
+                transform: translateX(5px);
+            }
         }
     </style>
 </body>

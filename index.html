@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -310,20 +310,20 @@
             } catch (e) {
                 console.error('Error rendering dynamic services:', e);
             }
-            
+
             function renderServices(servicesList) {
                 const grid = document.querySelector('.services-grid');
                 if (grid) {
                     grid.innerHTML = servicesList.map((svc, idx) => {
                         const num = svc.num || String(idx + 1).padStart(2, '0');
                         const dataSvc = svc.title ? svc.title.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'service';
-                        
+
                         const bulletsArray = svc.bullets || [];
                         const bulletListHtml = bulletsArray
                             .filter(b => b && b.trim() !== '')
                             .map(b => `<li><i data-lucide="check"></i> ${b}</li>`)
                             .join('');
-                            
+
                         return `
                         <div class="service-card" data-service="${dataSvc}">
                             <div class="card-bg-glow"></div>
@@ -338,7 +338,7 @@
                             </ul>
                         </div>`;
                     }).join('');
-                    
+
                     if (typeof lucide !== 'undefined') {
                         lucide.createIcons();
                     }
